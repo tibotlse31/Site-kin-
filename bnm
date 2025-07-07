@@ -13,6 +13,16 @@
       padding: 20px;
       color: #333;
     }
+    a.back-link {
+      display: inline-block;
+      margin-bottom: 15px;
+      font-size: 16px;
+      color: #2BAE66;
+      text-decoration: none;
+    }
+    a.back-link:hover {
+      text-decoration: underline;
+    }
     h1 {
       color: #2BAE66;
       text-align: center;
@@ -68,6 +78,8 @@
   </style>
 </head>
 <body>
+  <a href="index.html" class="back-link">← Retour à l’accueil</a>
+
   <h1>BNM Neuro Périphérique</h1>
 
   <div class="search-bar">
@@ -139,57 +151,4 @@
 
       racines.forEach(racine => {
         const label = document.createElement('label');
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.value = racine;
-        checkbox.name = 'racines';
-        checkbox.addEventListener('change', filterData);
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(' ' + racine));
-        racineCheckboxes.appendChild(label);
-      });
-    }
-
-    function displayTable(filteredData) {
-      tableBody.innerHTML = '';
-      filteredData.forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${item.Muscle || ''}</td>
-          <td>${item.Nerf || ''}</td>
-          <td>${item.Racines || ''}</td>
-          <td>${item.Fonctions || ''}</td>
-        `;
-        tableBody.appendChild(row);
-      });
-    }
-
-    function filterData() {
-      const search = searchInput.value.toLowerCase();
-      const nerf = nerfFilter.value;
-
-      const checkedRacines = Array.from(document.querySelectorAll('input[name="racines"]:checked')).map(cb => cb.value);
-
-      const filtered = data.filter(item => {
-        const text = `${item.Muscle} ${item.Nerf} ${item.Racines} ${item.Fonctions}`.toLowerCase();
-        const matchesSearch = !search || text.includes(search);
-        const matchesNerf = !nerf || item.Nerf === nerf;
-
-        let matchesRacines = true;
-        if (checkedRacines.length > 0) {
-          const itemRacines = item.Racines ? item.Racines.split(/[-.,; ]+/).map(r => r.trim()) : [];
-          // Ici on filtre si TOUTES les racines cochées sont présentes dans l’item
-          matchesRacines = checkedRacines.every(r => itemRacines.includes(r));
-        }
-
-        return matchesSearch && matchesNerf && matchesRacines;
-      });
-
-      displayTable(filtered);
-    }
-
-    searchInput.addEventListener('keyup', filterData);
-    nerfFilter.addEventListener('change', filterData);
-  </script>
-</body>
-</html>
+        const ch
