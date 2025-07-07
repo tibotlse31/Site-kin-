@@ -90,7 +90,6 @@
   <script>
     let data = [];
 
-    // Charge le JSON
     fetch('csvjson.json')
       .then(response => response.json())
       .then(json => {
@@ -148,5 +147,18 @@
       const filtered = data.filter(item => {
         const text = `${item.Muscle} ${item.Nerf} ${item.Racines} ${item.Fonctions}`.toLowerCase();
         const matchesSearch = !search || text.includes(search);
-        const matchesNerf =
+        const matchesNerf = !nerf || item.Nerf === nerf;
+        const matchesRacine = !racine || item.Racines === racine;
+        return matchesSearch && matchesNerf && matchesRacine;
+      });
+
+      displayTable(filtered);
+    }
+
+    searchInput.addEventListener('keyup', filterData);
+    nerfFilter.addEventListener('change', filterData);
+    racineFilter.addEventListener('change', filterData);
+  </script>
+</body>
+</html>
 
