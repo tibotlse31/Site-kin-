@@ -1,0 +1,821 @@
+[
+  {
+    "Region": "tête et cou",
+    "Muscle": "SCOM",
+    "Nerf": "accessoire",
+    "Racines": "C2.C3",
+    "Origine": "Chef sternal: Face ant manubrium sternal                                      Chef clav: Face sup tiers med clav",
+    "Terminaison": "Face lat processus mastoidien",
+    "Fonctions": "flexion inclinaison rotation"
+  },
+  {
+    "Region": "tête et cou",
+    "Muscle": "Prévertébraux",
+    "Nerf": "",
+    "Racines": "C1.C8",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion"
+  },
+  {
+    "Region": "tête et cou",
+    "Muscle": "Trapèze sup",
+    "Nerf": "plexus cervical",
+    "Racines": "C2.C3.C4",
+    "Origine": "Occiput, ligament nuchal, PE C1 à C5",
+    "Terminaison": "Bord post clav",
+    "Fonctions": "extension ereteur"
+  },
+  {
+    "Region": "tête et cou",
+    "Muscle": "extenseurs et érecteur de la nuque",
+    "Nerf": "",
+    "Racines": "C1.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "extension ereteur"
+  },
+  {
+    "Region": "scapula",
+    "Muscle": "Trapèze moyen fibres sup",
+    "Nerf": "accessoire",
+    "Racines": "C2.C3.C4",
+    "Origine": "Ligaments inter-épineux, C6 à T3",
+    "Terminaison": "Bord post acromion + epine scapula",
+    "Fonctions": "élévation scapula"
+  },
+  {
+    "Region": "scapula",
+    "Muscle": "Trapèze moyen fibres inf",
+    "Nerf": "accessoire",
+    "Racines": "C2.C3.C4",
+    "Origine": "Ligaments inter-épineux, C6 à T3",
+    "Terminaison": "Bord post acromion + epine scapula",
+    "Fonctions": "adduction scapula"
+  },
+  {
+    "Region": "scapula",
+    "Muscle": "Trapèze inf",
+    "Nerf": "accessoire",
+    "Racines": "C2.C3.C4",
+    "Origine": "PE T4 à T12",
+    "Terminaison": "Bord supero-med epine scapula",
+    "Fonctions": "abaissement scapula"
+  },
+  {
+    "Region": "scapula",
+    "Muscle": "Elévateur de la scapula",
+    "Nerf": "dorsal de la scapula",
+    "Racines": "C4.C5",
+    "Origine": "Processus transverse C1 à C4",
+    "Terminaison": "Angle sup scapula",
+    "Fonctions": "élévation scapula"
+  },
+  {
+    "Region": "scapula",
+    "Muscle": "Rhomboïdes",
+    "Nerf": "dorsal de la scapula",
+    "Racines": "C4.C5",
+    "Origine": "PE C6-C7 et T1-T4",
+    "Terminaison": "Bord médial de la scapula",
+    "Fonctions": "sonnette médiale adduction scapula"
+  },
+  {
+    "Region": "scapula",
+    "Muscle": "Petit pectoral",
+    "Nerf": "pectoraux médiaux",
+    "Racines": "C7.C8.T1",
+    "Origine": "Face ant 3e, 4e et 5e côtes",
+    "Terminaison": "Processus coracoïde",
+    "Fonctions": "abaissement scapula antépulsion"
+  },
+  {
+    "Region": "scapula",
+    "Muscle": "Dentelé ant",
+    "Nerf": "thoracique long",
+    "Racines": "C5.C6.C7",
+    "Origine": "Face ant côtes 1 à 9",
+    "Terminaison": "Bord med scapula",
+    "Fonctions": "abduction scapula sonnette lat flexion"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Deltoïde ant",
+    "Nerf": "axillaire",
+    "Racines": "C5.C6",
+    "Origine": "Tiers lat de la clavicule",
+    "Terminaison": "Tubérosité deltoidienne",
+    "Fonctions": "antépulsion"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Coraco-brachial",
+    "Nerf": "musculo-cutané",
+    "Racines": "C6.C7",
+    "Origine": "Processus coracoïde de la scapula",
+    "Terminaison": "Face médiale de l'humérus",
+    "Fonctions": "flexion"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Deltoïde moyen",
+    "Nerf": "axillaire",
+    "Racines": "C5.C6",
+    "Origine": "Bord lat acromion",
+    "Terminaison": "Tubérosité deltoidienne",
+    "Fonctions": "adbuction"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Supra-épineux",
+    "Nerf": "supra-scapulaire",
+    "Racines": "C5.C6",
+    "Origine": "Fosse supra-épineuse",
+    "Terminaison": "Face sup du grand tubercule de l'humérus",
+    "Fonctions": "abduction"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Deltoïde post",
+    "Nerf": "axillaire",
+    "Racines": "C5.C6",
+    "Origine": "Bord inf épine scapula",
+    "Terminaison": "Tubérosité deltoidienne",
+    "Fonctions": "extension abduction"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Subscapulaire",
+    "Nerf": "subscapulaire",
+    "Racines": "C5.C6",
+    "Origine": "Fosse subscapulaire",
+    "Terminaison": "Face med tubercule mineur",
+    "Fonctions": "rotation médiale"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Infra-épineux",
+    "Nerf": "supra-scapulaire",
+    "Racines": "C5.C6",
+    "Origine": "Fosse infra-épineuse",
+    "Terminaison": "Face post tubercule majeur",
+    "Fonctions": "rotation lat"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Petit rond",
+    "Nerf": "axillaire",
+    "Racines": "C5.C6",
+    "Origine": "Fosse infra-épineuse",
+    "Terminaison": "Tubercule majeur",
+    "Fonctions": "rotation lat"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Grand pectoral",
+    "Nerf": "pectoral latéral pectoral médial",
+    "Racines": "C5.C6.C7.C8.T1",
+    "Origine": "Fosse infra-épineuse",
+    "Terminaison": "Face ant de l'humérus (crête humérale)",
+    "Fonctions": "adduction rotation médiale flexion horizontale abaissement tête humérale"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Grand rond",
+    "Nerf": "grand rond",
+    "Racines": "C5.C6.C7",
+    "Origine": "Face post du scapulum (fosse subscapulaire)",
+    "Terminaison": "Face ant de l'humérus (tubercule mineur)",
+    "Fonctions": "adduction abaissement tête humérale rotation médiale"
+  },
+  {
+    "Region": "épaule",
+    "Muscle": "Grand dorsal",
+    "Nerf": "thoraco dorsal",
+    "Racines": "C6.C7.C8",
+    "Origine": "Face post du tronc (aponévrose thoraco-lombaire, fascia lombaire, 6 dernières côtes et crête iliaque)",
+    "Terminaison": "Face post de l'humérus (sillon bicipital)",
+    "Fonctions": "extension adduction rotation médiale"
+  },
+  {
+    "Region": "coude épaule",
+    "Muscle": "Biceps brachial",
+    "Nerf": "musculo-cutané",
+    "Racines": "C5.C6",
+    "Origine": "Tête courte: processus coracoïde du scapulum; Tête longue: tubercule supraglénoïdien du scapulum",
+    "Terminaison": "Face ant de l'humérus (tubérosité bicipitale)",
+    "Fonctions": "flexion"
+  },
+  {
+    "Region": "coude",
+    "Muscle": "Brachial",
+    "Nerf": "musculo-cutané",
+    "Racines": "C5.C6",
+    "Origine": "Face ant de l'humérus (face inférieure du corps)",
+    "Terminaison": "Face ant de l'ulna (tubérosité bicipitale)",
+    "Fonctions": "flexion"
+  },
+  {
+    "Region": "coude",
+    "Muscle": "Brachio radial",
+    "Nerf": "radial",
+    "Racines": "C5.C6",
+    "Origine": "Face ant de l'humérus (bord externe du tiers inférieur)",
+    "Terminaison": "Face post de la base du radius",
+    "Fonctions": "flexion"
+  },
+  {
+    "Region": "coude",
+    "Muscle": "Triceps brachial et acôné",
+    "Nerf": "radial",
+    "Racines": "C6.C7.C8",
+    "Origine": "Tête longue: face post du scapulum (tubercule infra-glénoïdien); Tête lat: face post de l'humérus (bord externe); Tête médiale: face post de l'humérus (partie moyenne du bord post)",
+    "Terminaison": "Olécrane de l'ulna",
+    "Fonctions": "extension"
+  },
+  {
+    "Region": "coude",
+    "Muscle": "Supinateur",
+    "Nerf": "radial",
+    "Racines": "C5.C6.C7",
+    "Origine": "Face post de l'épicondyle latéral de l'humérus",
+    "Terminaison": "Face post de l'ulna, à proximité de l'olécrâne",
+    "Fonctions": "supination"
+  },
+  {
+    "Region": "coude",
+    "Muscle": "Rond pronateur",
+    "Nerf": "médian",
+    "Racines": "C6.C7",
+    "Origine": "Face post de l'humérus (bord externe du tiers inférieur)",
+    "Terminaison": "Face post de la base du radius",
+    "Fonctions": "pronation"
+  },
+  {
+    "Region": "coude",
+    "Muscle": "Carré pronateur",
+    "Nerf": "médian",
+    "Racines": "C7.C8.T1",
+    "Origine": "Face ant de l'humérus (bord interne du tiers inférieur)",
+    "Terminaison": "Face ant du radius (tubérosité bicipitale)",
+    "Fonctions": "pronation"
+  },
+  {
+    "Region": "poignet",
+    "Muscle": "Fléchisseur ulnaire du carpe",
+    "Nerf": "ulnaire",
+    "Racines": "C7.C8.T1",
+    "Origine": "Face ant de l'ulna (bord inférieur)",
+    "Terminaison": "Face ant du radius (bord interne)",
+    "Fonctions": "flexion adduction"
+  },
+  {
+    "Region": "poignet",
+    "Muscle": "Fléchisseur radial du carpe",
+    "Nerf": "médian",
+    "Racines": "C6.C7.C8",
+    "Origine": "Face post de l'épicondyle médial de l'humérus",
+    "Terminaison": "Processus unciforme du radius et base de l'os pisiforme",
+    "Fonctions": "flexion"
+  },
+  {
+    "Region": "poignet",
+    "Muscle": "Long palmaire",
+    "Nerf": "médian",
+    "Racines": "C6.C7.C8",
+    "Origine": "Face ant de l'épicondyle médial de l'humérus",
+    "Terminaison": "Base des 2ème et 3ème métacarpiens",
+    "Fonctions": "flexion"
+  },
+  {
+    "Region": "poignet",
+    "Muscle": "LERC",
+    "Nerf": "radial",
+    "Racines": "C6.C7",
+    "Origine": "Face ant de l'épicondyle médial de l'humérus",
+    "Terminaison": "Fascia palmaire",
+    "Fonctions": "extension abduction"
+  },
+  {
+    "Region": "poignet",
+    "Muscle": "CERC",
+    "Nerf": "radial",
+    "Racines": "C6.C7.C8",
+    "Origine": "Face post de l'épicondyle latéral de l'humérus",
+    "Terminaison": "Base de la 2ème phalange du pouce",
+    "Fonctions": "extension"
+  },
+  {
+    "Region": "poignet",
+    "Muscle": "Extenseur ulnaire du carpe",
+    "Nerf": "radial",
+    "Racines": "C7.C8",
+    "Origine": "Face post de l'épicondyle latéral de l'humérus",
+    "Terminaison": "Base de la 3ème phalange du pouce",
+    "Fonctions": "extension adduction"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Fléchisseur superficiel des doigts",
+    "Nerf": "médian",
+    "Racines": "C7.C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion p1 p2"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Fléchisseurs profonds des doigts 2-3",
+    "Nerf": "médian",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion p2 p3"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Fléchisseurs prodonfs des doigts 4-5",
+    "Nerf": "ulnaire",
+    "Racines": "C7.C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion p2 p3"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Extenseurs des doigts",
+    "Nerf": "radial",
+    "Racines": "C6.C7.C8",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "extension p1 méta"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Extenseurs du 2",
+    "Nerf": "radial",
+    "Racines": "C6.C7.C8",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "extension p1 méta"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Extenseurs du 5",
+    "Nerf": "radial",
+    "Racines": "C6.C7.C8",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "extension p1 méta"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Long fléchisseur du pouce",
+    "Nerf": "médian",
+    "Racines": "C7.C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion p1 p2"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Long abducteur du pouce",
+    "Nerf": "radial",
+    "Racines": "C6.C7.C8",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "abduction pouce"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Cours extenseur du pouce",
+    "Nerf": "radial",
+    "Racines": "C6.C7.C8",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "extension mp"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Long extenseur du pouce",
+    "Nerf": "radial",
+    "Racines": "C6.C7.C8",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "extension ip"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Court abducteur du pouce",
+    "Nerf": "médian",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "antépulsion"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Opposant du pouce",
+    "Nerf": "médian",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "opposition"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Court fléchisseu du pouce sup.",
+    "Nerf": "médian",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion mp antépulsion"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Court fléchisseu du pouce prof.",
+    "Nerf": "ulnaire",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion mp"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Adducteur du pouce",
+    "Nerf": "ulnaire",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "adduction"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Lombricaux de la main 1-2",
+    "Nerf": "médian",
+    "Racines": "C7.C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion mp"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Lombricaux de la main 3-4",
+    "Nerf": "ulnaire",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion mp"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Interosseux palmaires",
+    "Nerf": "ulnaire",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "adduction"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Interosseux dorsaux",
+    "Nerf": "ulnaire",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "abduction"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Abducteur du 5",
+    "Nerf": "ulnaire",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "abduction du 5"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Court palmaire",
+    "Nerf": "ulnaire",
+    "Racines": "C7.C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "plis peau"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Court fléchisseur du 5",
+    "Nerf": "ulnaire",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion mp"
+  },
+  {
+    "Region": "main",
+    "Muscle": "Opposant du 5",
+    "Nerf": "ulnaire",
+    "Racines": "C8.T1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "opposition du 5"
+  },
+  {
+    "Region": "hanche",
+    "Muscle": "illio-psoas",
+    "Nerf": "psoas",
+    "Racines": "L1.L2.L3.L4",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion"
+  },
+  {
+    "Region": "hanche",
+    "Muscle": "illio-psoas",
+    "Nerf": "fémoral",
+    "Racines": "L2.L3.L4",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion"
+  },
+  {
+    "Region": "hanche",
+    "Muscle": "Sartorius",
+    "Nerf": "fémoral",
+    "Racines": "L1.L2.L3",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion abduction rotation lat"
+  },
+  {
+    "Region": "hanche",
+    "Muscle": "TFL",
+    "Nerf": "glutéal sup",
+    "Racines": "L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion abduction rotation lat"
+  },
+  {
+    "Region": "hanche",
+    "Muscle": "Moyen fessier",
+    "Nerf": "glutéal sup",
+    "Racines": "L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "Abduction rotation médiale"
+  },
+  {
+    "Region": "hanche",
+    "Muscle": "Petit fessier",
+    "Nerf": "glutéal sup",
+    "Racines": "L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "Abduction rotation médiale"
+  },
+  {
+    "Region": "hanche",
+    "Muscle": "Pelvi trochantériens",
+    "Nerf": "plexus sacré",
+    "Racines": "L3.L4.L5.S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "rotation lat"
+  },
+  {
+    "Region": "hanche",
+    "Muscle": "Adducteurs",
+    "Nerf": "obturateur fémoro sciatique",
+    "Racines": "L2.L3.L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "adduction"
+  },
+  {
+    "Region": "hanche",
+    "Muscle": "Grand fessier",
+    "Nerf": "glutéal inf",
+    "Racines": "L5.S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "extension"
+  },
+  {
+    "Region": "genou",
+    "Muscle": "Quadriceps",
+    "Nerf": "fémoral",
+    "Racines": "L2.L3.L4",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "extension"
+  },
+  {
+    "Region": "genou",
+    "Muscle": "Biceps fémoral",
+    "Nerf": "sciatique",
+    "Racines": "L5.S1.S2.S3",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion rotation lat"
+  },
+  {
+    "Region": "genou",
+    "Muscle": "Semi tendineux",
+    "Nerf": "sciatique",
+    "Racines": "L4.L5.S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion rotation médiale"
+  },
+  {
+    "Region": "genou",
+    "Muscle": "Semi membraneux",
+    "Nerf": "sciatique",
+    "Racines": "L4.L5.S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion rotation médiale"
+  },
+  {
+    "Region": "genou",
+    "Muscle": "Poplité",
+    "Nerf": "sciatique",
+    "Racines": "L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion rotation médiale"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Tibial post",
+    "Nerf": "tibial",
+    "Racines": "L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "adduction supination"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Long fléchisseur du hallux",
+    "Nerf": "tibial",
+    "Racines": "L5.S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion ip"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Long fléchisseur des orteils",
+    "Nerf": "tibial",
+    "Racines": "L5.S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion ipd"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Carré plantaire",
+    "Nerf": "plantaire",
+    "Racines": "L5.S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion ipd"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Tibial ant",
+    "Nerf": "fibulaire commun profond",
+    "Racines": "L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion dorsale adduction supination"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "long extenseur de hallux",
+    "Nerf": "fibulaire profond",
+    "Racines": "L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "extension du hallux"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Long + court extenseur orteils",
+    "Nerf": "fibulaire profond",
+    "Racines": "L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "extension orteils"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Long extenseurs orteils + 3e fibulaire",
+    "Nerf": "fibulaire profond",
+    "Racines": "L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion dorsale pronation abduction pied"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Court fibulaire",
+    "Nerf": "fibulaire superficiel",
+    "Racines": "L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "abduction pronation"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Long fibulaire",
+    "Nerf": "fibulaire superficiel",
+    "Racines": "L4.L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "abaissement m1 abduction pronation"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Gastrocnémiens",
+    "Nerf": "tibial",
+    "Racines": "L5.S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion genou flexion plantaire"
+  },
+  {
+    "Region": "cheville",
+    "Muscle": "Soléaire",
+    "Nerf": "tibial",
+    "Racines": "L5.S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion plantaire"
+  },
+  {
+    "Region": "pied",
+    "Muscle": "abducteur de l'hallux",
+    "Nerf": "plantaire médial",
+    "Racines": "L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "abduction de l'hallux"
+  },
+  {
+    "Region": "pied",
+    "Muscle": "Court fléchisseur de l'hallux",
+    "Nerf": "plantaire médial",
+    "Racines": "L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion mp"
+  },
+  {
+    "Region": "pied",
+    "Muscle": "Adducteur de l'hallux",
+    "Nerf": "plantaire latéral",
+    "Racines": "S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "adduction de l'hallux"
+  },
+  {
+    "Region": "pied",
+    "Muscle": "Court fléchisseur des orteils",
+    "Nerf": "plantaire médial",
+    "Racines": "L5.S1",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion ipp"
+  },
+  {
+    "Region": "pied",
+    "Muscle": "Abducteur du 5",
+    "Nerf": "plantaire latéral",
+    "Racines": "S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "abduction du 5"
+  },
+  {
+    "Region": "pied",
+    "Muscle": "Court fléchisseur 5",
+    "Nerf": "plantaire latéral",
+    "Racines": "S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "flexion mp"
+  },
+  {
+    "Region": "pied",
+    "Muscle": "Opposant du 5",
+    "Nerf": "plantaire latéral",
+    "Racines": "S1.S2",
+    "Origine": "",
+    "Terminaison": "",
+    "Fonctions": "opposition du 5"
+  }
+]
