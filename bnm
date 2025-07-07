@@ -151,4 +151,56 @@
 
       racines.forEach(racine => {
         const label = document.createElement('label');
-        const ch
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = racine;
+        checkbox.name = 'racines';
+        checkbox.addEventListener('change', filterData);
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(' ' + racine));
+        racineCheckboxes.appendChild(label);
+      });
+    }
+
+    function displayTable(filteredData) {
+      tableBody.innerHTML = '';
+      filteredData.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.Muscle || ''}</td>
+          <td>${item.Nerf || ''}</td>
+          <td>${item.Racines || ''}</td>
+          <td>${item.Fonctions || ''}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function filterData() {
+      const search = searchInput.value.toLowerCase();
+      const nerf = nerfFilter.value;
+
+      const checkedRacines = Array.from(document.querySelectorAll('input[name="racines"]:checked')).map(cb => cb.value);
+
+      const filtered = data.filter(item => {
+        const text = `${item.Muscle} ${item.Nerf} ${item.Racines} ${item.Fonctions}`.toLowerCase();
+        const matchesSearch = !search || text.includes(search);
+        const matchesNerf = !nerf || item.Nerf === nerf;
+
+        let matchesRacines = true;
+        if (checkedRacines.length > 0) {
+          const itemRacines = item.Racines ? item.Racines.split(/[-.,; ]+/).map(r => r.trim()) : [];
+          matchesRacines = checkedRacines.every(r => itemRacines.includes(r));
+        }
+
+        return matchesSearch && matchesNerf && matchesRacines;
+      });
+
+      displayTable(filtered);
+    }
+
+    searchInput.addEventListener('keyup', filterData);
+    nerfFilter.addEventListener('change', filterData);
+  </script>
+</body>
+</html>
