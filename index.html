@@ -4,62 +4,71 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Accueil BNM</title>
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans&display=swap" rel="stylesheet" />
   <style>
     body {
-      background-color: #f7f9fa;
-      padding: 50px 20px;
       font-family: 'Open Sans', sans-serif;
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
       min-height: 100vh;
+      margin: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      color: #333;
+      align-items: center;
+      padding: 40px 15px;
+      color: #2a6a34;
     }
     h1 {
-      color: #2BAE66;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
       font-size: 3rem;
-      margin-bottom: 30px;
+      margin-bottom: 1rem;
       text-align: center;
     }
     p {
       font-size: 1.2rem;
-      margin-bottom: 40px;
+      margin-bottom: 3rem;
       max-width: 600px;
       text-align: center;
     }
     .menu {
       display: flex;
-      gap: 30px;
+      gap: 2rem;
       flex-wrap: wrap;
       justify-content: center;
+      max-width: 700px;
       width: 100%;
-      max-width: 600px;
     }
-    .menu a {
-      flex: 1 1 200px;
+    .menu a, .menu .disabled {
+      flex: 1 1 250px;
       background-color: #2BAE66;
       color: white;
-      text-decoration: none;
       padding: 25px 20px;
-      border-radius: 12px;
+      border-radius: 15px;
+      text-decoration: none;
+      font-weight: 600;
       font-size: 1.3rem;
       text-align: center;
-      box-shadow: 0 4px 10px rgba(43,174,102,0.3);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 6px 15px rgba(43,174,102,0.3);
       user-select: none;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
     }
     .menu a:hover {
       background-color: #259755;
-      box-shadow: 0 6px 15px rgba(37,151,85,0.5);
+      box-shadow: 0 9px 25px rgba(37,151,85,0.5);
+    }
+    .menu .disabled {
+      background-color: #a5d6a7;
+      cursor: not-allowed;
+      box-shadow: none;
     }
     @media (max-width: 480px) {
       h1 {
         font-size: 2.2rem;
       }
-      .menu a {
+      .menu a, .menu .disabled {
         flex-basis: 100%;
       }
     }
@@ -68,9 +77,9 @@
 <body>
   <h1>Kiné toolbox</h1>
   <p>Ouvrir un outil :</p>
-  <nav class="menu">
+  <div class="menu">
     <a href="bnm.html" title="Accéder à la page BNM Neuro Périphérique">BNM Neuro Périphérique</a>
-    <a href="#" title="Tests Cliniques (bientôt disponible)" class="disabled" onclick="alert('Page en construction !')">Tests Cliniques (bientôt)</a>
-  </nav>
+    <div class="disabled" title="Page en construction">Tests Cliniques (bientôt)</div>
+  </div>
 </body>
 </html>
