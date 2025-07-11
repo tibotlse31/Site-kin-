@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Saisie Séance - BNM</title>
-  <!-- Bootstrap CSS -->
+  <title>Suivi Séance - BNM</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" />
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
@@ -41,14 +40,35 @@
       text-align: center;
       vertical-align: middle;
     }
+    .copy-btn {
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <a href="index.html" class="back-link">← Retour à l’accueil</a>
 
-    <h1>Saisie d’une Séance</h1>
+    <h1>Suivi d’une Séance</h1>
 
+    <!-- Patient Info -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5>Patient</h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Prénom</label>
+            <input type="text" class="form-control" id="prenomPatient" placeholder="Prénom">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Nom</label>
+            <input type="text" class="form-control" id="nomPatient" placeholder="Nom">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exercise Entry -->
     <div class="card mb-4">
       <div class="card-body">
         <div class="mb-3">
@@ -78,18 +98,37 @@
       </div>
     </div>
 
-    <h4>Exercices saisis :</h4>
-    <ul id="exerciseList" class="list-group mb-3"></ul>
+    <h4 class="mb-3">Tableau récapitulatif :</h4>
+    <button class="btn btn-outline-secondary copy-btn" id="copyTableBtn">Copier le tableau</button>
+    <div class="table-responsive mb-4">
+      <table class="table table-bordered align-middle" id="recapTable">
+        <thead>
+          <tr>
+            <th>Exercice</th>
+            <th>Série</th>
+            <th>Poids (kg)</th>
+            <th>Répétitions</th>
+            <th>RPE</th>
+            <th>EVA</th>
+            <th>Commentaire</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
     <button class="btn btn-primary" id="exportExcelBtn">Exporter en Excel</button>
+
   </div>
 
   <script>
     const addRowBtn = document.getElementById('addRowBtn');
     const saveExerciseBtn = document.getElementById('saveExerciseBtn');
     const exportExcelBtn = document.getElementById('exportExcelBtn');
+    const copyTableBtn = document.getElementById('copyTableBtn');
     const tableBody = document.getElementById('tableBody');
-    const exerciseList = document.getElementById('exerciseList');
+    const recapTableBody = document.querySelector('#recapTable tbody');
+    const exerciceList = document.getElementById('exerciseList');
 
     let seanceData = [];
 
@@ -133,7 +172,7 @@
         const comment = tr.querySelector('.comment-input').value;
 
         for (let i = 0; i < nbSeries; i++) {
-          seanceData.push({
+          const dataRow = {
             exercice,
             serie: serieCounter,
             poids,
@@ -141,29 +180,54 @@
             rpe,
             eva,
             comment
-          });
+          };
+          seanceData.push(dataRow);
+          appendToRecapTable(dataRow);
           serieCounter++;
         }
       });
-
-      const li = document.createElement('li');
-      li.className = 'list-group-item';
-      li.textContent = exercice;
-      exerciseList.appendChild(li);
 
       tableBody.innerHTML = '';
       document.getElementById('exerciceName').value = '';
       alert("Exercice ajouté !");
     });
 
+    function appendToRecapTable(data) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${data.exercice}</td>
+        <td>${data.serie}</td>
+        <td>${data.poids}</td>
+        <td>${data.reps}</td>
+        <td>${data.rpe}</td>
+        <td>${data.eva}</td>
+        <td>${data.comment}</td>
+      `;
+      recapTableBody.appendChild(tr);
+    }
+
+    copyTableBtn.addEventListener('click', () => {
+      let txt = "Exercice\tSérie\tPoids (kg)\tRépétitions\tRPE\tEVA\tCommentaire\n";
+      seanceData.forEach(d => {
+        txt += `${d.exercice}\t${d.serie}\t${d.poids}\t${d.reps}\t${d.rpe}\t${d.eva}\t${d.comment}\n`;
+      });
+
+      navigator.clipboard.writeText(txt).then(() => {
+        alert("Tableau copié dans le presse-papiers !");
+      });
+    });
+
     exportExcelBtn.addEventListener('click', () => {
-      if (seanceData.length === 0) {
-        alert("Aucune donnée à exporter !");
+      const prenom = document.getElementById('prenomPatient').value.trim();
+      const nom = document.getElementById('nomPatient').value.trim();
+
+      if (!prenom || !nom) {
+        alert("Merci de remplir le prénom et le nom du patient !");
         return;
       }
 
       const wsData = [
-        ["Exercice", "Série", "Poids", "Répétitions", "RPE", "EVA", "Commentaire"]
+        ["Exercice", "Série", "Poids (kg)", "Répétitions", "RPE", "EVA", "Commentaire"]
       ];
 
       seanceData.forEach(item => {
@@ -191,7 +255,9 @@
 
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Séance");
-      XLSX.writeFile(wb, "Seance.xlsx");
+
+      const fileName = `${prenom}_${nom}_Seance.xlsx`;
+      XLSX.writeFile(wb, fileName);
     });
   </script>
 </body>
