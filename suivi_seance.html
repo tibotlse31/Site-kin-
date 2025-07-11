@@ -284,14 +284,14 @@
       const tr = document.createElement('tr');
 
       const cells = [
-        data.date,
         data.exercice,
         data.serie,
         data.poids,
         data.reps,
         data.rpe,
         data.eva,
-        data.comment
+        data.comment,
+        data.date
       ];
 
       cells.forEach((text, index) => {
@@ -330,7 +330,7 @@
     copyTableBtn.addEventListener('click', () => {
       let txt = "";
       seanceData.forEach(d => {
-        txt += `${d.date}\t${d.exercice}\t${d.serie}\t${d.poids}\t${d.reps}\t${d.rpe}\t${d.eva}\t${d.comment}\n`;
+        txt += `${d.exercice}\t${d.serie}\t${d.poids}\t${d.reps}\t${d.rpe}\t${d.eva}\t${d.comment}\t${d.date}\n`;
       });
 
       navigator.clipboard.writeText(txt).then(() => {
@@ -348,19 +348,19 @@
       }
 
       const wsData = [
-        ["Date", "Exercice", "Série", "Poids (kg)", "Répétitions", "RPE", "EVA", "Commentaire"]
+        ["Exercice", "Série", "Poids (kg)", "Répétitions", "RPE", "EVA", "Commentaire", "Date"]
       ];
 
       seanceData.forEach(item => {
         wsData.push([
-          item.date,
           item.exercice,
           item.serie,
           item.poids,
           item.reps,
           item.rpe,
           item.eva,
-          item.comment
+          item.comment,
+          item.date
         ]);
       });
 
