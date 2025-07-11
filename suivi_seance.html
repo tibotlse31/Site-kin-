@@ -40,6 +40,20 @@
       text-align: center;
       vertical-align: middle;
     }
+    .patient-box {
+      background-color: #d9f2e6;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      max-width: 400px;
+    }
+    td[contenteditable="true"] {
+      background-color: #f0f9f4;
+      cursor: text;
+    }
+    td[contenteditable="true"]:hover {
+      background-color: #e0f2eb;
+    }
     .copy-btn {
       margin-bottom: 20px;
     }
@@ -51,19 +65,15 @@
 
     <h1>Suivi d’une Séance</h1>
 
-    <!-- Patient Info -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <h5>Patient</h5>
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label">Prénom</label>
-            <input type="text" class="form-control" id="prenomPatient" placeholder="Prénom">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Nom</label>
-            <input type="text" class="form-control" id="nomPatient" placeholder="Nom">
-          </div>
+    <!-- Patient Info compact -->
+    <div class="patient-box">
+      <h5 style="color:#2BAE66;">Patient</h5>
+      <div class="row g-2">
+        <div class="col">
+          <input type="text" class="form-control" id="prenomPatient" placeholder="Prénom">
+        </div>
+        <div class="col">
+          <input type="text" class="form-control" id="nomPatient" placeholder="Nom">
         </div>
       </div>
     </div>
@@ -99,7 +109,7 @@
     </div>
 
     <h4 class="mb-3">Tableau récapitulatif :</h4>
-    <button class="btn btn-outline-secondary copy-btn" id="copyTableBtn">Copier le tableau</button>
+    <button class="btn btn-outline-secondary copy-btn" id="copyTableBtn">Copier le contenu du tableau</button>
     <div class="table-responsive mb-4">
       <table class="table table-bordered align-middle" id="recapTable">
         <thead>
@@ -111,6 +121,7 @@
             <th>RPE</th>
             <th>EVA</th>
             <th>Commentaire</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -128,7 +139,6 @@
     const copyTableBtn = document.getElementById('copyTableBtn');
     const tableBody = document.getElementById('tableBody');
     const recapTableBody = document.querySelector('#recapTable tbody');
-    const exerciceList = document.getElementById('exerciseList');
 
     let seanceData = [];
 
@@ -194,26 +204,60 @@
 
     function appendToRecapTable(data) {
       const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${data.exercice}</td>
-        <td>${data.serie}</td>
-        <td>${data.poids}</td>
-        <td>${data.reps}</td>
-        <td>${data.rpe}</td>
-        <td>${data.eva}</td>
-        <td>${data.comment}</td>
-      `;
+
+      const cells = [
+        data.exercice,
+        data.serie,
+        data.poids,
+        data.reps,
+        data.rpe,
+        data.eva,
+        data.comment
+      ];
+
+      cells.forEach((text, index) => {
+        const td = document.createElement('td');
+        td.textContent = text;
+
+        // Série (index 1) n'est pas éditable
+        if (index !== 1) {
+          td.setAttribute('contenteditable', 'true');
+          td.addEventListener('blur', () => {
+            const rowIndex = tr.rowIndex - 1;
+            const keys = ['exercice', 'serie', 'poids', 'reps', 'rpe', 'eva', 'comment'];
+            const key = keys[index];
+            seanceData[rowIndex][key] = td.textContent;
+          });
+        }
+        tr.appendChild(td);
+      });
+
+      // Ajout du bouton Supprimer
+      const tdDelete = document.createElement('td');
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-danger btn-sm';
+      btn.textContent = 'Supprimer';
+
+      btn.addEventListener('click', () => {
+        const rowIndex = tr.rowIndex - 1;
+        seanceData.splice(rowIndex, 1);
+        tr.remove();
+      });
+
+      tdDelete.appendChild(btn);
+      tr.appendChild(tdDelete);
+
       recapTableBody.appendChild(tr);
     }
 
     copyTableBtn.addEventListener('click', () => {
-      let txt = "Exercice\tSérie\tPoids (kg)\tRépétitions\tRPE\tEVA\tCommentaire\n";
+      let txt = "";
       seanceData.forEach(d => {
         txt += `${d.exercice}\t${d.serie}\t${d.poids}\t${d.reps}\t${d.rpe}\t${d.eva}\t${d.comment}\n`;
       });
 
       navigator.clipboard.writeText(txt).then(() => {
-        alert("Tableau copié dans le presse-papiers !");
+        alert("Contenu du tableau copié dans le presse-papiers !");
       });
     });
 
