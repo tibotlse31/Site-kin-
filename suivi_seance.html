@@ -74,6 +74,10 @@
 
     <h1>Suivi d’une Séance</h1>
 
+    <!-- Champs cachés manquants (ajoutés ici) -->
+    <input type="hidden" id="prenomPatient">
+    <input type="hidden" id="nomPatient">
+
     <!-- Ecran Nouvelle séance -->
     <div id="startSection">
       <div class="patient-box">
@@ -187,6 +191,7 @@
         return;
       }
 
+      // Ces champs existent désormais
       document.getElementById('prenomPatient').value = prenom;
       document.getElementById('nomPatient').value = nom;
       document.getElementById('dateSeance').value = date;
@@ -195,6 +200,11 @@
 
       document.getElementById('startSection').style.display = 'none';
       document.getElementById('mainSection').style.display = 'block';
+    });
+
+    // Ajout compatibilité iPhone
+    startSeanceBtn.addEventListener('touchstart', () => {
+      startSeanceBtn.click();
     });
 
     newSeanceBtn.addEventListener('click', () => {
@@ -221,7 +231,6 @@
 
     document.getElementById('dateSeance').addEventListener('change', () => {
       updatePatientInfo();
-      // Update existing rows with new date
       seanceData.forEach(item => {
         item.date = document.getElementById('dateSeance').value;
       });
