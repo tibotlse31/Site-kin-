@@ -45,7 +45,7 @@
       padding: 15px;
       border-radius: 10px;
       margin-bottom: 20px;
-      max-width: 400px;
+      max-width: 600px;
     }
     td[contenteditable="true"] {
       background-color: #f0f9f4;
@@ -57,6 +57,9 @@
     .copy-btn {
       margin-bottom: 20px;
     }
+    #mainSection {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -65,74 +68,106 @@
 
     <h1>Suivi d’une Séance</h1>
 
-    <!-- Patient Info compact -->
-    <div class="patient-box">
-      <h5 style="color:#2BAE66;">Patient</h5>
-      <div class="row g-2">
-        <div class="col">
-          <input type="text" class="form-control" id="prenomPatient" placeholder="Prénom">
+    <!-- Ecran Nouvelle séance -->
+    <div id="startSection">
+      <div class="patient-box">
+        <h5 style="color:#2BAE66;">Nouvelle séance</h5>
+        <div class="row g-2 mb-3">
+          <div class="col">
+            <input type="text" class="form-control" id="prenomStart" placeholder="Prénom">
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" id="nomStart" placeholder="Nom">
+          </div>
+          <div class="col">
+            <input type="date" class="form-control" id="dateStart">
+          </div>
         </div>
-        <div class="col">
-          <input type="text" class="form-control" id="nomPatient" placeholder="Nom">
-        </div>
+        <button class="btn btn-success" id="startSeanceBtn">Démarrer la séance</button>
       </div>
     </div>
 
-    <!-- Exercise Entry -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <div class="mb-3">
-          <label class="form-label">Exercice :</label>
-          <input type="text" class="form-control" id="exerciceName" placeholder="Ex : Squat" />
+    <!-- Section principale -->
+    <div id="mainSection">
+      <div class="patient-box">
+        <h5 style="color:#2BAE66;">Patient</h5>
+        <div class="row g-2 mb-2">
+          <div class="col">
+            <input type="text" class="form-control" id="prenomPatient" readonly>
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" id="nomPatient" readonly>
+          </div>
         </div>
+        <div class="row g-2">
+          <div class="col-4">
+            <label class="form-label">Date de la séance :</label>
+            <input type="date" class="form-control" id="dateSeance">
+          </div>
+        </div>
+      </div>
 
-        <div class="table-responsive">
-          <table class="table table-bordered align-middle">
-            <thead>
-              <tr>
-                <th>Séries (x)</th>
-                <th>Poids (kg)</th>
-                <th>Répétitions</th>
-                <th>RPE</th>
-                <th>EVA</th>
-                <th>Commentaire</th>
-                <th>Supprimer</th>
-              </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-          </table>
+      <!-- Saisie exercices -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Exercice :</label>
+            <input type="text" class="form-control" id="exerciceName" placeholder="Ex : Squat" />
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+              <thead>
+                <tr>
+                  <th>Séries (x)</th>
+                  <th>Poids (kg)</th>
+                  <th>Répétitions</th>
+                  <th>RPE</th>
+                  <th>EVA</th>
+                  <th>Commentaire</th>
+                  <th>Supprimer</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+          <button class="btn btn-secondary mb-3" id="addRowBtn">+ Ajouter un bloc de séries</button>
+          <br>
+          <button class="btn btn-success" id="saveExerciseBtn">Valider l’exercice</button>
         </div>
-        <button class="btn btn-secondary mb-3" id="addRowBtn">+ Ajouter un bloc de séries</button>
-        <br>
-        <button class="btn btn-success" id="saveExerciseBtn">Valider l’exercice</button>
+      </div>
+
+      <h4 class="mb-3">Tableau récapitulatif :</h4>
+      <button class="btn btn-outline-secondary copy-btn" id="copyTableBtn">Copier le contenu du tableau</button>
+      <div class="table-responsive mb-4">
+        <table class="table table-bordered align-middle" id="recapTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Exercice</th>
+              <th>Série</th>
+              <th>Poids (kg)</th>
+              <th>Répétitions</th>
+              <th>RPE</th>
+              <th>EVA</th>
+              <th>Commentaire</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="d-flex gap-3 mb-4">
+        <button class="btn btn-primary" id="exportExcelBtn">Exporter en Excel</button>
+        <button class="btn btn-warning" id="newSeanceBtn">Nouvelle séance</button>
       </div>
     </div>
-
-    <h4 class="mb-3">Tableau récapitulatif :</h4>
-    <button class="btn btn-outline-secondary copy-btn" id="copyTableBtn">Copier le contenu du tableau</button>
-    <div class="table-responsive mb-4">
-      <table class="table table-bordered align-middle" id="recapTable">
-        <thead>
-          <tr>
-            <th>Exercice</th>
-            <th>Série</th>
-            <th>Poids (kg)</th>
-            <th>Répétitions</th>
-            <th>RPE</th>
-            <th>EVA</th>
-            <th>Commentaire</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <button class="btn btn-primary" id="exportExcelBtn">Exporter en Excel</button>
-
   </div>
 
   <script>
+    const startSeanceBtn = document.getElementById('startSeanceBtn');
+    const newSeanceBtn = document.getElementById('newSeanceBtn');
     const addRowBtn = document.getElementById('addRowBtn');
     const saveExerciseBtn = document.getElementById('saveExerciseBtn');
     const exportExcelBtn = document.getElementById('exportExcelBtn');
@@ -141,6 +176,47 @@
     const recapTableBody = document.querySelector('#recapTable tbody');
 
     let seanceData = [];
+
+    window.onload = () => {
+      document.getElementById('dateStart').value = getTodayDate();
+    };
+
+    function getTodayDate() {
+      const d = new Date();
+      return d.toISOString().substring(0,10);
+    }
+
+    startSeanceBtn.addEventListener('click', () => {
+      const prenom = document.getElementById('prenomStart').value.trim();
+      const nom = document.getElementById('nomStart').value.trim();
+      const date = document.getElementById('dateStart').value;
+
+      if (!prenom || !nom || !date) {
+        alert("Merci de saisir le prénom, le nom et la date de la séance !");
+        return;
+      }
+
+      document.getElementById('prenomPatient').value = prenom;
+      document.getElementById('nomPatient').value = nom;
+      document.getElementById('dateSeance').value = date;
+
+      document.getElementById('startSection').style.display = 'none';
+      document.getElementById('mainSection').style.display = 'block';
+    });
+
+    newSeanceBtn.addEventListener('click', () => {
+      if (confirm("Voulez-vous vraiment recommencer une nouvelle séance ?")) {
+        seanceData = [];
+        tableBody.innerHTML = '';
+        recapTableBody.innerHTML = '';
+        document.getElementById('exerciceName').value = '';
+        document.getElementById('prenomStart').value = '';
+        document.getElementById('nomStart').value = '';
+        document.getElementById('dateStart').value = getTodayDate();
+        document.getElementById('startSection').style.display = 'block';
+        document.getElementById('mainSection').style.display = 'none';
+      }
+    });
 
     addRowBtn.addEventListener('click', () => {
       const tr = document.createElement('tr');
@@ -172,6 +248,7 @@
       }
 
       let serieCounter = 1;
+      const date = document.getElementById('dateSeance').value;
 
       rows.forEach(tr => {
         const nbSeries = parseInt(tr.querySelector('.nb-series-input').value) || 1;
@@ -183,6 +260,7 @@
 
         for (let i = 0; i < nbSeries; i++) {
           const dataRow = {
+            date,
             exercice,
             serie: serieCounter,
             poids,
@@ -206,6 +284,7 @@
       const tr = document.createElement('tr');
 
       const cells = [
+        data.date,
         data.exercice,
         data.serie,
         data.poids,
@@ -219,12 +298,11 @@
         const td = document.createElement('td');
         td.textContent = text;
 
-        // Série (index 1) n'est pas éditable
-        if (index !== 1) {
+        if (index !== 2) {
           td.setAttribute('contenteditable', 'true');
           td.addEventListener('blur', () => {
             const rowIndex = tr.rowIndex - 1;
-            const keys = ['exercice', 'serie', 'poids', 'reps', 'rpe', 'eva', 'comment'];
+            const keys = ['date','exercice','serie','poids','reps','rpe','eva','comment'];
             const key = keys[index];
             seanceData[rowIndex][key] = td.textContent;
           });
@@ -232,7 +310,6 @@
         tr.appendChild(td);
       });
 
-      // Ajout du bouton Supprimer
       const tdDelete = document.createElement('td');
       const btn = document.createElement('button');
       btn.className = 'btn btn-danger btn-sm';
@@ -253,7 +330,7 @@
     copyTableBtn.addEventListener('click', () => {
       let txt = "";
       seanceData.forEach(d => {
-        txt += `${d.exercice}\t${d.serie}\t${d.poids}\t${d.reps}\t${d.rpe}\t${d.eva}\t${d.comment}\n`;
+        txt += `${d.date}\t${d.exercice}\t${d.serie}\t${d.poids}\t${d.reps}\t${d.rpe}\t${d.eva}\t${d.comment}\n`;
       });
 
       navigator.clipboard.writeText(txt).then(() => {
@@ -271,11 +348,12 @@
       }
 
       const wsData = [
-        ["Exercice", "Série", "Poids (kg)", "Répétitions", "RPE", "EVA", "Commentaire"]
+        ["Date", "Exercice", "Série", "Poids (kg)", "Répétitions", "RPE", "EVA", "Commentaire"]
       ];
 
       seanceData.forEach(item => {
         wsData.push([
+          item.date,
           item.exercice,
           item.serie,
           item.poids,
@@ -288,6 +366,7 @@
 
       const ws = XLSX.utils.aoa_to_sheet(wsData);
       ws['!cols'] = [
+        { wch: 12 },
         { wch: 20 },
         { wch: 10 },
         { wch: 10 },
