@@ -47,6 +47,12 @@
       margin-bottom: 20px;
       max-width: 600px;
     }
+    .patient-info {
+      color: #2BAE66;
+      font-weight: 600;
+      text-align: left;
+      margin-bottom: 20px;
+    }
     td[contenteditable="true"] {
       background-color: #f0f9f4;
       cursor: text;
@@ -89,23 +95,8 @@
 
     <!-- Section principale -->
     <div id="mainSection">
-      <div class="patient-box">
-        <h5 style="color:#2BAE66;">Patient</h5>
-        <div class="row g-2 mb-2">
-          <div class="col">
-            <input type="text" class="form-control" id="prenomPatient" readonly>
-          </div>
-          <div class="col">
-            <input type="text" class="form-control" id="nomPatient" readonly>
-          </div>
-        </div>
-        <div class="row g-2">
-          <div class="col-4">
-            <label class="form-label">Date de la séance :</label>
-            <input type="date" class="form-control" id="dateSeance">
-          </div>
-        </div>
-      </div>
+      <p id="patientInfo" class="patient-info"></p>
+      <input type="date" id="dateSeance" style="display:none;">
 
       <!-- Saisie exercices -->
       <div class="card mb-4">
@@ -200,6 +191,8 @@
       document.getElementById('nomPatient').value = nom;
       document.getElementById('dateSeance').value = date;
 
+      updatePatientInfo();
+
       document.getElementById('startSection').style.display = 'none';
       document.getElementById('mainSection').style.display = 'block';
     });
@@ -216,6 +209,23 @@
         document.getElementById('startSection').style.display = 'block';
         document.getElementById('mainSection').style.display = 'none';
       }
+    });
+
+    function updatePatientInfo() {
+      const prenom = document.getElementById('prenomPatient').value;
+      const nom = document.getElementById('nomPatient').value;
+      const date = document.getElementById('dateSeance').value;
+      document.getElementById('patientInfo').textContent =
+        `Séance de ${prenom} ${nom} - ${date}`;
+    }
+
+    document.getElementById('dateSeance').addEventListener('change', () => {
+      updatePatientInfo();
+      // Update existing rows with new date
+      seanceData.forEach(item => {
+        item.date = document.getElementById('dateSeance').value;
+      });
+      refreshRecapTable();
     });
 
     addRowBtn.addEventListener('click', () => {
@@ -260,25 +270,30 @@
 
         for (let i = 0; i < nbSeries; i++) {
           const dataRow = {
-            date,
             exercice,
             serie: serieCounter,
             poids,
             reps,
             rpe,
             eva,
-            comment
+            comment,
+            date
           };
           seanceData.push(dataRow);
-          appendToRecapTable(dataRow);
           serieCounter++;
         }
       });
 
       tableBody.innerHTML = '';
       document.getElementById('exerciceName').value = '';
+      refreshRecapTable();
       alert("Exercice ajouté !");
     });
+
+    function refreshRecapTable() {
+      recapTableBody.innerHTML = '';
+      seanceData.forEach(item => appendToRecapTable(item));
+    }
 
     function appendToRecapTable(data) {
       const tr = document.createElement('tr');
@@ -298,11 +313,11 @@
         const td = document.createElement('td');
         td.textContent = text;
 
-        if (index !== 2) {
+        if (index !== 1) {
           td.setAttribute('contenteditable', 'true');
           td.addEventListener('blur', () => {
             const rowIndex = tr.rowIndex - 1;
-            const keys = ['date','exercice','serie','poids','reps','rpe','eva','comment'];
+            const keys = ['exercice', 'serie', 'poids', 'reps', 'rpe', 'eva', 'comment', 'date'];
             const key = keys[index];
             seanceData[rowIndex][key] = td.textContent;
           });
@@ -366,14 +381,14 @@
 
       const ws = XLSX.utils.aoa_to_sheet(wsData);
       ws['!cols'] = [
-        { wch: 12 },
         { wch: 20 },
         { wch: 10 },
         { wch: 10 },
         { wch: 15 },
         { wch: 10 },
         { wch: 10 },
-        { wch: 30 }
+        { wch: 30 },
+        { wch: 12 }
       ];
 
       const wb = XLSX.utils.book_new();
