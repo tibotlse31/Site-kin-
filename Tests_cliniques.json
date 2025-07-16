@@ -59,7 +59,7 @@
    "Test": "test d’appréhension de smilie",
    "Interpratation": "Positif (signe de Smilie) :  appréhension du sujet à la reproduction de son instabilité et/ou d’une douleur.",
    "Clinimétrie": "Sb: 100%\nSp:  88%\nRV+ : 8.33",
-   "Illustration": "",
+   "Illustration": "images/genou-smilie.png",
    "Mise en oeuvre": "Avec une prise sur le segment jambier et une prise sur le segment fémoral, les pouces orientent la patella vers l’exterieur et on demande\nune flexion du genou à 20-30°.",
    "Référence clinimétrie": "Ahmad et al. (2009)\n\nhttps://doi.org/10.1177/0363546508328113",
    "Remarque": ""
@@ -72,7 +72,7 @@
    "Test": "Test de Lachman",
    "Interpratation": "Positif :\n\n- déplacement antérieur du tibia anormal ou supérieur par rapport au côté sain\n\n- arrêt \"mou\" en fin de mouvement ",
    "Clinimétrie": "Sb : 85 %\t\nSp : 94 %\t\nRV+ : 14.17\t\nRV- : 0.16",
-   "Illustration": "",
+   "Illustration": "images/lachman.png",
    "Mise en oeuvre": "Genou testé fléchi à 20° de flexion, le talon reposant sur la table. La main crâniale maintient le tiers distal du fémur. La main caudale empaume le tibia, le pouce placé sur la tubérosité tibiale antérieure, on effectue une traction antérieure",
    "Référence clinimétrie": "Benjaminse et al. (2006)\n\nhttps://doi.org/10.2519/jospt.2006.2011",
    "Remarque": "Il existe des variantes lorsque la prise du segment jambier ou crural est difficile : \n\n- Stabilized lachman test \n- Drop leg lachman test"
