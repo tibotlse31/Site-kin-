@@ -64,6 +64,26 @@
       margin-bottom: 10px;
     }
 
+    .image-placeholder {
+      background-color: #e0e0e0;
+      color: #555;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      text-align: center;
+      padding: 20px;
+      margin-top: 15px;
+    }
+
+    .img-fluid {
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
     .modal-body p {
       margin-bottom: 10px;
     }
@@ -111,44 +131,40 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <div class="info-card">
-            <h6><i class="bi bi-search"></i> Région</h6>
-            <p id="modalRegion"></p>
-          </div>
+          <div class="row">
+            <!-- Colonne gauche -->
+            <div class="col-md-7">
+              <p><i class="bi bi-search"></i> <strong>Région :</strong> <span id="modalRegion"></span></p>
+              <p><i class="bi bi-activity"></i> <strong>Pathologie :</strong> <span id="modalPathology"></span></p>
 
-          <div class="info-card">
-            <h6><i class="bi bi-activity"></i> Pathologie</h6>
-            <p id="modalPathology"></p>
-          </div>
+              <div class="info-card">
+                <h6><i class="bi bi-tools"></i> Mise en œuvre</h6>
+                <p id="modalImplementation"></p>
+              </div>
 
-          <div class="info-card">
-            <h6><i class="bi bi-tools"></i> Mise en œuvre</h6>
-            <p id="modalImplementation"></p>
-          </div>
+              <div id="modalClinimetrics" class="info-card d-none">
+                <h6><i class="bi bi-bar-chart-line"></i> Clinimétrie</h6>
+                <div id="modalClinimetricsContent"></div>
+              </div>
 
-          <div id="modalClinimetrics" class="info-card d-none">
-            <h6><i class="bi bi-bar-chart-line"></i> Clinimétrie</h6>
-            <div id="modalClinimetricsContent"></div>
-          </div>
+              <div class="info-card">
+                <h6><i class="bi bi-search-heart"></i> Interprétation</h6>
+                <p id="modalInterpretation"></p>
+              </div>
 
-          <div class="info-card">
-            <h6><i class="bi bi-search-heart"></i> Interprétation</h6>
-            <p id="modalInterpretation"></p>
-          </div>
+              <p><i class="bi bi-chat-dots"></i> <strong>Remarques :</strong> <span id="modalRemarks"></span></p>
+              <p><i class="bi bi-journal-text"></i> <strong>Référence clinimétrie :</strong> <span id="modalReference"></span></p>
+            </div>
 
-          <div class="info-card">
-            <h6><i class="bi bi-chat-dots"></i> Remarques</h6>
-            <p id="modalRemarks"></p>
-          </div>
-
-          <div class="info-card">
-            <h6><i class="bi bi-journal-text"></i> Référence clinimétrie</h6>
-            <p id="modalReference"></p>
-          </div>
-
-          <div id="modalImageContainer" class="info-card d-none">
-            <h6><i class="bi bi-image"></i> Illustration</h6>
-            <img id="modalImage" src="" alt="Illustration du test" class="img-fluid rounded" />
+            <!-- Colonne droite -->
+            <div class="col-md-5">
+              <div id="modalImageContainer">
+                <img id="modalImage" src="" alt="Illustration du test" class="img-fluid d-none" />
+                <div id="imagePlaceholder" class="image-placeholder d-none">
+                  Pas d'image disponible pour l'instant.
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -299,11 +315,16 @@
         clinimetricsBlock.classList.add('d-none');
       }
 
+      const modalImage = document.getElementById('modalImage');
+      const imagePlaceholder = document.getElementById('imagePlaceholder');
+
       if (item.Illustration && item.Illustration.trim() && item.Illustration !== "????") {
-        document.getElementById('modalImageContainer').classList.remove('d-none');
-        document.getElementById('modalImage').src = item.Illustration;
+        modalImage.src = item.Illustration;
+        modalImage.classList.remove('d-none');
+        imagePlaceholder.classList.add('d-none');
       } else {
-        document.getElementById('modalImageContainer').classList.add('d-none');
+        modalImage.classList.add('d-none');
+        imagePlaceholder.classList.remove('d-none');
       }
 
       const modal = new bootstrap.Modal(document.getElementById('testModal'));
