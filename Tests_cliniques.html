@@ -32,7 +32,9 @@
       background: #fff;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
       transition: transform 0.2s ease;
+      height: 100%;
     }
 
     .card-test:hover {
@@ -45,22 +47,37 @@
       font-size: 1.2rem;
     }
 
+    .section-title {
+      font-weight: 600;
+      color: #1976D2;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+    }
+
     .clinimetrics-card {
       background-color: #E3F2FD;
       border-radius: 8px;
       padding: 15px;
     }
+
+    .modal-body p {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container py-4">
+
     <a href="index.html" class="btn btn-outline-primary mb-3">
       <i class="bi bi-arrow-left"></i> Retour à l’accueil
     </a>
 
-    <h1><i class="bi bi-heart-pulse-fill"></i> Tests Cliniques</h1>
+    <h1><i class="bi bi-rulers"></i> Tests Cliniques</h1>
 
-    <!-- Barre de recherche -->
+    <!-- Recherche -->
     <div class="mb-3">
       <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un test, une région, une pathologie..." />
     </div>
@@ -79,13 +96,12 @@
       </div>
     </div>
 
-    <!-- Zone des cartes -->
     <div class="row" id="cardsContainer">
       <!-- cartes injectées ici -->
     </div>
   </div>
 
-  <!-- Modale Bootstrap -->
+  <!-- Modale -->
   <div class="modal fade" id="testModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
@@ -94,30 +110,31 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <p><i class="bi bi-geo-alt-fill"></i> <strong>Région : </strong> <span id="modalRegion"></span></p>
-          <p><i class="bi bi-bug-fill"></i> <strong>Pathologie : </strong> <span id="modalPathology"></span></p>
+          <p><i class="bi bi-search"></i> <strong>Région :</strong> <span id="modalRegion"></span></p>
+          <p><i class="bi bi-activity"></i> <strong>Pathologie :</strong> <span id="modalPathology"></span></p>
 
-          <hr />
-
-          <h6>Description</h6>
+          <div class="section-title"><i class="bi bi-file-text"></i> Description</div>
           <p id="modalDescription"></p>
 
-          <h6>Mise en œuvre</h6>
+          <div class="section-title"><i class="bi bi-tools"></i> Mise en œuvre</div>
           <p id="modalImplementation"></p>
 
           <div id="modalClinimetrics" class="clinimetrics-card mt-3 d-none">
-            <h6 class="text-primary"><i class="bi bi-graph-up"></i> Clinimétrie</h6>
+            <div class="section-title"><i class="bi bi-bar-chart-line"></i> Clinimétrie</div>
             <div id="modalClinimetricsContent"></div>
           </div>
 
-          <h6>Interprétation</h6>
+          <div class="section-title"><i class="bi bi-search-heart"></i> Interprétation</div>
           <p id="modalInterpretation"></p>
 
-          <h6>Remarques</h6>
+          <div class="section-title"><i class="bi bi-chat-dots"></i> Remarques</div>
           <p id="modalRemarks"></p>
 
+          <div class="section-title"><i class="bi bi-journal-text"></i> Référence clinimétrie</div>
+          <p id="modalReference"></p>
+
           <div id="modalImageContainer" class="mt-3 d-none">
-            <h6>Illustration</h6>
+            <div class="section-title"><i class="bi bi-image"></i> Illustration</div>
             <img id="modalImage" src="" alt="Illustration du test" class="img-fluid rounded" />
           </div>
         </div>
@@ -125,13 +142,13 @@
     </div>
   </div>
 
-  <!-- Bootstrap JS Bundle -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     let testsData = [];
 
-    fetch('testclinique.json')
+    fetch('Tests_cliniques.json')
       .then(response => response.json())
       .then(json => {
         testsData = json;
@@ -150,7 +167,12 @@
     pathologySelect.addEventListener('change', filterTests);
 
     function populateRegionFilter() {
-      const regions = [...new Set(testsData.map(item => item.Zone).filter(Boolean))].sort();
+      const regions = [...new Set(
+        testsData
+          .map(item => item.Zone)
+          .filter(r => r && !r.match(/^(Sb|Sp|RV)/i))
+      )].sort();
+
       regions.forEach(region => {
         const option = document.createElement('option');
         option.value = region;
@@ -168,7 +190,7 @@
         const pathologies = [...new Set(
           testsData
             .filter(item => item.Zone === selectedRegion)
-            .map(item => item["Pathologie/atteinte"])
+            .map(item => item.Pathologie?.atteinte)
             .filter(Boolean)
         )].sort();
 
@@ -191,11 +213,11 @@
       const pathology = pathologySelect.value;
 
       const filtered = testsData.filter(item => {
-        const combinedText = `${item.Test} ${item.Zone} ${item["Pathologie/atteinte"]} ${item.Description || ""}`.toLowerCase();
+        const combinedText = `${item.Test} ${item.Zone} ${item.Pathologie?.atteinte} ${item["Mise en oeuvre"] || ""}`.toLowerCase();
 
         const matchesSearch = !search || combinedText.includes(search);
         const matchesRegion = !region || item.Zone === region;
-        const matchesPathology = !pathology || item["Pathologie/atteinte"] === pathology;
+        const matchesPathology = !pathology || item.Pathologie?.atteinte === pathology;
 
         return matchesSearch && matchesRegion && matchesPathology;
       });
@@ -217,26 +239,22 @@
 
         const card = document.createElement('div');
         card.className = 'card card-test h-100';
+        card.addEventListener('click', () => openModal(item));
 
         const cardBody = document.createElement('div');
         cardBody.className = 'card-body';
 
         const title = document.createElement('h5');
         title.className = 'card-title';
-        title.textContent = item.Test;
+        title.textContent = item.Test || '';
 
         const region = document.createElement('p');
-        region.innerHTML = `<i class="bi bi-geo-alt-fill"></i> <strong>Région :</strong> ${item.Zone || ''}`;
+        region.innerHTML = `<i class="bi bi-search"></i> <strong>Région :</strong> ${item.Zone || ''}`;
 
         const patho = document.createElement('p');
-        patho.innerHTML = `<i class="bi bi-bug-fill"></i> <strong>Pathologie :</strong> ${item["Pathologie/atteinte"] || ''}`;
+        patho.innerHTML = `<i class="bi bi-activity"></i> <strong>Pathologie :</strong> ${item.Pathologie?.atteinte || ''}`;
 
-        const btn = document.createElement('button');
-        btn.className = 'btn btn-primary';
-        btn.textContent = 'Voir détails';
-        btn.addEventListener('click', () => openModal(item));
-
-        cardBody.append(title, region, patho, btn);
+        cardBody.append(title, region, patho);
         card.append(cardBody);
         col.append(card);
 
@@ -247,24 +265,27 @@
     function openModal(item) {
       document.getElementById('modalTitle').textContent = item.Test || '';
       document.getElementById('modalRegion').textContent = item.Zone || '';
-      document.getElementById('modalPathology').textContent = item["Pathologie/atteinte"] || '';
+      document.getElementById('modalPathology').textContent = item.Pathologie?.atteinte || '';
       document.getElementById('modalDescription').textContent = item.Description || 'Non renseigné.';
-      document.getElementById('modalImplementation').textContent = item["Mise en œuvre"] || 'Non renseigné.';
-      document.getElementById('modalInterpretation').textContent = item.Interprétation || 'Non renseigné.';
+      document.getElementById('modalImplementation').textContent = item["Mise en oeuvre"] || 'Non renseigné.';
+      document.getElementById('modalInterpretation').textContent = item.Interpratation || 'Non renseigné.';
       document.getElementById('modalRemarks').textContent = item.Remarque || 'Non renseigné.';
+      document.getElementById('modalReference').textContent = item["Référence clinimétrie"] || 'Non renseigné.';
 
-      // Clinimétrie
       const clinimetricsBlock = document.getElementById('modalClinimetrics');
       const clinimetricsContent = document.getElementById('modalClinimetricsContent');
-      if (item.Clinimétrie) {
+
+      if (item.Clinimétrie && item.Clinimétrie.trim() && item.Clinimétrie.trim() !== "NC") {
         clinimetricsBlock.classList.remove('d-none');
-        clinimetricsContent.textContent = item.Clinimétrie;
+        clinimetricsContent.innerHTML = item.Clinimétrie
+          .split('\n')
+          .map(line => `<p class="mb-1">${line}</p>`)
+          .join('');
       } else {
         clinimetricsBlock.classList.add('d-none');
       }
 
-      // Illustration
-      if (item.Illustration) {
+      if (item.Illustration && item.Illustration.trim() && item.Illustration !== "????") {
         document.getElementById('modalImageContainer').classList.remove('d-none');
         document.getElementById('modalImage').src = item.Illustration;
       } else {
