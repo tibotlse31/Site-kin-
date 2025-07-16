@@ -113,9 +113,6 @@
           <p><i class="bi bi-search"></i> <strong>Région :</strong> <span id="modalRegion"></span></p>
           <p><i class="bi bi-activity"></i> <strong>Pathologie :</strong> <span id="modalPathology"></span></p>
 
-          <div class="section-title"><i class="bi bi-file-text"></i> Description</div>
-          <p id="modalDescription"></p>
-
           <div class="section-title"><i class="bi bi-tools"></i> Mise en œuvre</div>
           <p id="modalImplementation"></p>
 
@@ -153,7 +150,6 @@
       .then(json => {
         testsData = json;
         populateRegionFilter();
-        displayTests(filteredData);
       })
       .catch(err => console.error(err));
 
@@ -213,6 +209,9 @@
       const pathology = pathologySelect.value;
 
       const filtered = testsData.filter(item => {
+        if (!item.Test || !item.Test.trim()) return false;
+        if (!item.Zone || !item.Zone.trim()) return false;
+
         const combinedText = `${item.Test} ${item.Zone} ${item.Pathologie?.atteinte} ${item["Mise en oeuvre"] || ""}`.toLowerCase();
 
         const matchesSearch = !search || combinedText.includes(search);
@@ -266,7 +265,6 @@
       document.getElementById('modalTitle').textContent = item.Test || '';
       document.getElementById('modalRegion').textContent = item.Zone || '';
       document.getElementById('modalPathology').textContent = item.Pathologie?.atteinte || '';
-      document.getElementById('modalDescription').textContent = item.Description || 'Non renseigné.';
       document.getElementById('modalImplementation').textContent = item["Mise en oeuvre"] || 'Non renseigné.';
       document.getElementById('modalInterpretation').textContent = item.Interpratation || 'Non renseigné.';
       document.getElementById('modalRemarks').textContent = item.Remarque || 'Non renseigné.';
