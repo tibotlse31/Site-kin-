@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPPB Simulator</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
+        #canvas { border: 1px solid #000; width: 500px; height: 500px; }
+        .form-control { margin: 10px 0; }
+    </style>
+    <script>
+        function runSimulator() {
+            // Add your simulator algorithm here
+            const canal = document.getElementById('canal').value;
+            const side = document.getElementById('side').value;
+            const mechanism = document.getElementById('mechanism').value;
+            const maneuver = document.getElementById('maneuver').value;
+
+            // Mock algorithm results for nystagmus
+            const results = `Simulating ${canal} canal, ${side} side, ${mechanism} mechanism, using ${maneuver} maneuver...`;
+
+            document.getElementById('results').innerText = results;
+            // Update 3D canvas based on selections (placeholder)
+        }
+    </script>
+</head>
+<body>
+    <h1>VPPB Interactive Simulator</h1>
+    <div class="form-control">
+        <label for="canal">Select Canal:</label>
+        <select id="canal">
+            <option value="anterior">Anterior</option>
+            <option value="posterior">Posterior</option>
+            <option value="lateral">Lateral</option>
+        </select>
+    </div>
+    <div class="form-control">
+        <label for="side">Select Side:</label>
+        <select id="side">
+            <option value="left">Left</option>
+            <option value="right">Right</option>
+        </select>
+    </div>
+    <div class="form-control">
+        <label for="mechanism">Select Mechanism:</label>
+        <select id="mechanism">
+            <option value="cupulolithiasis">Cupulolithiasis</option>
+            <option value="canalolithiasis">Canalolithiasis</option>
+        </select>
+    </div>
+    <div class="form-control">
+        <label for="maneuver">Select Maneuver:</label>
+        <select id="maneuver">
+            <option value="Epley">Epley</option>
+            <option value="Semont">Semont</option>
+        </select>
+    </div>
+    <button onclick="runSimulator()">Run Simulation</button>
+    <div id="results" class="form-control"></div>
+    <canvas id="canvas"></canvas>
+</body>
+</html>
