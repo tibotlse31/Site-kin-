@@ -33,16 +33,6 @@ window.VPPBRender = (() => {
   function renderHome() {
     return `
       <section class="page-grid">
-        <div class="card">
-          <div class="home-intro">
-            <h2>Apprendre le VPPB par étapes</h2>
-            <p>
-              Cette mini-app est pensée pour apprendre progressivement : revoir les bases,
-              comprendre la biomécanique, interpréter un test ou une manœuvre, puis raisonner cliniquement.
-            </p>
-          </div>
-        </div>
-
         <div class="home-grid-4">
           ${ui.card({
             icon: '①',
@@ -53,13 +43,13 @@ window.VPPBRender = (() => {
           ${ui.card({
             icon: '②',
             title: 'Comprendre la biomécanique',
-            text: 'Un parcours guidé pour relier canal, débris, flux et nystagmus.',
+            text: 'Parcours guidé pour relier canal, lithiase, flux et nystagmus attendu.',
             action: { type: 'go-module', payload: { module: 'biomechanics' } }
           })}
           ${ui.card({
             icon: '③',
             title: 'Interpréter un test ou une manœuvre',
-            text: 'Savoir ce qu’on attend, ce que cela oriente, et quelle suite logique en découle.',
+            text: 'Ce qu’on attend, ce que cela oriente, et quelle suite logique en découle.',
             action: { type: 'go-module', payload: { module: 'interpret' } }
           })}
           ${ui.card({
@@ -112,20 +102,14 @@ window.VPPBRender = (() => {
           </div>
 
           <div class="card">
-            <h3>Repère visuel</h3>
-            <div class="visual-box">
-              ${ui.renderGlobalOrientationSVG({
-                canal:
-                  state.basicsTopic === 'orientation'
-                    ? 'horizontal'
-                    : state.basicsTopic === 'nystagmus'
-                    ? 'anterior'
-                    : 'posterior'
-              })}
+            <h3>Illustration à ajouter</h3>
+            <div class="image-slot">
+              <div>
+                <strong>Zone prévue pour une image</strong>
+                <p>Tu pourras ici insérer un schéma de cours, une capture PDF, ou une image web sélectionnée.</p>
+              </div>
             </div>
-            <p class="note">
-              Ici, le schéma sert surtout de repère global. La logique détaillée du canal étudié se trouve dans le module biomécanique.
-            </p>
+            <p class="note">Pas de schéma généré automatiquement dans cette version.</p>
           </div>
         </div>
       </section>
@@ -143,11 +127,11 @@ window.VPPBRender = (() => {
           <div class="section-header">
             <div>
               <h2>Comprendre la biomécanique</h2>
-              <p>Un parcours guidé, une vue d’orientation, puis une vue du canal sélectionné.</p>
+              <p>Choisis progressivement une configuration clinique cohérente. Seules les options compatibles sont proposées.</p>
             </div>
             <div class="tag-row">
               <span class="tag">Parcours guidé</span>
-              <span class="tag">Multi-vues 2D</span>
+              <span class="tag">Sans schéma maison</span>
             </div>
           </div>
         </div>
@@ -193,7 +177,7 @@ window.VPPBRender = (() => {
                         action: 'set-bio-mechanism',
                         formatter: engine.labelMechanism
                       })
-                    : `<div class="choice-help">Le mécanisme apparaît ensuite.</div>`
+                    : `<div class="choice-help">Le mécanisme devient disponible après le côté.</div>`
                 }
               </div>
             </div>
@@ -215,74 +199,54 @@ window.VPPBRender = (() => {
             </div>
           </aside>
 
-          <section class="visual-stage">
-            ${
-              s.canal
-                ? `
-                <div class="visual-columns">
-                  <div class="card">
-                    <div class="visual-title">Vue 1 — repérage global</div>
-                    <div class="visual-box">
-                      ${ui.renderGlobalOrientationSVG({ canal: s.canal })}
-                    </div>
-                    <div class="legend-inline">Le canal étudié est surligné dans le labyrinthe global.</div>
-                  </div>
-
-                  <div class="card">
-                    <div class="visual-title">Vue 2 — plan utile pour comprendre</div>
-                    <div class="visual-box">
-                      ${ui.renderCanalPlaneSVG(s, outcome || { expectedNystagmus: '' })}
-                    </div>
-                    <div class="legend-inline">On isole le plan du canal sélectionné pour lire le déplacement des débris.</div>
-                  </div>
-                </div>
-              `
-                : `
-                <div class="card">
-                  <div class="empty-state">Choisis un canal pour commencer la lecture biomécanique.</div>
-                </div>
-              `
-            }
-
+          <section class="stack">
             <div class="card">
               <h3>Lecture simple</h3>
               ${
                 outcome
-                  ? `<div class="summary-box"><p>${ui.escapeHtml(outcome.summary)}</p></div>`
-                  : `<div class="empty-state">Le résumé pédagogique s’affichera quand les choix seront complets.</div>`
+                  ? `
+                    <div class="summary-box">
+                      <p>${ui.escapeHtml(outcome.summary)}</p>
+                    </div>
+                  `
+                  : `<div class="empty-state">Le résumé pédagogique s’affichera quand les 4 choix seront complétés.</div>`
               }
+            </div>
+
+            <div class="card">
+              <h3>Illustration à ajouter</h3>
+              <div class="image-slot">
+                <div>
+                  <strong>Emplacement image / capture</strong>
+                  <p>Tu pourras ajouter ici une image web ou une capture de cours pour le cas sélectionné.</p>
+                </div>
+              </div>
             </div>
           </section>
 
           <aside class="compact-stack">
             <div class="card">
-              <h3>Résultat</h3>
+              <h3>Résultat pédagogique</h3>
               ${
                 outcome
                   ? `
                     <div class="kv">
                       <div class="kv-row">
-                        <div class="kv-key">Déplacement</div>
+                        <div class="kv-key">Déplacement attendu</div>
                         <div>${ui.escapeHtml(outcome.flow)}</div>
                       </div>
                       <div class="kv-row">
-                        <div class="kv-key">Effet vestibulaire</div>
+                        <div class="kv-key">Excitation / inhibition</div>
                         <div>${ui.escapeHtml(outcome.effect)}</div>
                       </div>
                       <div class="kv-row">
                         <div class="kv-key">Nystagmus attendu</div>
                         <div>${ui.escapeHtml(outcome.expectedNystagmus)}</div>
                       </div>
-                    </div>
-
-                    <div style="margin-top:12px;" class="visual-box">
-                      <div class="visual-title">Repère du nystagmus</div>
-                      ${ui.renderNystagmusSVG(outcome.expectedNystagmus)}
-                    </div>
-
-                    <div style="margin-top:12px;" class="summary-box">
-                      <strong>Conclusion</strong>
-                      <p style="margin-top:8px;">${ui.escapeHtml(outcome.conclusion)}</p>
+                      <div class="kv-row">
+                        <div class="kv-key">Conclusion pédagogique</div>
+                        <div>${ui.escapeHtml(outcome.conclusion)}</div>
+                      </div>
                     </div>
 
                     ${ui.detailsBlock('Voir plus : détail biomécanique', `<p>${ui.escapeHtml(outcome.why)}</p>`)}
@@ -291,7 +255,7 @@ window.VPPBRender = (() => {
                       <p style="margin-top:8px;">${ui.escapeHtml(outcome.caution)}</p>
                     </div>
                   `
-                  : `<div class="empty-state">Le panneau de résultat se remplit à la fin du parcours guidé.</div>`
+                  : `<div class="empty-state">Le panneau de résultat se remplit à mesure que le parcours devient cohérent.</div>`
               }
             </div>
           </aside>
@@ -309,7 +273,7 @@ window.VPPBRender = (() => {
       <section class="page-grid">
         <div class="card">
           <h2>Interpréter un test ou une manœuvre</h2>
-          <p>Partir d’un geste clinique et afficher d’abord l’essentiel, puis le détail sur demande.</p>
+          <p>Partir d’un geste clinique et montrer ce qu’on attend, comment l’interpréter, et quelle conduite logique en découle.</p>
         </div>
 
         <div class="subnav">
@@ -327,7 +291,7 @@ window.VPPBRender = (() => {
       <div class="layout-3">
         <aside class="compact-stack">
           <div class="card soft">
-            <div class="choice-label">Test</div>
+            <div class="choice-label">Choix du test</div>
             <div class="choice-grid">
               ${data.tests
                 .map(
@@ -353,55 +317,33 @@ window.VPPBRender = (() => {
                     <button class="choice-button ${state.interpret.selectedTestSide === 'left' ? 'is-active' : ''}" data-action="set-test-side" data-side="left">Gauche</button>
                   </div>
                 `
-                : `<div class="choice-help">Pas de choix latéralisé obligatoire ici.</div>`
+                : `<div class="choice-help">Ce test n’est pas présenté ici avec un choix latéralisé obligatoire.</div>`
             }
           </div>
         </aside>
 
         <section class="stack">
           <div class="card">
-            <h3>Vue utile</h3>
-            <div class="visual-columns">
-              <div class="visual-box">
-                <div class="visual-title">Repérage global</div>
-                ${ui.renderGlobalOrientationSVG({
-                  canal:
-                    test.family === 'posterior'
-                      ? 'posterior'
-                      : test.family === 'horizontal'
-                      ? 'horizontal'
-                      : 'anterior'
-                })}
-              </div>
-              <div class="visual-box">
-                <div class="visual-title">Canal mobilisé</div>
-                ${ui.renderCanalPlaneSVG(
-                  {
-                    canal:
-                      test.family === 'posterior'
-                        ? 'posterior'
-                        : test.family === 'horizontal'
-                        ? 'horizontal'
-                        : 'anterior',
-                    side: state.interpret.selectedTestSide
-                  },
-                  { expectedNystagmus: test.expected }
-                )}
-              </div>
+            <h3>Lecture simple</h3>
+            <div class="summary-box">
+              <p>${ui.escapeHtml(test.quick)}</p>
             </div>
           </div>
 
           <div class="card">
-            <h3>Lecture simple</h3>
-            <div class="summary-box">
-              <p>${ui.escapeHtml(test.quick)}</p>
+            <h3>Illustration à ajouter</h3>
+            <div class="image-slot">
+              <div>
+                <strong>Zone prévue pour une image du test</strong>
+                <p>Tu pourras insérer ici une photo, un schéma de cours ou une capture vidéo du test.</p>
+              </div>
             </div>
           </div>
         </section>
 
         <aside class="compact-stack">
           <div class="card">
-            <h3>À retenir</h3>
+            <h3>Ce qu’on attend si positif</h3>
             <div class="result-list">
               <div class="result-item">
                 <strong>Nystagmus attendu</strong>
@@ -411,11 +353,6 @@ window.VPPBRender = (() => {
                 <strong>Canal probable</strong>
                 <span>${ui.escapeHtml(test.likely)}</span>
               </div>
-            </div>
-
-            <div style="margin-top:12px;" class="visual-box">
-              <div class="visual-title">Repère du nystagmus</div>
-              ${ui.renderNystagmusSVG(test.expected)}
             </div>
 
             ${ui.detailsBlock('Voir plus : pourquoi ?', `<p>${ui.escapeHtml(test.why)}</p>`)}
@@ -434,7 +371,7 @@ window.VPPBRender = (() => {
       <div class="layout-3">
         <aside class="compact-stack">
           <div class="card soft">
-            <div class="choice-label">Manœuvre</div>
+            <div class="choice-label">Choix de la manœuvre</div>
             <div class="choice-grid">
               ${data.maneuvers
                 .map(
@@ -460,68 +397,46 @@ window.VPPBRender = (() => {
                     <button class="choice-button ${state.interpret.selectedManeuverSide === 'left' ? 'is-active' : ''}" data-action="set-maneuver-side" data-side="left">Gauche</button>
                   </div>
                 `
-                : `<div class="choice-help">Pas de côté obligatoire dans cette vue.</div>`
+                : `<div class="choice-help">Cette manœuvre peut être présentée sans latéralisation obligatoire dans cette V1.</div>`
             }
           </div>
         </aside>
 
         <section class="stack">
           <div class="card">
-            <h3>Vue utile</h3>
-            <div class="visual-columns">
-              <div class="visual-box">
-                <div class="visual-title">Repérage global</div>
-                ${ui.renderGlobalOrientationSVG({
-                  canal:
-                    maneuver.family === 'posterior'
-                      ? 'posterior'
-                      : maneuver.family === 'horizontal'
-                      ? 'horizontal'
-                      : 'anterior'
-                })}
-              </div>
-              <div class="visual-box">
-                <div class="visual-title">Canal visé</div>
-                ${ui.renderCanalPlaneSVG(
-                  {
-                    canal:
-                      maneuver.family === 'posterior'
-                        ? 'posterior'
-                        : maneuver.family === 'horizontal'
-                        ? 'horizontal'
-                        : 'anterior',
-                    side: state.interpret.selectedManeuverSide
-                  },
-                  { expectedNystagmus: maneuver.expected }
-                )}
-              </div>
+            <h3>Objectif biomécanique</h3>
+            <div class="summary-box">
+              <p>${ui.escapeHtml(maneuver.goal)}</p>
             </div>
           </div>
 
           <div class="card">
-            <h3>Objectif simple</h3>
-            <div class="summary-box">
-              <p>${ui.escapeHtml(maneuver.goal)}</p>
+            <h3>Illustration à ajouter</h3>
+            <div class="image-slot">
+              <div>
+                <strong>Zone prévue pour une image de la manœuvre</strong>
+                <p>Tu pourras insérer ici une planche étape par étape, une photo ou un schéma choisi.</p>
+              </div>
             </div>
           </div>
         </section>
 
         <aside class="compact-stack">
           <div class="card">
-            <h3>À retenir</h3>
+            <h3>Étapes et interprétation</h3>
             <div class="result-item">
-              <strong>Indication</strong>
+              <strong>Indication clinique</strong>
               <span>${ui.escapeHtml(maneuver.indication)}</span>
             </div>
 
             <div class="result-item" style="margin-top:10px;">
-              <strong>Étapes</strong>
+              <strong>Étapes successives</strong>
               <ol class="steps">
                 ${maneuver.steps.map(step => `<li>${ui.escapeHtml(step)}</li>`).join('')}
               </ol>
             </div>
 
-            ${ui.detailsBlock('Voir plus : ce qu’on attend', `<p>${ui.escapeHtml(maneuver.expected)}</p>`)}
+            ${ui.detailsBlock('Voir plus : ce qu’on est censé observer', `<p>${ui.escapeHtml(maneuver.expected)}</p>`)}
             ${ui.detailsBlock(
               'Voir plus : précautions',
               `<ul class="steps">${maneuver.precautions.map(x => `<li>${ui.escapeHtml(x)}</li>`).join('')}</ul>`
@@ -540,16 +455,16 @@ window.VPPBRender = (() => {
       <section class="page-grid">
         <div class="card">
           <h2>Raisonnement clinique</h2>
-          <p>Construire progressivement une hypothèse cohérente à partir du nystagmus observé.</p>
+          <p>Transformer les connaissances en raisonnement progressif et en vigilance diagnostique.</p>
         </div>
 
         <div class="split-cards">
           <div class="card">
             <h3>Arbre décisionnel simplifié</h3>
 
-            <div class="decision-flow">
+            <div class="stack">
               <div class="choice-group">
-                <div class="choice-label">Quel profil observes-tu ?</div>
+                <div class="choice-label">Quel nystagmus ou quelle situation observes-tu ?</div>
                 <div class="choice-grid">
                   <button class="choice-button ${state.reasoning.nystagmusFamily === 'torsion_upbeat' ? 'is-active' : ''}" data-action="set-reasoning" data-key="nystagmusFamily" data-value="torsion_upbeat">Torsionnel + vertical supérieur</button>
                   <button class="choice-button ${state.reasoning.nystagmusFamily === 'horizontal_geotropic' ? 'is-active' : ''}" data-action="set-reasoning" data-key="nystagmusFamily" data-value="horizontal_geotropic">Horizontal géotropique</button>
@@ -602,7 +517,7 @@ window.VPPBRender = (() => {
           </div>
 
           <div class="card">
-            <h3>Cas clinique</h3>
+            <h3>Cas cliniques</h3>
 
             <div class="choice-grid" style="margin-bottom:14px;">
               ${data.clinicalCases
