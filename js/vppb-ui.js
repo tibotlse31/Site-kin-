@@ -60,122 +60,158 @@ window.VPPBUI = (() => {
     `;
   }
 
-  function renderLabyrinthSVG(selection, outcome) {
+  function renderGlobalOrientationSVG(selection) {
     const canal = selection.canal || 'posterior';
-    const rightSide = selection.side !== 'left';
-    const mirror = rightSide ? 1 : -1;
-    const highlight = '#1f6fd1';
-    const neutral = '#bfd2e6';
-    const ampouleX = rightSide ? 470 : 130;
-    const utricleX = 300;
-    const arrowColor = '#13a38b';
-    const particleX = rightSide ? 418 : 182;
-
-    let canalPath = '';
-    let secondaryPath = '';
-    let tertiaryPath = '';
-
-    if (canal === 'posterior') {
-      canalPath = `M ${300 + mirror * 30} 290 C ${300 + mirror * 130} 250, ${300 + mirror * 170} 150, ${300 + mirror * 120} 85`;
-      secondaryPath = `M 220 210 C 210 150, 230 105, 270 70`;
-      tertiaryPath = `M 380 210 C 390 150, 370 105, 330 70`;
-    } else if (canal === 'horizontal') {
-      canalPath = `M 140 180 C 190 120, 410 120, 460 180 C 410 240, 190 240, 140 180`;
-      secondaryPath = `M 220 260 C 200 180, 225 95, 280 55`;
-      tertiaryPath = `M 380 260 C 400 180, 375 95, 320 55`;
-    } else {
-      canalPath = `M ${300 - mirror * 30} 290 C ${300 - mirror * 130} 250, ${300 - mirror * 170} 150, ${300 - mirror * 120} 85`;
-      secondaryPath = `M 220 210 C 210 150, 230 105, 270 70`;
-      tertiaryPath = `M 380 210 C 390 150, 370 105, 330 70`;
-    }
-
-    const flowArrow =
-      canal === 'horizontal'
-        ? (rightSide
-            ? `<path d="M150 180 L230 180" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round"/>
-               <path d="M220 170 L240 180 L220 190" fill="none" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`
-            : `<path d="M450 180 L370 180" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round"/>
-               <path d="M380 170 L360 180 L380 190" fill="none" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`)
-        : (rightSide
-            ? `<path d="M390 120 L445 92" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round"/>
-               <path d="M430 86 L448 90 L438 105" fill="none" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`
-            : `<path d="M210 120 L155 92" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round"/>
-               <path d="M170 86 L152 90 L162 105" fill="none" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`);
-
-    const particleGroup =
-      canal === 'horizontal'
-        ? `
-          <circle cx="${rightSide ? 395 : 205}" cy="180" r="8" fill="#ef5b5b"/>
-          <circle cx="${rightSide ? 379 : 221}" cy="172" r="6" fill="#ef5b5b"/>
-          <circle cx="${rightSide ? 379 : 221}" cy="189" r="5" fill="#ef5b5b"/>
-        `
-        : `
-          <circle cx="${particleX}" cy="138" r="8" fill="#ef5b5b"/>
-          <circle cx="${particleX + (rightSide ? -14 : 14)}" cy="152" r="6" fill="#ef5b5b"/>
-          <circle cx="${particleX + (rightSide ? -3 : 3)}" cy="166" r="5" fill="#ef5b5b"/>
-        `;
-
-    const nystagmusMini = renderNystagmusMini(outcome?.expectedNystagmus || '');
 
     return `
-      <svg class="visual-svg" viewBox="0 0 600 420" role="img" aria-label="Schéma vestibulaire">
-        <rect x="0" y="0" width="600" height="420" rx="18" fill="#fbfdff"/>
-        <circle cx="${utricleX}" cy="230" r="34" fill="#edf4ff" stroke="#8ab2e4" stroke-width="3"/>
-        <text x="${utricleX}" y="236" text-anchor="middle" font-size="14" fill="#305a86" font-family="Open Sans">Utricule</text>
+      <svg class="visual-svg small" viewBox="0 0 360 180" role="img" aria-label="Vue globale d’orientation">
+        <rect x="0" y="0" width="360" height="180" rx="16" fill="#fbfdff"/>
+        <circle cx="180" cy="95" r="20" fill="#edf4ff" stroke="#8ab2e4" stroke-width="2.5"/>
+        <text x="180" y="100" text-anchor="middle" font-size="11" fill="#305a86" font-family="Open Sans">Utricule</text>
 
-        <path d="${secondaryPath}" fill="none" stroke="${canal === 'anterior' ? neutral : neutral}" stroke-width="18" stroke-linecap="round"/>
-        <path d="${tertiaryPath}" fill="none" stroke="${canal === 'posterior' ? neutral : neutral}" stroke-width="18" stroke-linecap="round"/>
-        <path d="${canalPath}" fill="none" stroke="${highlight}" stroke-width="20" stroke-linecap="round"/>
+        <path d="M110 112 C95 72, 112 34, 145 18" fill="none" stroke="${canal === 'posterior' ? '#216dd1' : '#c8d7e8'}" stroke-width="${canal === 'posterior' ? 12 : 8}" stroke-linecap="round"/>
+        <path d="M250 112 C265 72, 248 34, 215 18" fill="none" stroke="${canal === 'anterior' ? '#216dd1' : '#c8d7e8'}" stroke-width="${canal === 'anterior' ? 12 : 8}" stroke-linecap="round"/>
+        <ellipse cx="180" cy="96" rx="108" ry="42" fill="none" stroke="${canal === 'horizontal' ? '#216dd1' : '#c8d7e8'}" stroke-width="${canal === 'horizontal' ? 12 : 8}"/>
 
-        <circle cx="${ampouleX}" cy="${canal === 'horizontal' ? 180 : 92}" r="22" fill="#cde8e1" stroke="#6fbaa8" stroke-width="3"/>
-        <text x="${ampouleX}" y="${canal === 'horizontal' ? 150 : 58}" text-anchor="middle" font-size="13" fill="#305a86" font-family="Open Sans">
-          Ampoule
-        </text>
+        <text x="74" y="28" font-size="11" fill="#587089" font-family="Open Sans">Postérieur</text>
+        <text x="238" y="28" font-size="11" fill="#587089" font-family="Open Sans">Antérieur</text>
+        <text x="145" y="156" font-size="11" fill="#587089" font-family="Open Sans">Horizontal</text>
+      </svg>
+    `;
+  }
 
-        ${particleGroup}
+  function renderCanalPlaneSVG(selection, outcome) {
+    const canal = selection.canal || 'posterior';
+    const side = selection.side || 'right';
+    const rightSide = side !== 'left';
+    const ampouleX = rightSide ? 480 : 120;
+    const particleX = rightSide ? 430 : 170;
+    const mainColor = '#216dd1';
+    const neutral = '#d7e3f0';
+    const arrowColor = '#16a085';
+
+    let pathMain = '';
+    let ampouleY = 90;
+    let title = 'Plan du canal sélectionné';
+    let planeLabel = '';
+    let flowArrow = '';
+    let particles = '';
+
+    if (canal === 'posterior') {
+      title = 'Plan du canal postérieur';
+      planeLabel = 'Plan vertical oblique postérieur';
+      pathMain = rightSide
+        ? `M 270 280 C 360 238, 430 168, 472 96`
+        : `M 330 280 C 240 238, 170 168, 128 96`;
+      flowArrow = rightSide
+        ? `<path d="M385 162 L447 112" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round"/>
+           <path d="M432 106 L450 110 L442 126" fill="none" stroke="${arrowColor}" stroke-width="5" stroke-linejoin="round"/>`
+        : `<path d="M215 162 L153 112" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round"/>
+           <path d="M168 106 L150 110 L158 126" fill="none" stroke="${arrowColor}" stroke-width="5" stroke-linejoin="round"/>`;
+      particles = `
+        <circle cx="${particleX}" cy="170" r="8" fill="#ef5b5b"/>
+        <circle cx="${particleX + (rightSide ? -14 : 14)}" cy="186" r="6" fill="#ef5b5b"/>
+        <circle cx="${particleX + (rightSide ? -6 : 6)}" cy="201" r="5" fill="#ef5b5b"/>
+      `;
+    } else if (canal === 'horizontal') {
+      title = 'Plan du canal horizontal';
+      planeLabel = 'Plan horizontal';
+      ampouleY = 170;
+      pathMain = `M 128 170 C 190 120, 410 120, 472 170 C 410 220, 190 220, 128 170`;
+      flowArrow = rightSide
+        ? `<path d="M332 170 L420 170" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round"/>
+           <path d="M405 160 L425 170 L405 180" fill="none" stroke="${arrowColor}" stroke-width="5" stroke-linejoin="round"/>`
+        : `<path d="M268 170 L180 170" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round"/>
+           <path d="M195 160 L175 170 L195 180" fill="none" stroke="${arrowColor}" stroke-width="5" stroke-linejoin="round"/>`;
+      particles = `
+        <circle cx="${rightSide ? 300 : 260}" cy="170" r="8" fill="#ef5b5b"/>
+        <circle cx="${rightSide ? 286 : 274}" cy="182" r="6" fill="#ef5b5b"/>
+        <circle cx="${rightSide ? 318 : 242}" cy="160" r="5" fill="#ef5b5b"/>
+      `;
+    } else {
+      title = 'Plan du canal antérieur';
+      planeLabel = 'Plan vertical oblique antérieur';
+      pathMain = rightSide
+        ? `M 330 280 C 420 238, 460 160, 480 96`
+        : `M 270 280 C 180 238, 140 160, 120 96`;
+      flowArrow = rightSide
+        ? `<path d="M408 148 L470 108" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round"/>
+           <path d="M454 102 L472 106 L464 122" fill="none" stroke="${arrowColor}" stroke-width="5" stroke-linejoin="round"/>`
+        : `<path d="M192 148 L130 108" stroke="${arrowColor}" stroke-width="5" stroke-linecap="round"/>
+           <path d="M146 102 L128 106 L136 122" fill="none" stroke="${arrowColor}" stroke-width="5" stroke-linejoin="round"/>`;
+      particles = `
+        <circle cx="${particleX}" cy="150" r="8" fill="#ef5b5b"/>
+        <circle cx="${particleX + (rightSide ? -12 : 12)}" cy="166" r="6" fill="#ef5b5b"/>
+        <circle cx="${particleX + (rightSide ? -20 : 20)}" cy="182" r="5" fill="#ef5b5b"/>
+      `;
+    }
+
+    return `
+      <svg class="visual-svg" viewBox="0 0 600 340" role="img" aria-label="${escapeHtml(title)}">
+        <rect x="0" y="0" width="600" height="340" rx="18" fill="#fbfdff"/>
+        <text x="24" y="30" font-size="18" fill="#17324d" font-family="Montserrat">${escapeHtml(title)}</text>
+        <text x="24" y="52" font-size="12" fill="#617a93" font-family="Open Sans">${escapeHtml(planeLabel)}</text>
+
+        <circle cx="300" cy="250" r="30" fill="#edf4ff" stroke="#8ab2e4" stroke-width="3"/>
+        <text x="300" y="255" text-anchor="middle" font-size="14" fill="#305a86" font-family="Open Sans">Utricule</text>
+
+        ${canal !== 'horizontal'
+          ? `
+            <path d="M220 110 C 210 70, 230 40, 260 18" fill="none" stroke="${canal === 'anterior' ? neutral : '#c8d7e8'}" stroke-width="16" stroke-linecap="round"/>
+            <path d="M380 110 C 390 70, 370 40, 340 18" fill="none" stroke="${canal === 'posterior' ? neutral : '#c8d7e8'}" stroke-width="16" stroke-linecap="round"/>
+          `
+          : `
+            <path d="M220 110 C 210 70, 230 40, 260 18" fill="none" stroke="${neutral}" stroke-width="12" stroke-linecap="round"/>
+            <path d="M380 110 C 390 70, 370 40, 340 18" fill="none" stroke="${neutral}" stroke-width="12" stroke-linecap="round"/>
+          `
+        }
+
+        <path d="${pathMain}" fill="none" stroke="${mainColor}" stroke-width="20" stroke-linecap="round"/>
+
+        <circle cx="${ampouleX}" cy="${ampouleY}" r="22" fill="#cfe9e2" stroke="#68b79f" stroke-width="3"/>
+        <text x="${ampouleX}" y="${ampouleY - 34}" text-anchor="middle" font-size="13" fill="#305a86" font-family="Open Sans">Ampoule</text>
+
+        ${particles}
         ${flowArrow}
 
-        <text x="44" y="32" font-size="18" font-family="Montserrat" fill="#17324d">
-          ${escapeHtml(
-            outcome?.title ||
-            'Visualisation pédagogique'
-          )}
-        </text>
-
-        <g transform="translate(360,300)">
-          ${nystagmusMini}
-        </g>
-
-        <text x="40" y="385" font-size="13" fill="#587089" font-family="Open Sans">
-          Canal sélectionné en bleu • Débris en rouge • Flux en vert
+        <text x="24" y="313" font-size="12" fill="#617a93" font-family="Open Sans">
+          Bleu : canal étudié • Rouge : débris • Vert : sens de déplacement
         </text>
       </svg>
     `;
   }
 
-  function renderNystagmusMini(text) {
-    const normalized = text.toLowerCase();
+  function renderNystagmusSVG(text) {
+    const normalized = String(text).toLowerCase();
+
+    let drawing = '';
+    let title = 'Nystagmus attendu';
 
     if (normalized.includes('horizontal')) {
-      return `
-        <text x="0" y="-18" font-size="13" fill="#305a86" font-family="Open Sans">Nystagmus</text>
-        <path d="M0 0 L80 0" stroke="#1f6fd1" stroke-width="5" stroke-linecap="round"/>
-        <path d="M68 -10 L82 0 L68 10" fill="none" stroke="#1f6fd1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      drawing = `
+        <text x="18" y="28" font-size="13" fill="#617a93" font-family="Open Sans">Horizontal</text>
+        <path d="M40 82 L220 82" stroke="#216dd1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M200 68 L224 82 L200 96" fill="none" stroke="#216dd1" stroke-width="6" stroke-linejoin="round"/>
       `;
-    }
-
-    if (normalized.includes('vertical inférieur')) {
-      return `
-        <text x="0" y="-18" font-size="13" fill="#305a86" font-family="Open Sans">Nystagmus</text>
-        <path d="M40 -25 L40 35" stroke="#1f6fd1" stroke-width="5" stroke-linecap="round"/>
-        <path d="M30 23 L40 38 L50 23" fill="none" stroke="#1f6fd1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    } else if (normalized.includes('vertical inférieur')) {
+      drawing = `
+        <text x="18" y="28" font-size="13" fill="#617a93" font-family="Open Sans">Vertical inférieur</text>
+        <path d="M128 42 L128 126" stroke="#216dd1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M114 104 L128 126 L142 104" fill="none" stroke="#216dd1" stroke-width="6" stroke-linejoin="round"/>
+      `;
+    } else {
+      drawing = `
+        <text x="18" y="28" font-size="13" fill="#617a93" font-family="Open Sans">Torsionnel / vertical supérieur</text>
+        <path d="M78 98 C 90 55, 158 50, 176 95" fill="none" stroke="#216dd1" stroke-width="6" stroke-linecap="round"/>
+        <path d="M162 84 L178 98 L156 104" fill="none" stroke="#216dd1" stroke-width="6" stroke-linejoin="round"/>
       `;
     }
 
     return `
-      <text x="0" y="-18" font-size="13" fill="#305a86" font-family="Open Sans">Nystagmus</text>
-      <path d="M18 8 C 25 -15, 58 -18, 66 10" fill="none" stroke="#1f6fd1" stroke-width="5" stroke-linecap="round"/>
-      <path d="M58 2 L68 12 L54 14" fill="none" stroke="#1f6fd1" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg class="visual-svg small" viewBox="0 0 260 160" role="img" aria-label="${escapeHtml(title)}">
+        <rect x="0" y="0" width="260" height="160" rx="16" fill="#fbfdff"/>
+        ${drawing}
+      </svg>
     `;
   }
 
@@ -184,6 +220,8 @@ window.VPPBUI = (() => {
     card,
     detailsBlock,
     choiceButtons,
-    renderLabyrinthSVG
+    renderGlobalOrientationSVG,
+    renderCanalPlaneSVG,
+    renderNystagmusSVG
   };
 })();
