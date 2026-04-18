@@ -1,25 +1,25 @@
 // ========================================
-// VPPB SIMULATOR - VERSION SIMPLE
+// VPPB SIMULATOR - VERSION PÉDAGOGIQUE SIMPLIFIÉE
 // ========================================
 
 const CANAL_INFO = {
     post: {
         name: 'Canal postérieur',
         frequency: '90%',
-        symptoms: 'Vertiges brefs en se couchant, en se relevant ou en se tournant dans le lit.',
-        nystagmus: 'Torsionnel géotropique, avec inversion au retour assis.'
+        symptoms: 'Vertiges brefs en se couchant/levant',
+        nystagmus: 'Torsionnel géotropique'
     },
     horiz: {
         name: 'Canal horizontal',
         frequency: '9%',
-        symptoms: 'Vertiges positionnels souvent plus prolongés.',
-        nystagmus: 'Horizontal géotropique ou agéotropique.'
+        symptoms: 'Vertiges prolongés, > 1 min',
+        nystagmus: 'Horizontal géotropique ou agéotropique'
     },
     ant: {
         name: 'Canal antérieur',
         frequency: '1%',
-        symptoms: 'Vertige moins franc, parfois sensation d’ébriété.',
-        nystagmus: 'Vertical inférieur.'
+        symptoms: 'Vertige moins franc',
+        nystagmus: 'Vertical inférieur'
     }
 };
 
@@ -43,8 +43,7 @@ const MANOEUVRES = {
 
 const TESTS = {
     post: [
-        { id: 'dixhallpike', name: 'Dix-Hallpike', steps: 2 },
-        { id: 'sidelying', name: 'Side-Lying', steps: 2 }
+        { id: 'dixhallpike', name: 'Dix-Hallpike', steps: 2 }
     ],
     horiz: [
         { id: 'bowlean', name: 'Bow and Lean', steps: 2 },
@@ -56,78 +55,23 @@ const TESTS = {
     ]
 };
 
-const STEP_TEXT = {
-    epley: [
-        { title: 'Position 1', description: 'Dix-Hallpike : mise en mouvement des otolithes.' },
-        { title: 'Position 2', description: 'Rotation vers le côté sain : poursuite de la migration.' },
-        { title: 'Position 3', description: 'Roulade : les otolithes avancent vers le vestibule.' },
-        { title: 'Position 4', description: 'Retour assis : possible inversion du nystagmus.' }
+// DESCRIPTIONS DES ÉTAPES
+const STEP_DESCRIPTIONS = {
+    // Épley postérieur
+    epley_post: [
+        { step: 1, title: 'Position 1 : Dix-Hallpike', description: 'Tête en extension, cristaux se mettent en mouvement' },
+        { step: 2, title: 'Position 2 : Latéralisation', description: 'Tête tournée côté sain, cristaux glissent' },
+        { step: 3, title: 'Position 3 : Roulade', description: 'Roulade côté sain, cristaux continuent à migrer' },
+        { step: 4, title: 'Position 4 : Retour assis', description: 'Cristaux retombent dans le vestibule' }
     ],
-    semont: [
-        { title: 'Position 1', description: 'Bascule rapide côté atteint : déclenchement.' },
-        { title: 'Position 2', description: 'Passage côté opposé : déplacement libérateur.' },
-        { title: 'Position 3', description: 'Retour assis : stabilisation.' }
+    dixhallpike_post: [
+        { step: 1, title: 'Dix-Hallpike', description: 'Tête en arrière, déclenchement du nystagmus' },
+        { step: 2, title: 'Retour assis', description: 'Cristaux retombent, nystagmus s\'inverse' }
     ],
-    brandt: [
-        { title: 'Position 1', description: 'Décubitus latéral d’un côté.' },
-        { title: 'Position 2', description: 'Retour assis.' },
-        { title: 'Position 3', description: 'Décubitus latéral opposé.' }
-    ],
-    lempert: [
-        { title: 'Position 1', description: 'Départ en décubitus dorsal.' },
-        { title: 'Position 2', description: 'Rotation intermédiaire.' },
-        { title: 'Position 3', description: 'Rotation avancée.' },
-        { title: 'Position 4', description: 'Fin de rotation et retour.' }
-    ],
-    gufoni3g: [
-        { title: 'Position 1', description: 'Bascule latérale rapide.' },
-        { title: 'Position 2', description: 'Rotation de tête vers la table.' },
-        { title: 'Position 3', description: 'Retour assis.' }
-    ],
-    gufoni3a: [
-        { title: 'Position 1', description: 'Bascule latérale rapide côté atteint.' },
-        { title: 'Position 2', description: 'Rotation de tête vers le haut.' },
-        { title: 'Position 3', description: 'Retour assis.' }
-    ],
-    yacovino: [
-        { title: 'Position 1', description: 'Head hanging.' },
-        { title: 'Position 2', description: 'Menton-poitrine.' },
-        { title: 'Position 3', description: 'Retour assis.' }
-    ],
-    li: [
-        { title: 'Position 1', description: 'Déclenchement en head hanging.' },
-        { title: 'Position 2', description: 'Passage ventral.' },
-        { title: 'Position 3', description: 'Retour progressif.' }
-    ],
-    kim: [
-        { title: 'Position 1', description: 'Tête tournée côté sain.' },
-        { title: 'Position 2', description: 'Position couchée avec extension.' },
-        { title: 'Position 3', description: 'Retour assis.' }
-    ],
-    dixhallpike: [
-        { title: 'Test', description: 'Déclenchement en position tête pendante.' },
-        { title: 'Retour assis', description: 'Recherche de l’inversion du nystagmus.' }
-    ],
-    sidelying: [
-        { title: 'Test', description: 'Décubitus latéral côté testé.' },
-        { title: 'Retour assis', description: 'Observation clinique.' }
-    ],
-    bowlean: [
-        { title: 'Bow', description: 'Tête fléchie : lecture du sens du nystagmus.' },
-        { title: 'Lean', description: 'Tête redressée / inclinée : comparaison.' }
-    ],
-    supineroll: [
-        { title: 'Centre', description: 'Position neutre.' },
-        { title: 'Roll droit', description: 'Observation du nystagmus à droite.' },
-        { title: 'Roll gauche', description: 'Observation du nystagmus à gauche.' }
-    ],
-    upright: [
-        { title: 'Inclinaison 1', description: 'Inclinaison frontale d’un côté.' },
-        { title: 'Inclinaison 2', description: 'Inclinaison frontale opposée.' }
-    ],
-    deepheading: [
-        { title: 'Head hanging', description: 'Recherche d’un vertical inférieur.' },
-        { title: 'Retour', description: 'Fin du test.' }
+    supineroll_horiz: [
+        { step: 1, title: 'Position centrale', description: 'Tête en arrière, observation de base' },
+        { step: 2, title: 'Roll à droite', description: 'Observation du nystagmus côté droit' },
+        { step: 3, title: 'Roll à gauche', description: 'Observation du nystagmus côté gauche, comparaison' }
     ]
 };
 
@@ -139,21 +83,27 @@ class SimplifiedVPPBSimulator {
 
         this.currentManoeuvre = null;
         this.currentTest = null;
-        this.currentMode = 'none';
+        this.currentMode = 'none'; // 'manoeuvre' ou 'test'
 
         this.currentStep = 1;
-        this.totalSteps = 1;
+        this.totalSteps = 4;
         this.isAnimating = false;
-        this.timer = null;
 
+        // État des otolithes (position simple 0-1)
         this.otolithPosition = 0;
-
+        
+        // État du nystagmus
         this.nystagmus = {
             active: false,
-            type: 'none',
-            direction: 'none',
-            intensity: 0,
-            label: 'Aucun nystagmus'
+            direction: 'none', // 'left', 'right', 'up', 'down', 'torsional-cw', 'torsional-ccw'
+            type: 'none', // 'torsional', 'horizontal', 'vertical'
+            intensity: 0, // 0-1
+            side: 'none' // 'right', 'left'
+        };
+
+        this.headPosition = {
+            rotation: { x: 0, y: 0, z: 0 },
+            label: 'neutre'
         };
 
         this.init();
@@ -161,140 +111,138 @@ class SimplifiedVPPBSimulator {
 
     init() {
         this.bindUI();
-        this.renderCanalButtons();
-        this.renderManoeuvreButtons();
-        this.renderTestButtons();
         this.updateUI();
     }
 
     bindUI() {
+        // Sélection canal
         document.querySelectorAll('#canalButtons .btn').forEach(btn => {
             btn.addEventListener('click', () => this.selectCanal(btn.dataset.canal));
         });
 
-        document.getElementById('affectedSide')?.addEventListener('change', (e) => {
-            this.affectedSide = e.target.value;
-            this.updateStepVisualization();
-            this.updateUI();
-        });
-
-        document.getElementById('horizontalVariant')?.addEventListener('change', (e) => {
-            this.horizontalVariant = e.target.value;
-            this.updateStepVisualization();
-            this.updateUI();
-        });
-
-        document.getElementById('prevStepBtn')?.addEventListener('click', () => this.prevStep('manoeuvre'));
-        document.getElementById('nextStepBtn')?.addEventListener('click', () => this.nextStep('manoeuvre'));
-        document.getElementById('playStepsBtn')?.addEventListener('click', () => this.playSequence('manoeuvre'));
-        document.getElementById('resetStepsBtn')?.addEventListener('click', () => this.resetSequence('manoeuvre'));
-
-        document.getElementById('prevTestBtn')?.addEventListener('click', () => this.prevStep('test'));
-        document.getElementById('nextTestBtn')?.addEventListener('click', () => this.nextStep('test'));
-        document.getElementById('playTestBtn')?.addEventListener('click', () => this.playSequence('test'));
-        document.getElementById('resetTestBtn')?.addEventListener('click', () => this.resetSequence('test'));
-    }
-
-    stopAnimation() {
-        this.isAnimating = false;
-        if (this.timer) {
-            clearInterval(this.timer);
-            this.timer = null;
+        // Côté atteint
+        const affectedSideSelect = document.getElementById('affectedSide');
+        if (affectedSideSelect) {
+            affectedSideSelect.addEventListener('change', (e) => {
+                this.affectedSide = e.target.value;
+                this.updateUI();
+            });
         }
+
+        // Variante horizontale
+        const variantSelect = document.getElementById('horizontalVariant');
+        if (variantSelect) {
+            variantSelect.addEventListener('change', (e) => {
+                this.horizontalVariant = e.target.value;
+                this.updateUI();
+            });
+        }
+
+        // Onglets
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => this.switchTab(tab.dataset.tab));
+        });
+
+        // Boutons manœuvres
+        this.updateManoeuvreButtons();
+        
+        // Boutons tests
+        this.updateTestButtons();
+
+        // Contrôles étapes
+        document.getElementById('prevStepBtn')?.addEventListener('click', () => this.prevStep());
+        document.getElementById('nextStepBtn')?.addEventListener('click', () => this.nextStep());
+        document.getElementById('playStepsBtn')?.addEventListener('click', () => this.playSteps());
+        document.getElementById('resetStepsBtn')?.addEventListener('click', () => this.resetSteps());
     }
 
     selectCanal(canal) {
-        this.stopAnimation();
         this.currentCanal = canal;
         this.currentManoeuvre = null;
         this.currentTest = null;
         this.currentMode = 'none';
         this.currentStep = 1;
-        this.totalSteps = 1;
-        this.otolithPosition = 0;
-        this.resetNystagmus();
+        this.resetOtoliths();
+        
+        document.querySelectorAll('#canalButtons .btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.canal === canal);
+        });
 
-        document.getElementById('horizontalVariant').disabled = canal !== 'horiz';
+        const variantSelect = document.getElementById('horizontalVariant');
+        if (variantSelect) {
+            variantSelect.disabled = canal !== 'horiz';
+        }
 
-        this.renderCanalButtons();
-        this.renderManoeuvreButtons();
-        this.renderTestButtons();
         this.updateUI();
     }
 
-    renderCanalButtons() {
-        document.querySelectorAll('#canalButtons .btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.canal === this.currentCanal);
-        });
+    switchTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+
+        document.getElementById(tabName)?.classList.add('active');
+        document.querySelector(`.tab[data-tab="${tabName}"]`)?.classList.add('active');
     }
 
-    renderManoeuvreButtons() {
+    selectManoeuvre(manoeuvreId) {
+        const manoeuvre = MANOEUVRES[this.currentCanal].find(m => m.id === manoeuvreId);
+        if (!manoeuvre) return;
+
+        this.currentManoeuvre = manoeuvre;
+        this.currentTest = null;
+        this.currentMode = 'manoeuvre';
+        this.currentStep = 1;
+        this.totalSteps = manoeuvre.steps;
+        this.resetOtoliths();
+
+        this.updateManoeuvreButtons();
+        this.updateUI();
+    }
+
+    selectTest(testId) {
+        const test = TESTS[this.currentCanal].find(t => t.id === testId);
+        if (!test) return;
+
+        this.currentTest = test;
+        this.currentManoeuvre = null;
+        this.currentMode = 'test';
+        this.currentStep = 1;
+        this.totalSteps = test.steps;
+        this.resetOtoliths();
+
+        this.updateTestButtons();
+        this.updateUI();
+    }
+
+    updateManoeuvreButtons() {
         const container = document.getElementById('manoeuvreButtons');
         if (!container) return;
 
         container.innerHTML = '';
-        MANOEUVRES[this.currentCanal].forEach(item => {
+        MANOEUVRES[this.currentCanal].forEach(m => {
             const btn = document.createElement('button');
-            btn.className = 'btn' + (this.currentManoeuvre?.id === item.id ? ' active' : '');
-            btn.textContent = item.name;
-            btn.addEventListener('click', () => this.selectManoeuvre(item.id));
+            btn.className = 'btn' + (this.currentManoeuvre?.id === m.id ? ' active' : '');
+            btn.textContent = m.name;
+            btn.addEventListener('click', () => this.selectManoeuvre(m.id));
             container.appendChild(btn);
         });
     }
 
-    renderTestButtons() {
+    updateTestButtons() {
         const container = document.getElementById('testButtons');
         if (!container) return;
 
         container.innerHTML = '';
-        TESTS[this.currentCanal].forEach(item => {
+        TESTS[this.currentCanal].forEach(t => {
             const btn = document.createElement('button');
-            btn.className = 'btn' + (this.currentTest?.id === item.id ? ' active' : '');
-            btn.textContent = item.name;
-            btn.addEventListener('click', () => this.selectTest(item.id));
+            btn.className = 'btn' + (this.currentTest?.id === t.id ? ' active' : '');
+            btn.textContent = t.name;
+            btn.addEventListener('click', () => this.selectTest(t.id));
             container.appendChild(btn);
         });
     }
 
-    selectManoeuvre(id) {
-        this.stopAnimation();
-        this.currentManoeuvre = MANOEUVRES[this.currentCanal].find(m => m.id === id) || null;
-        this.currentMode = 'manoeuvre';
-        this.currentStep = 1;
-        this.totalSteps = this.currentManoeuvre.steps;
-        this.otolithPosition = 0;
-        this.resetNystagmus();
-
-        this.renderManoeuvreButtons();
-        this.updateStepVisualization();
-        this.updateUI();
-    }
-
-    selectTest(id) {
-        this.stopAnimation();
-        this.currentTest = TESTS[this.currentCanal].find(t => t.id === id) || null;
-        this.currentMode = 'test';
-        this.currentStep = 1;
-        this.totalSteps = this.currentTest.steps;
-        this.otolithPosition = 0;
-        this.resetNystagmus();
-
-        this.renderTestButtons();
-        this.updateStepVisualization();
-        this.updateUI();
-    }
-
-    prevStep(mode) {
-        if (this.currentMode !== mode) return;
-        if (this.currentStep > 1) {
-            this.currentStep--;
-            this.updateStepVisualization();
-            this.updateUI();
-        }
-    }
-
-    nextStep(mode) {
-        if (this.currentMode !== mode) return;
+    nextStep() {
         if (this.currentStep < this.totalSteps) {
             this.currentStep++;
             this.updateStepVisualization();
@@ -302,288 +250,275 @@ class SimplifiedVPPBSimulator {
         }
     }
 
-    playSequence(mode) {
-        if (this.currentMode !== mode) return;
-        this.stopAnimation();
-        this.isAnimating = true;
+    prevStep() {
+        if (this.currentStep > 1) {
+            this.currentStep--;
+            this.updateStepVisualization();
+            this.updateUI();
+        }
+    }
 
-        this.timer = setInterval(() => {
+    playSteps() {
+        this.isAnimating = true;
+        this.currentStep = 1;
+        const interval = setInterval(() => {
             if (this.currentStep < this.totalSteps) {
                 this.currentStep++;
                 this.updateStepVisualization();
                 this.updateUI();
             } else {
-                this.stopAnimation();
+                clearInterval(interval);
+                this.isAnimating = false;
             }
-        }, 1700);
+        }, 2000); // 2 sec par étape
     }
 
-    resetSequence(mode) {
-        if (this.currentMode !== mode) return;
-        this.stopAnimation();
+    resetSteps() {
+        this.isAnimating = false;
         this.currentStep = 1;
-        this.otolithPosition = 0;
-        this.resetNystagmus();
+        this.resetOtoliths();
         this.updateStepVisualization();
         this.updateUI();
     }
 
-    resetNystagmus() {
+    resetOtoliths() {
+        this.otolithPosition = 0;
         this.nystagmus = {
             active: false,
-            type: 'none',
             direction: 'none',
+            type: 'none',
             intensity: 0,
-            label: 'Aucun nystagmus'
+            side: 'none'
         };
     }
 
-    getProgress() {
-        if (this.totalSteps <= 1) return 0;
-        return (this.currentStep - 1) / (this.totalSteps - 1);
+    updateStepVisualization() {
+        if (!this.currentManoeuvre && !this.currentTest) return;
+
+        const step = this.currentStep;
+        const total = this.totalSteps;
+        const progress = step / total;
+
+        // Mise à jour position otolithes
+        this.otolithPosition = progress;
+
+        // Mise à jour nystagmus selon étape et type
+        this.updateNystagmusForStep();
     }
 
-    updateStepVisualization() {
-        if (this.currentMode === 'none') {
-            this.otolithPosition = 0;
-            this.resetNystagmus();
+    updateNystagmusForStep() {
+        if (!this.currentManoeuvre && !this.currentTest) {
+            this.nystagmus.active = false;
             return;
         }
 
-        this.otolithPosition = this.getProgress();
-        this.computeNystagmus();
-    }
-
-    computeNystagmus() {
-        this.resetNystagmus();
-
+        const manoeuvreName = this.currentManoeuvre?.id || this.currentTest?.id;
         const step = this.currentStep;
-        const side = this.affectedSide;
-        const variant = this.horizontalVariant;
-        const selectionId = this.currentMode === 'manoeuvre' ? this.currentManoeuvre?.id : this.currentTest?.id;
 
-        if (!selectionId) return;
-
+        // Logique simple par manœuvre/test
         if (this.currentCanal === 'post') {
+            // POSTÉRIEUR - Nystagmus torsionnel
             this.nystagmus.type = 'torsional';
-
-            const mainDir = side === 'right' ? 'ccw' : 'cw';
-            const inverseDir = side === 'right' ? 'cw' : 'ccw';
-
-            if (selectionId === 'dixhallpike' || selectionId === 'sidelying') {
+            
+            if (manoeuvreName === 'dixhallpike') {
                 if (step === 1) {
-                    this.setNystagmus(true, 'torsional', mainDir, 0.85, mainDir === 'cw' ? 'Torsionnel horaire' : 'Torsionnel anti-horaire');
+                    // Dix-Hallpike : nystagmus actif
+                    this.nystagmus.active = true;
+                    this.nystagmus.intensity = 0.7;
+                    this.nystagmus.direction = this.affectedSide === 'right' ? 'torsional-ccw' : 'torsional-cw';
+                    this.nystagmus.side = this.affectedSide;
                 } else {
-                    this.setNystagmus(true, 'torsional', inverseDir, 0.5, inverseDir === 'cw' ? 'Inversion horaire au retour assis' : 'Inversion anti-horaire au retour assis');
+                    // Retour assis : inversion
+                    this.nystagmus.active = true;
+                    this.nystagmus.intensity = 0.5;
+                    this.nystagmus.direction = this.affectedSide === 'right' ? 'torsional-cw' : 'torsional-ccw';
+                    this.nystagmus.side = this.affectedSide;
                 }
-                return;
-            }
-
-            if (selectionId === 'epley') {
+            } else if (manoeuvreName === 'epley') {
+                // Épley : nystagmus présent aux étapes 1-3
                 if (step <= 3) {
-                    const intensities = [0.85, 0.65, 0.4];
-                    this.setNystagmus(true, 'torsional', mainDir, intensities[step - 1], mainDir === 'cw' ? 'Torsionnel horaire' : 'Torsionnel anti-horaire');
+                    this.nystagmus.active = true;
+                    this.nystagmus.intensity = 0.5 + (4 - step) * 0.1; // Diminue progressivement
+                    this.nystagmus.direction = this.affectedSide === 'right' ? 'torsional-ccw' : 'torsional-cw';
+                    this.nystagmus.side = this.affectedSide;
                 } else {
-                    this.setNystagmus(true, 'torsional', inverseDir, 0.35, inverseDir === 'cw' ? 'Inversion horaire au retour assis' : 'Inversion anti-horaire au retour assis');
+                    // Étape 4 : inversion
+                    this.nystagmus.active = true;
+                    this.nystagmus.intensity = 0.3;
+                    this.nystagmus.direction = this.affectedSide === 'right' ? 'torsional-cw' : 'torsional-ccw';
+                    this.nystagmus.side = this.affectedSide;
                 }
-                return;
-            }
-
-            if (selectionId === 'semont') {
+            } else if (manoeuvreName === 'semont') {
+                // Sémont : nystagmus étape 1
                 if (step === 1) {
-                    this.setNystagmus(true, 'torsional', mainDir, 0.9, mainDir === 'cw' ? 'Torsionnel horaire' : 'Torsionnel anti-horaire');
-                } else if (step === 2) {
-                    this.setNystagmus(true, 'torsional', inverseDir, 0.45, inverseDir === 'cw' ? 'Torsionnel thérapeutique horaire' : 'Torsionnel thérapeutique anti-horaire');
+                    this.nystagmus.active = true;
+                    this.nystagmus.intensity = 0.7;
+                    this.nystagmus.direction = this.affectedSide === 'right' ? 'torsional-ccw' : 'torsional-cw';
+                    this.nystagmus.side = this.affectedSide;
+                } else {
+                    this.nystagmus.active = false;
                 }
-                return;
             }
 
-            if (selectionId === 'brandt') {
-                if (step === 1 || step === 3) {
-                    this.setNystagmus(true, 'torsional', mainDir, 0.4, mainDir === 'cw' ? 'Torsionnel horaire faible' : 'Torsionnel anti-horaire faible');
-                }
-                return;
-            }
-        }
-
-        if (this.currentCanal === 'horiz') {
+        } else if (this.currentCanal === 'horiz') {
+            // HORIZONTAL - Nystagmus horizontal
             this.nystagmus.type = 'horizontal';
 
-            if (selectionId === 'supineroll') {
-                if (step === 1) return;
-
-                if (variant === 'geotropic') {
-                    const rightIntensity = side === 'right' ? 0.85 : 0.4;
-                    const leftIntensity = side === 'left' ? 0.85 : 0.4;
-
-                    if (step === 2) this.setNystagmus(true, 'horizontal', 'right', rightIntensity, 'Horizontal vers la droite');
-                    if (step === 3) this.setNystagmus(true, 'horizontal', 'left', leftIntensity, 'Horizontal vers la gauche');
-                    return;
+            if (this.horizontalVariant === 'geotropic') {
+                // Géotropique : plus intense du côté atteint
+                if (manoeuvreName === 'supineroll') {
+                    this.nystagmus.active = true;
+                    this.nystagmus.intensity = 0.6;
+                    
+                    if (step === 1) {
+                        this.nystagmus.active = false; // Position neutre
+                    } else if (step === 2) {
+                        // Roll côté atteint : nystagmus FORT
+                        this.nystagmus.intensity = 0.8;
+                        this.nystagmus.direction = this.affectedSide === 'right' ? 'right' : 'left';
+                        this.nystagmus.side = this.affectedSide;
+                    } else if (step === 3) {
+                        // Roll côté sain : nystagmus FAIBLE
+                        this.nystagmus.intensity = 0.3;
+                        this.nystagmus.direction = this.affectedSide === 'right' ? 'left' : 'right';
+                        this.nystagmus.side = 'opposite';
+                    }
+                } else {
+                    this.nystagmus.active = step > 1; // Après position 1
+                    this.nystagmus.intensity = 0.6;
+                    this.nystagmus.direction = this.affectedSide === 'right' ? 'right' : 'left';
+                    this.nystagmus.side = this.affectedSide;
                 }
 
-                if (variant === 'ageotropic' || variant === 'cupulo') {
-                    const rightIntensity = side === 'left' ? 0.85 : 0.4;
-                    const leftIntensity = side === 'right' ? 0.85 : 0.4;
-
-                    if (step === 2) this.setNystagmus(true, 'horizontal', 'left', rightIntensity, 'Horizontal vers la gauche');
-                    if (step === 3) this.setNystagmus(true, 'horizontal', 'right', leftIntensity, 'Horizontal vers la droite');
-                    return;
-                }
-            }
-
-            if (selectionId === 'bowlean') {
-                if (variant === 'geotropic') {
-                    if (step === 1) this.setNystagmus(true, 'horizontal', side === 'right' ? 'right' : 'left', 0.7, `Bow : horizontal vers ${side === 'right' ? 'la droite' : 'la gauche'}`);
-                    if (step === 2) this.setNystagmus(true, 'horizontal', side === 'right' ? 'left' : 'right', 0.6, `Lean : horizontal vers ${side === 'right' ? 'la gauche' : 'la droite'}`);
-                    return;
-                }
-
-                if (variant === 'ageotropic' || variant === 'cupulo') {
-                    if (step === 1) this.setNystagmus(true, 'horizontal', side === 'right' ? 'left' : 'right', 0.7, `Bow : horizontal vers ${side === 'right' ? 'la gauche' : 'la droite'}`);
-                    if (step === 2) this.setNystagmus(true, 'horizontal', side === 'right' ? 'right' : 'left', 0.7, `Lean : horizontal vers ${side === 'right' ? 'la droite' : 'la gauche'}`);
-                    return;
-                }
-            }
-
-            if (selectionId === 'upright') {
-                if (variant === 'geotropic') {
-                    if (step === 1) this.setNystagmus(true, 'horizontal', side === 'right' ? 'right' : 'left', 0.65, 'Inclinaison 1');
-                    if (step === 2) this.setNystagmus(true, 'horizontal', side === 'right' ? 'left' : 'right', 0.45, 'Inclinaison 2');
-                    return;
+            } else if (this.horizontalVariant === 'ageotropic') {
+                // Agéotropique : plus intense du côté SAIN
+                if (manoeuvreName === 'supineroll') {
+                    this.nystagmus.active = true;
+                    
+                    if (step === 1) {
+                        this.nystagmus.active = false;
+                    } else if (step === 2) {
+                        // Roll côté atteint : nystagmus FAIBLE
+                        this.nystagmus.intensity = 0.3;
+                        this.nystagmus.direction = this.affectedSide === 'right' ? 'left' : 'right';
+                        this.nystagmus.side = 'opposite';
+                    } else if (step === 3) {
+                        // Roll côté sain : nystagmus FORT
+                        this.nystagmus.intensity = 0.8;
+                        this.nystagmus.direction = this.affectedSide === 'right' ? 'right' : 'left';
+                        this.nystagmus.side = 'sain';
+                    }
+                } else {
+                    this.nystagmus.active = step > 1;
+                    this.nystagmus.intensity = 0.6;
+                    this.nystagmus.direction = this.affectedSide === 'right' ? 'left' : 'right';
+                    this.nystagmus.side = 'opposite';
                 }
 
-                if (variant === 'ageotropic' || variant === 'cupulo') {
-                    if (step === 1) this.setNystagmus(true, 'horizontal', side === 'right' ? 'left' : 'right', 0.65, 'Inclinaison 1');
-                    if (step === 2) this.setNystagmus(true, 'horizontal', side === 'right' ? 'right' : 'left', 0.55, 'Inclinaison 2');
-                    return;
-                }
+            } else if (this.horizontalVariant === 'cupulo') {
+                // Cupulolithiase : nystagmus persistant, pas de latence
+                this.nystagmus.active = step > 1;
+                this.nystagmus.intensity = 0.5;
+                this.nystagmus.direction = this.affectedSide === 'right' ? 'right' : 'left';
+                this.nystagmus.side = this.affectedSide;
             }
 
-            if (selectionId === 'lempert') {
-                const dirs = ['right', 'right', 'left', 'none'];
-                const ints = [0.7, 0.55, 0.35, 0];
-                const dir = dirs[step - 1];
-                const intensity = ints[step - 1];
-                if (dir !== 'none') {
-                    this.setNystagmus(true, 'horizontal', dir, intensity, `Horizontal vers ${dir === 'right' ? 'la droite' : 'la gauche'}`);
-                }
-                return;
-            }
+        } else if (this.currentCanal === 'ant') {
+            // ANTÉRIEUR - Nystagmus vertical inférieur
+            this.nystagmus.type = 'vertical-down';
 
-            if (selectionId === 'gufoni3g') {
-                if (step === 1) this.setNystagmus(true, 'horizontal', side === 'right' ? 'right' : 'left', 0.7, 'Horizontal géotropique');
-                if (step === 2) this.setNystagmus(true, 'horizontal', side === 'right' ? 'left' : 'right', 0.45, 'Nystagmus thérapeutique');
-                return;
-            }
-
-            if (selectionId === 'gufoni3a') {
-                if (step === 1) this.setNystagmus(true, 'horizontal', side === 'right' ? 'left' : 'right', 0.7, 'Horizontal agéotropique');
-                if (step === 2) this.setNystagmus(true, 'horizontal', side === 'right' ? 'right' : 'left', 0.45, 'Nystagmus thérapeutique');
-                return;
-            }
-        }
-
-        if (this.currentCanal === 'ant') {
-            this.nystagmus.type = 'vertical';
-
-            if (selectionId === 'deepheading') {
-                if (step === 1) this.setNystagmus(true, 'vertical', 'down', 0.8, 'Vertical inférieur');
-                return;
-            }
-
-            if (selectionId === 'yacovino' || selectionId === 'li' || selectionId === 'kim') {
-                if (step === 1) this.setNystagmus(true, 'vertical', 'down', 0.8, 'Vertical inférieur');
-                if (step === 2) this.setNystagmus(true, 'vertical', 'down', 0.45, 'Vertical inférieur en décroissance');
-                return;
+            if (manoeuvreName === 'deepheading') {
+                this.nystagmus.active = step > 1;
+                this.nystagmus.intensity = 0.6;
+                this.nystagmus.direction = 'down';
+                this.nystagmus.side = this.affectedSide;
             }
         }
     }
 
-    setNystagmus(active, type, direction, intensity, label) {
-        this.nystagmus = { active, type, direction, intensity, label };
+    getStepDescription() {
+        if (!this.currentManoeuvre && !this.currentTest) return null;
+
+        const key = this.getDescriptionKey();
+        const descriptions = STEP_DESCRIPTIONS[key];
+        
+        if (descriptions && descriptions[this.currentStep - 1]) {
+            return descriptions[this.currentStep - 1];
+        }
+
+        return {
+            step: this.currentStep,
+            title: `Position ${this.currentStep}`,
+            description: `Étape ${this.currentStep} sur ${this.totalSteps}`
+        };
     }
 
-    getStepTextForManoeuvre() {
-        if (!this.currentManoeuvre) {
-            return { title: 'Aucune manœuvre sélectionnée', description: 'Choisis une manœuvre pour commencer.' };
+    getDescriptionKey() {
+        if (this.currentManoeuvre) {
+            return `${this.currentManoeuvre.id}_${this.currentCanal}`;
+        } else if (this.currentTest) {
+            return `${this.currentTest.id}_${this.currentCanal}`;
         }
-        return STEP_TEXT[this.currentManoeuvre.id][this.currentStep - 1] || STEP_TEXT[this.currentManoeuvre.id][0];
+        return 'default';
     }
 
-    getStepTextForTest() {
-        if (!this.currentTest) {
-            return { title: 'Aucun test sélectionné', description: 'Choisis un test pour commencer.' };
+    getNystagmusInfo() {
+        if (!this.nystagmus.active) {
+            return 'Aucun nystagmus';
         }
-        return STEP_TEXT[this.currentTest.id][this.currentStep - 1] || STEP_TEXT[this.currentTest.id][0];
+
+        let info = '';
+        
+        if (this.nystagmus.type === 'torsional') {
+            info += '🔄 Torsionnel ';
+            info += this.nystagmus.direction === 'torsional-cw' ? '(horaire)' : '(anti-horaire)';
+        } else if (this.nystagmus.type === 'horizontal') {
+            info += '↔️ Horizontal ';
+            info += this.nystagmus.direction === 'right' ? '(droite)' : '(gauche)';
+        } else if (this.nystagmus.type === 'vertical-down') {
+            info += '↓ Vertical inférieur';
+        }
+
+        const intensity = this.nystagmus.intensity > 0.6 ? 'FORT' : this.nystagmus.intensity > 0.3 ? 'MOYEN' : 'FAIBLE';
+        info += ` | Intensité: ${intensity}`;
+
+        if (this.nystagmus.side && this.nystagmus.side !== 'none') {
+            info += ` | Côté: ${this.nystagmus.side === 'opposite' ? 'sain' : 'atteint'}`;
+        }
+
+        return info;
     }
 
     updateUI() {
-        this.updateCanalInfo();
-        this.updateStepPanels();
-        this.updateNystagmusPanel();
-
-        if (window.visualization && typeof window.visualization.requestRender === 'function') {
+        this.updateStepInfo();
+        this.updateNystagmusDisplay();
+        
+        if (window.visualization) {
             window.visualization.requestRender();
         }
     }
 
-    updateCanalInfo() {
-        const info = CANAL_INFO[this.currentCanal];
-        const box = document.getElementById('canalInfo');
-        if (!box) return;
-
-        box.innerHTML = `
-            <p><strong>${info.name}</strong> — ${info.frequency}</p>
-            <p><strong>Symptômes :</strong> ${info.symptoms}</p>
-            <p><strong>Nystagmus attendu :</strong> ${info.nystagmus}</p>
-        `;
-    }
-
-    updateStepPanels() {
-        const manBox = document.getElementById('stepInfo');
-        const testBox = document.getElementById('testInfo');
-
-        if (manBox) {
-            const t = this.getStepTextForManoeuvre();
-            const footer = this.currentMode === 'manoeuvre' && this.currentManoeuvre
-                ? `Étape ${this.currentStep}/${this.totalSteps}`
-                : '';
-            manBox.innerHTML = `
-                <h4>${t.title}</h4>
-                <p>${t.description}</p>
-                ${footer ? `<p style="margin-top:0.5rem;color:#64748b;font-size:0.9rem;">${footer}</p>` : ''}
-            `;
-        }
-
-        if (testBox) {
-            const t = this.getStepTextForTest();
-            const footer = this.currentMode === 'test' && this.currentTest
-                ? `Étape ${this.currentStep}/${this.totalSteps}`
-                : '';
-            testBox.innerHTML = `
-                <h4>${t.title}</h4>
-                <p>${t.description}</p>
-                ${footer ? `<p style="margin-top:0.5rem;color:#64748b;font-size:0.9rem;">${footer}</p>` : ''}
-            `;
+    updateStepInfo() {
+        const desc = this.getStepDescription();
+        if (desc) {
+            const panel = document.getElementById('stepInfo');
+            if (panel) {
+                panel.innerHTML = `
+                    <h4>${desc.title}</h4>
+                    <p>${desc.description}</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
+                        Étape ${this.currentStep}/${this.totalSteps}
+                    </p>
+                `;
+            }
         }
     }
 
-    updateNystagmusPanel() {
-        const box = document.getElementById('nystagmusInfo');
-        if (!box) return;
-
-        if (!this.nystagmus.active) {
-            box.textContent = 'Aucun nystagmus';
-            return;
+    updateNystagmusDisplay() {
+        const panel = document.getElementById('nystagmusInfo');
+        if (panel) {
+            panel.innerHTML = `<strong>${this.getNystagmusInfo()}</strong>`;
         }
-
-        const intensityTxt = this.nystagmus.intensity >= 0.75
-            ? 'FORT'
-            : this.nystagmus.intensity >= 0.45
-                ? 'MOYEN'
-                : 'FAIBLE';
-
-        box.textContent = `${this.nystagmus.label} — intensité ${intensityTxt}`;
     }
 }
 
