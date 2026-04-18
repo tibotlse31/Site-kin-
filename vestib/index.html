@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VestibLab VPPB — accueil</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="shell">
+      <div class="topbar">
+        <div>
+          <div class="brand">VestibLab VPPB</div>
+          <div class="tagline">Plateforme pédagogique structurée par modules : diagnostic, traitements, cas cliniques, checklists, pièges et visualiseur d’appoint.</div>
+        </div>
+      </div>
+      <div class="nav-row" id="pageNav"></div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="shell stack">
+      <section class="hero-card hero-grid">
+        <div>
+          <h1 class="h1">Le cours passe avant l’animation</h1>
+          <p class="lead">Cette version sépare les outils en fenêtres claires. Le diagnostic et les contenus de cours sont centraux. Le visualiseur n’est plus la page principale : il devient un support pour comprendre les tests diagnostiques.</p>
+          <div class="pill-row">
+            <span class="pill">Arbre décisionnel</span>
+            <span class="pill">Manœuvres pas à pas</span>
+            <span class="pill">Cas corrigés</span>
+            <span class="pill">Checklists</span>
+            <span class="pill">Red flags</span>
+          </div>
+        </div>
+        <div class="card soft">
+          <h2 class="h2">Utilisation conseillée</h2>
+          <ol class="step-list">
+            <li>Commencer par <strong>Diagnostic</strong> pour maîtriser la lecture clinique.</li>
+            <li>Poursuivre par <strong>Traitements</strong> pour apprendre les séquences.</li>
+            <li>S’entraîner avec les <strong>Cas cliniques</strong>.</li>
+            <li>Réviser avec les <strong>Checklists</strong> et les <strong>Pièges</strong>.</li>
+            <li>Utiliser le <strong>Visualiseur</strong> seulement comme appui visuel.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="home-grid">
+        <a class="link-card" href="diagnostic.html">
+          <div class="icon">🧭</div>
+          <h3>Diagnostic</h3>
+          <p>Latence, forme du nystagmus, sens, canal atteint, côté atteint, conclusion thérapeutique.</p>
+          <ul><li>Postérieur</li><li>Horizontal</li><li>Antérieur</li></ul>
+        </a>
+
+        <a class="link-card" href="traitements.html">
+          <div class="icon">🎯</div>
+          <h3>Traitements</h3>
+          <p>Chaque manœuvre dans une carte séparée avec indication, séquence, nystagmus attendu, erreurs et consignes.</p>
+          <ul><li>Sémont / Épley</li><li>Lempert / Gufoni</li><li>Yacovino / Li / Kim</li></ul>
+        </a>
+
+        <a class="link-card" href="cas-cliniques.html">
+          <div class="icon">🧪</div>
+          <h3>Cas cliniques</h3>
+          <p>Énoncé, réflexion, correction masquée, justification. Conçu pour l’entraînement et l’auto-évaluation.</p>
+          <ul><li>Postérieur</li><li>Horizontal</li><li>Antérieur</li></ul>
+        </a>
+
+        <a class="link-card" href="checklists.html">
+          <div class="icon">✅</div>
+          <h3>Checklists</h3>
+          <p>Critères d’observation diagnostique et thérapeutique, canal par canal, sans surcharge visuelle.</p>
+          <ul><li>Diagnostic</li><li>Thérapeutique</li></ul>
+        </a>
+
+        <a class="link-card" href="pieges.html">
+          <div class="icon">🚩</div>
+          <h3>Pièges / red flags</h3>
+          <p>Atypies, diagnostics différentiels, erreurs de raisonnement, situations où il faut ralentir ou réévaluer.</p>
+          <ul><li>Downbeat</li><li>Faux positifs</li><li>Surmanipulation</li></ul>
+        </a>
+
+        <a class="link-card" href="visualiseur.html">
+          <div class="icon">👁️</div>
+          <h3>Visualiseur</h3>
+          <p>Module secondaire dédié aux tests diagnostiques. Il sert à illustrer le sens du nystagmus, pas à remplacer le raisonnement clinique.</p>
+          <ul><li>Dix-Hallpike</li><li>Bow & Lean</li><li>SRT / DHH</li></ul>
+        </a>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">Version statique prête à déposer sur GitHub Pages.</div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>APP.pageNav('vestibulaire.html');</script>
+</body>
+</html>
