@@ -1,6 +1,8 @@
-APP.pageNav('visualiseur.html');
+if (window.APP && typeof window.APP.pageNav === 'function') {
+  window.APP.pageNav('visualiseur.html');
+}
 
-class DiagnosticVisualizer {
+class FixedSVGVPPBVisualizer {
   constructor() {
     this.channel = 'post';
     this.test = 'dixhallpike';
@@ -9,8 +11,7 @@ class DiagnosticVisualizer {
     this.stepIndex = 0;
     this.timer = null;
 
-    this.canvas = document.getElementById('vizCanvas');
-    this.ctx = this.canvas.getContext('2d');
+    this.host = document.getElementById('svgHost');
 
     this.bind();
     this.fillChannelSelect();
@@ -51,27 +52,19 @@ class DiagnosticVisualizer {
     });
     document.getElementById('playBtn').addEventListener('click', () => this.play());
 
-    new ResizeObserver(() => this.resize()).observe(this.canvas.parentElement);
-    this.resize();
-  }
-
-  resize() {
-    const box = this.canvas.parentElement.getBoundingClientRect();
-    this.canvas.width = Math.max(860, Math.floor(box.width));
-    this.canvas.height = 700;
-    this.render();
+    window.addEventListener('resize', () => this.render());
   }
 
   fillChannelSelect() {
     const select = document.getElementById('channelSelect');
-    select.innerHTML = Object.values(COURSE_DATA.channels)
+    select.innerHTML = Object.values(window.COURSE_DATA.channels)
       .map(c => `<option value="${c.id}">${c.name}</option>`)
       .join('');
     select.value = this.channel;
   }
 
   fillTestSelect() {
-    const tests = COURSE_DATA.visualizer[this.channel].tests;
+    const tests = window.COURSE_DATA.visualizer[this.channel].tests;
     const select = document.getElementById('testSelect');
     select.innerHTML = Object.entries(tests)
       .map(([id, test]) => `<option value="${id}">${test.name}</option>`)
@@ -82,7 +75,7 @@ class DiagnosticVisualizer {
   }
 
   getTest() {
-    return COURSE_DATA.visualizer[this.channel].tests[this.test];
+    return window.COURSE_DATA.visualizer[this.channel].tests[this.test];
   }
 
   getStep() {
@@ -128,344 +121,466 @@ class DiagnosticVisualizer {
     }
   }
 
+  variantLabel() {
+    if (this.variant === 'geotropic') return 'géotropique';
+    if (this.variant === 'ageotropic') return 'agéotropique';
+    return 'cupulolithiase';
+  }
+
   render() {
     const test = this.getTest();
     const step = this.getStep();
 
     document.getElementById('stepBox').innerHTML = `
       <div class="badge success">Étape ${this.stepIndex + 1} / ${test.steps.length}</div>
-      <h3 class="h3" style="margin-top:12px">${step.title}</h3>
+      <h3 style="margin-top:12px">${step.title}</h3>
       <p>${step.text}</p>
-      <div class="note info" style="margin-top:12px"><strong>Nystagmus attendu :</strong> ${step.nystagmus}</div>
+      <div class="note info"><strong>Nystagmus attendu :</strong> ${step.nystagmus}</div>
     `;
 
     document.getElementById('interpretBox').innerHTML = `
-      <h3 class="h3">${test.name}</h3>
+      <h3>${test.name}</h3>
       <p>${test.interpretation}</p>
-      <div class="note warn" style="margin-top:12px">Schéma pédagogique simplifié, mais avec repères fixes : canal, utricule, ampoule, cupule et otoconies.</div>
+      ${this.extraInterpretation()}
     `;
 
-    this.draw();
+    this.host.innerHTML = this.buildSVG();
   }
 
-  draw() {
-    const ctx = this.ctx;
-    const w = this.canvas.width;
-    const h = this.canvas.height;
-
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = '#f8fbff';
-    ctx.fillRect(0, 0, w, h);
-
-    this.drawHeader();
-    this.drawPanelBackground();
-
+  extraInterpretation() {
     if (this.channel === 'horiz') {
-      this.drawHorizontalScene();
-    } else if (this.channel === 'post') {
-      this.drawPosteriorScene();
-    } else {
-      this.drawAnteriorScene();
+      return `
+        <div class="note warn">
+          <strong>Repère anatomique :</strong> l’utricule et l’ampoule sont du côté vestibulaire.  
+          La forme géotropique est représentée dans le <strong>bras long</strong>, alors que la forme agéotropique / cupulolithiase est montrée près du <strong>bras court / de la cupule</strong>.
+        </div>
+      `;
     }
 
-    this.drawNystagmusTitle();
-    this.drawEyes();
-    this.drawLegend();
+    return `
+      <div class="note warn">
+        <strong>Repère anatomique :</strong> le <strong>bras commun (crus commune)</strong> est représenté sur les canaux verticaux, avec l’<strong>ampoule</strong> au versant ampullaire près de l’utricule.
+      </div>
+    `;
   }
 
-  drawHeader() {
-    const ctx = this.ctx;
-    const channel = COURSE_DATA.channels[this.channel];
-    const test = this.getTest();
+  buildSVG() {
+    const w = 920;
+    const h = 700;
 
-    ctx.fillStyle = '#16324f';
-    ctx.textAlign = 'center';
-    ctx.font = '700 24px sans-serif';
-    ctx.fillText(`${channel.name} — ${test.name}`, this.canvas.width / 2, 36);
+    return `
+      <svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-label="Visualiseur VPPB">
+        <defs>
+          <radialGradient id="utricleGrad" cx="35%" cy="30%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#d9e5ff"/>
+          </radialGradient>
+          <radialGradient id="ampullaGrad" cx="35%" cy="30%">
+            <stop offset="0%" stop-color="#fff7ff"/>
+            <stop offset="100%" stop-color="#c084fc"/>
+          </radialGradient>
+          <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#ef4444"></path>
+          </marker>
+          <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#14b8a6"></path>
+          </marker>
+        </defs>
 
-    ctx.font = '14px sans-serif';
-    ctx.fillStyle = '#5f7288';
+        <rect x="0" y="0" width="${w}" height="${h}" fill="#f8fbff"/>
+        <text x="${w / 2}" y="36" text-anchor="middle" font-size="24" font-weight="700" fill="#16324f" font-family="Open Sans, sans-serif">
+          ${this.escape(`${window.COURSE_DATA.channels[this.channel].name} — ${this.getTest().name}`)}
+        </text>
+        <text x="${w / 2}" y="60" text-anchor="middle" font-size="14" fill="#61758d" font-family="Open Sans, sans-serif">
+          ${this.escape(`Côté atteint : ${this.side === 'right' ? 'droite' : 'gauche'}${this.channel === 'horiz' ? ' • ' + this.variantLabel() : ''}`)}
+        </text>
 
-    let subtitle = `Côté atteint : ${this.side === 'right' ? 'droite' : 'gauche'}`;
-    if (this.channel === 'horiz') subtitle += ` • ${this.variantLabel()}`;
-    ctx.fillText(subtitle, this.canvas.width / 2, 60);
+        <rect x="34" y="84" width="${w - 68}" height="306" rx="18" fill="#eef5fc" stroke="#d8e5f2"/>
+        <text x="${w / 2}" y="106" text-anchor="middle" font-size="12" fill="#6c8097" font-family="Open Sans, sans-serif">
+          Schéma conventionnel simplifié
+        </text>
+
+        ${this.buildScene()}
+
+        <text x="${w / 2}" y="430" text-anchor="middle" font-size="22" font-weight="700" fill="#16324f" font-family="Open Sans, sans-serif">
+          Illustration du nystagmus
+        </text>
+
+        ${this.buildEyes()}
+
+        ${this.buildLegend()}
+      </svg>
+    `;
   }
 
-  drawPanelBackground() {
-    const ctx = this.ctx;
-    ctx.fillStyle = '#eef5fc';
-    ctx.fillRect(34, 84, this.canvas.width - 68, 300);
-    ctx.strokeStyle = '#d8e5f2';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(34, 84, this.canvas.width - 68, 300);
-
-    ctx.fillStyle = '#6b7f96';
-    ctx.textAlign = 'center';
-    ctx.font = '12px sans-serif';
-    ctx.fillText('Schéma conventionnel simplifié', this.canvas.width / 2, 104);
+  buildScene() {
+    if (this.channel === 'horiz') return this.buildHorizontalScene();
+    if (this.channel === 'post') return this.buildPosteriorScene();
+    return this.buildAnteriorScene();
   }
 
-  variantLabel() {
-    return this.variant === 'geotropic'
-      ? 'géotropique'
-      : this.variant === 'ageotropic'
-        ? 'agéotropique'
-        : 'cupulolithiase';
+  buildPosteriorScene() {
+    const leftX = 260;
+    const rightX = 660;
+    const y = 240;
+
+    return `
+      ${this.posteriorEar(leftX, y, 'left', this.side === 'left')}
+      ${this.posteriorEar(rightX, y, 'right', this.side === 'right')}
+    `;
   }
 
-  pointOnEllipse(cx, cy, rx, ry, angle, rotation = 0) {
-    const cos = Math.cos(rotation);
-    const sin = Math.sin(rotation);
-    const ex = rx * Math.cos(angle);
-    const ey = ry * Math.sin(angle);
+  buildAnteriorScene() {
+    const leftX = 260;
+    const rightX = 660;
+    const y = 240;
 
-    return {
-      x: cx + ex * cos - ey * sin,
-      y: cy + ex * sin + ey * cos
-    };
+    return `
+      ${this.anteriorEar(leftX, y, 'left', this.side === 'left')}
+      ${this.anteriorEar(rightX, y, 'right', this.side === 'right')}
+    `;
   }
 
-  drawOpenEllipse({ cx, cy, rx, ry, rotation = 0, openCenter = 0, gap = 0.70, alpha = 1 }) {
-    const ctx = this.ctx;
-    const start = openCenter + gap / 2;
-    const end = openCenter - gap / 2 + Math.PI * 2;
+  buildHorizontalScene() {
+    const leftX = 260;
+    const rightX = 660;
+    const y = 240;
 
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = '#43c7c0';
-    ctx.lineWidth = 17;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.ellipse(cx, cy, rx, ry, rotation, start, end);
-    ctx.stroke();
-    ctx.restore();
-
-    return {
-      p1: this.pointOnEllipse(cx, cy, rx, ry, start, rotation),
-      p2: this.pointOnEllipse(cx, cy, rx, ry, end, rotation)
-    };
+    return `
+      ${this.horizontalEar(leftX, y, 'left', this.side === 'left')}
+      ${this.horizontalEar(rightX, y, 'right', this.side === 'right')}
+    `;
   }
 
-  drawConnector(p1, p2, alpha = 1) {
-    const ctx = this.ctx;
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = '#43c7c0';
-    ctx.lineWidth = 12;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.stroke();
-    ctx.restore();
+  abs(tx, ty, sx, x, y) {
+    return { x: tx + sx * x, y: ty + y };
   }
 
-  drawEarLabel(x, y, text, active) {
-    const ctx = this.ctx;
-    ctx.fillStyle = active ? '#16324f' : '#8aa0b8';
-    ctx.textAlign = 'center';
-    ctx.font = '700 13px sans-serif';
-    ctx.fillText(text, x, y);
-  }
+  posteriorEar(tx, ty, earSide, active) {
+    const sx = earSide === 'left' ? 1 : -1;
+    const alpha = active ? 1 : 0.24;
+    const p = (x, y) => this.abs(tx, ty, sx, x, y);
 
-  drawPosteriorScene() {
-    const leftX = this.canvas.width * 0.28;
-    const rightX = this.canvas.width * 0.72;
-    const cy = 230;
+    const c0 = p(34, -96);   // bras commun
+    const c1 = p(-6, -112);
+    const c2 = p(-72, -44);
+    const c3 = p(-64, 54);
+    const c4 = p(-58, 114);
+    const c5 = p(-8, 126);
+    const c6 = p(34, 70);
+    const c7 = p(46, 48);
+    const c8 = p(50, 24);
+    const a = p(56, 8);      // ampoule
 
-    this.drawEarLabel(leftX, 126, 'Oreille gauche', this.side === 'left');
-    this.drawEarLabel(rightX, 126, 'Oreille droite', this.side === 'right');
+    const u = p(108, 64);    // utricule
+    const utTop = p(94, 30);
+    const utLow = p(98, 56);
+    const cup = p(43, 6);
+    const commonLabel = p(52, -114);
 
-    this.drawPosteriorEar(leftX, cy, 'left', this.side === 'left');
-    this.drawPosteriorEar(rightX, cy, 'right', this.side === 'right');
-  }
-
-  drawPosteriorEar(panelX, panelY, earSide, active) {
-    const alpha = active ? 1 : 0.26;
-    const medial = earSide === 'left' ? 1 : -1;
-
-    const loopCx = panelX - medial * 28;
-    const loopCy = panelY + 4;
-    const rx = 86;
-    const ry = 116;
-    const rotation = earSide === 'left' ? -0.16 : 0.16;
-    const openCenter = earSide === 'left' ? 0.18 * Math.PI : 0.82 * Math.PI;
-
-    const loop = this.drawOpenEllipse({
-      cx: loopCx,
-      cy: loopCy,
-      rx,
-      ry,
-      rotation,
-      openCenter,
-      gap: 0.72,
-      alpha
-    });
-
-    const upperEnd = loop.p1.y < loop.p2.y ? loop.p1 : loop.p2;
-    const lowerEnd = loop.p1.y > loop.p2.y ? loop.p1 : loop.p2;
-
-    const utricle = { x: panelX + medial * 98, y: panelY + 70 };
-
-    this.drawConnector(upperEnd, { x: utricle.x, y: utricle.y - 18 }, alpha);
-    this.drawConnector(lowerEnd, { x: utricle.x + medial * 8, y: utricle.y - 2 }, alpha);
-
-    this.drawUtricle(utricle.x, utricle.y, 22, alpha);
-    this.drawAmpulla(lowerEnd.x, lowerEnd.y, 18, alpha);
-    this.drawCupula(lowerEnd.x + medial * 12, lowerEnd.y - 2, medial * 0.28, alpha);
-
-    this.drawSmallLabel('Utricule', utricle.x, utricle.y + 38, alpha);
-    this.drawSmallLabel('Ampoule', lowerEnd.x + medial * 46, lowerEnd.y - 10, alpha);
-
-    if (!active) return;
-
-    const angle = earSide === 'left'
-      ? 1.18 * Math.PI - this.progress() * 0.92 * Math.PI
-      : -0.18 * Math.PI + this.progress() * 0.92 * Math.PI;
-
-    const cluster = this.pointOnEllipse(loopCx, loopCy, rx, ry, angle, rotation);
-    this.drawCluster(cluster.x, cluster.y, 1);
-    this.drawArrow(cluster.x - medial * 22, cluster.y + 26, cluster.x + medial * 22, cluster.y + 26, '#14b8a6', 3);
-  }
-
-  drawAnteriorScene() {
-    const leftX = this.canvas.width * 0.28;
-    const rightX = this.canvas.width * 0.72;
-    const cy = 230;
-
-    this.drawEarLabel(leftX, 126, 'Oreille gauche', this.side === 'left');
-    this.drawEarLabel(rightX, 126, 'Oreille droite', this.side === 'right');
-
-    this.drawAnteriorEar(leftX, cy, 'left', this.side === 'left');
-    this.drawAnteriorEar(rightX, cy, 'right', this.side === 'right');
-  }
-
-  drawAnteriorEar(panelX, panelY, earSide, active) {
-    const alpha = active ? 1 : 0.26;
-    const medial = earSide === 'left' ? 1 : -1;
-
-    const loopCx = panelX - medial * 28;
-    const loopCy = panelY;
-    const rx = 86;
-    const ry = 116;
-    const rotation = earSide === 'left' ? 0.16 : -0.16;
-    const openCenter = earSide === 'left' ? 1.82 * Math.PI : 1.18 * Math.PI;
-
-    const loop = this.drawOpenEllipse({
-      cx: loopCx,
-      cy: loopCy,
-      rx,
-      ry,
-      rotation,
-      openCenter,
-      gap: 0.72,
-      alpha
-    });
-
-    const upperEnd = loop.p1.y < loop.p2.y ? loop.p1 : loop.p2;
-    const lowerEnd = loop.p1.y > loop.p2.y ? loop.p1 : loop.p2;
-
-    const utricle = { x: panelX + medial * 98, y: panelY + 70 };
-
-    this.drawConnector(upperEnd, { x: utricle.x + medial * 4, y: utricle.y - 38 }, alpha);
-    this.drawConnector(lowerEnd, { x: utricle.x, y: utricle.y - 8 }, alpha);
-
-    this.drawUtricle(utricle.x, utricle.y, 22, alpha);
-    this.drawAmpulla(upperEnd.x, upperEnd.y, 18, alpha);
-    this.drawCupula(upperEnd.x + medial * 12, upperEnd.y + 4, -medial * 0.28, alpha);
-
-    this.drawSmallLabel('Utricule', utricle.x, utricle.y + 38, alpha);
-    this.drawSmallLabel('Ampoule', upperEnd.x + medial * 46, upperEnd.y - 10, alpha);
-
-    if (!active) return;
-
-    const angle = earSide === 'left'
-      ? 1.92 * Math.PI - this.progress() * 0.82 * Math.PI
-      : 1.08 * Math.PI + this.progress() * 0.82 * Math.PI;
-
-    const cluster = this.pointOnEllipse(loopCx, loopCy, rx, ry, angle, rotation);
-    this.drawCluster(cluster.x, cluster.y, 1);
-    this.drawArrow(cluster.x + medial * 22, cluster.y + 26, cluster.x - medial * 22, cluster.y + 26, '#14b8a6', 3);
-  }
-
-  drawHorizontalScene() {
-    const leftX = this.canvas.width * 0.28;
-    const rightX = this.canvas.width * 0.72;
-    const cy = 228;
-
-    this.drawEarLabel(leftX, 126, 'Oreille gauche', this.side === 'left');
-    this.drawEarLabel(rightX, 126, 'Oreille droite', this.side === 'right');
-
-    this.drawHorizontalEar(leftX, cy, 'left', this.side === 'left');
-    this.drawHorizontalEar(rightX, cy, 'right', this.side === 'right');
-  }
-
-  drawHorizontalEar(panelX, panelY, earSide, active) {
-    const alpha = active ? 1 : 0.26;
-    const medial = earSide === 'left' ? 1 : -1;
-
-    const rx = 106;
-    const ry = 62;
-
-    const loop = this.drawOpenEllipse({
-      cx: panelX,
-      cy: panelY,
-      rx,
-      ry,
-      rotation: 0,
-      openCenter: earSide === 'left' ? 0 : Math.PI,
-      gap: 0.66,
-      alpha
-    });
-
-    const upperEnd = loop.p1.y < loop.p2.y ? loop.p1 : loop.p2;
-    const lowerEnd = loop.p1.y > loop.p2.y ? loop.p1 : loop.p2;
-
-    const amp = { x: (upperEnd.x + lowerEnd.x) / 2, y: (upperEnd.y + lowerEnd.y) / 2 };
-    const utricle = { x: panelX + medial * 118, y: panelY };
-
-    this.drawConnector(upperEnd, { x: utricle.x, y: utricle.y - 18 }, alpha);
-    this.drawConnector(lowerEnd, { x: utricle.x, y: utricle.y + 18 }, alpha);
-
-    this.drawUtricle(utricle.x, utricle.y, 18, alpha);
-    this.drawAmpulla(amp.x, amp.y, 16, alpha);
-    this.drawCupula(amp.x + medial * 12, amp.y, Math.PI / 2, alpha);
-
-    this.drawSmallLabel('Utricule', utricle.x, utricle.y + 34, alpha);
-    this.drawSmallLabel('Ampoule', amp.x + medial * 44, amp.y - 8, alpha);
-
-    if (!active) return;
+    const d = `
+      M ${c0.x} ${c0.y}
+      C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${c3.x} ${c3.y}
+      C ${c4.x} ${c4.y}, ${c5.x} ${c5.y}, ${c6.x} ${c6.y}
+      C ${c7.x} ${c7.y}, ${c8.x} ${c8.y}, ${a.x} ${a.y}
+    `;
 
     let cluster;
+    let flow = '';
 
-    if (this.variant === 'cupulo') {
-      cluster = { x: amp.x + medial * 8, y: amp.y };
-    } else {
-      let angle;
-      if (this.variant === 'geotropic') {
-        angle = earSide === 'left'
-          ? 1.10 * Math.PI + this.progress() * 0.70 * Math.PI
-          : -0.10 * Math.PI + this.progress() * 0.70 * Math.PI;
+    if (active) {
+      const shape = this.getStep().shape;
+      if (shape === 'neutral') cluster = p(46, 42);
+      else if (shape === 'post-provoked') {
+        cluster = p(-26, -18);
+        flow = this.arrowLine(p(40, 32), p(4, -8), '#14b8a6', 3);
       } else {
-        angle = earSide === 'left'
-          ? 0.10 * Math.PI + this.progress() * 0.52 * Math.PI
-          : 0.90 * Math.PI + this.progress() * 0.52 * Math.PI;
+        cluster = p(14, 12);
+        flow = this.arrowLine(p(0, 0), p(40, 30), '#14b8a6', 3);
       }
-      cluster = this.pointOnEllipse(panelX, panelY, rx, ry, angle, 0);
     }
 
-    this.drawCluster(cluster.x, cluster.y, 1);
+    return `
+      <g opacity="${alpha}">
+        ${this.earLabel(tx, 130, earSide === 'left' ? 'Oreille gauche' : 'Oreille droite', active)}
+        <path d="${d}" fill="none" stroke="#43c7c0" stroke-width="17" stroke-linecap="round"/>
+        <line x1="${c0.x}" y1="${c0.y}" x2="${utTop.x}" y2="${utTop.y}" stroke="#43c7c0" stroke-width="12" stroke-linecap="round"/>
+        <line x1="${a.x}" y1="${a.y}" x2="${utLow.x}" y2="${utLow.y}" stroke="#43c7c0" stroke-width="12" stroke-linecap="round"/>
 
-    const dir = this.variant === 'geotropic' ? medial : -medial;
-    this.drawArrow(panelX - 52 * dir, panelY - 92, panelX + 52 * dir, panelY - 92, '#14b8a6', 3);
+        ${this.utricle(u.x, u.y, 22)}
+        ${this.ampulla(a.x, a.y, 18)}
+        ${this.cupula(cup.x, cup.y, sx * 0.28)}
+
+        ${this.smallLabel(u.x, u.y + 40, 'Utricule')}
+        ${this.smallLabel(a.x + sx * 52, a.y - 8, 'Ampoule')}
+        ${active ? this.smallLabel(commonLabel.x, commonLabel.y, 'Bras commun') : ''}
+
+        ${active && cluster ? this.cluster(cluster.x, cluster.y, 1) : ''}
+        ${active ? flow : ''}
+      </g>
+    `;
   }
 
-  drawNystagmusTitle() {
-    const ctx = this.ctx;
-    ctx.fillStyle = '#16324f';
-    ctx.font = '700 20px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Illustration du nystagmus', this.canvas.width / 2, 420);
+  anteriorEar(tx, ty, earSide, active) {
+    const sx = earSide === 'left' ? 1 : -1;
+    const alpha = active ? 1 : 0.24;
+    const p = (x, y) => this.abs(tx, ty, sx, x, y);
+
+    const c0 = p(34, -96);   // bras commun
+    const c1 = p(-34, -118);
+    const c2 = p(-86, -88);
+    const c3 = p(-78, -10);
+    const c4 = p(-72, 58);
+    const c5 = p(-18, 88);
+    const c6 = p(36, 56);
+    const c7 = p(46, 40);
+    const c8 = p(50, 18);
+    const a = p(56, 0);      // ampoule
+    const u = p(108, 64);    // utricule
+    const utTop = p(98, 22);
+    const utLow = p(96, 54);
+    const cup = p(43, 2);
+    const commonLabel = p(52, -114);
+
+    const d = `
+      M ${c0.x} ${c0.y}
+      C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${c3.x} ${c3.y}
+      C ${c4.x} ${c4.y}, ${c5.x} ${c5.y}, ${c6.x} ${c6.y}
+      C ${c7.x} ${c7.y}, ${c8.x} ${c8.y}, ${a.x} ${a.y}
+    `;
+
+    let cluster;
+    let flow = '';
+
+    if (active) {
+      const shape = this.getStep().shape;
+      if (shape === 'neutral') cluster = p(46, 28);
+      else if (shape === 'ant-provoked') {
+        cluster = p(-26, -52);
+        flow = this.arrowLine(p(38, 16), p(4, -22), '#14b8a6', 3);
+      } else {
+        cluster = p(12, -6);
+        flow = this.arrowLine(p(-4, -20), p(34, 18), '#14b8a6', 3);
+      }
+    }
+
+    return `
+      <g opacity="${alpha}">
+        ${this.earLabel(tx, 130, earSide === 'left' ? 'Oreille gauche' : 'Oreille droite', active)}
+        <path d="${d}" fill="none" stroke="#43c7c0" stroke-width="17" stroke-linecap="round"/>
+        <line x1="${c0.x}" y1="${c0.y}" x2="${utTop.x}" y2="${utTop.y}" stroke="#43c7c0" stroke-width="12" stroke-linecap="round"/>
+        <line x1="${a.x}" y1="${a.y}" x2="${utLow.x}" y2="${utLow.y}" stroke="#43c7c0" stroke-width="12" stroke-linecap="round"/>
+
+        ${this.utricle(u.x, u.y, 22)}
+        ${this.ampulla(a.x, a.y, 18)}
+        ${this.cupula(cup.x, cup.y, -sx * 0.28)}
+
+        ${this.smallLabel(u.x, u.y + 40, 'Utricule')}
+        ${this.smallLabel(a.x + sx * 52, a.y - 8, 'Ampoule')}
+        ${active ? this.smallLabel(commonLabel.x, commonLabel.y, 'Bras commun') : ''}
+
+        ${active && cluster ? this.cluster(cluster.x, cluster.y, 1) : ''}
+        ${active ? flow : ''}
+      </g>
+    `;
+  }
+
+  horizontalEar(tx, ty, earSide, active) {
+    const sx = earSide === 'left' ? 1 : -1;
+    const alpha = active ? 1 : 0.24;
+    const p = (x, y) => this.abs(tx, ty, sx, x, y);
+
+    const s0 = p(48, -20);
+    const s1 = p(0, -74);
+    const s2 = p(-96, -64);
+    const s3 = p(-108, 0);
+    const s4 = p(-96, 64);
+    const s5 = p(0, 74);
+    const s6 = p(48, 20);
+
+    const d = `
+      M ${s0.x} ${s0.y}
+      C ${s1.x} ${s1.y}, ${s2.x} ${s2.y}, ${s3.x} ${s3.y}
+      C ${s4.x} ${s4.y}, ${s5.x} ${s5.y}, ${s6.x} ${s6.y}
+    `;
+
+    const u = p(102, 0);
+    const utTop = p(90, -16);
+    const utLow = p(90, 16);
+    const a = p(56, 0);
+    const cup = p(42, 0);
+
+    let cluster = null;
+    let note = '';
+    let flow = '';
+
+    if (active) {
+      if (this.variant === 'geotropic') {
+        cluster = p(-88, 0);
+        note = this.smallLabel(tx, ty - 100, 'Bras long', 1);
+      } else if (this.variant === 'ageotropic') {
+        cluster = p(22, 26);
+        note = this.smallLabel(tx, ty - 100, 'Bras court', 1);
+      } else {
+        cluster = p(42, 0);
+        note = this.smallLabel(tx, ty - 100, 'Cupulolithiase', 1);
+      }
+
+      flow = this.horizontalFlow(tx, ty, sx);
+    }
+
+    return `
+      <g opacity="${alpha}">
+        ${this.earLabel(tx, 130, earSide === 'left' ? 'Oreille gauche' : 'Oreille droite', active)}
+        <path d="${d}" fill="none" stroke="#43c7c0" stroke-width="17" stroke-linecap="round"/>
+        <line x1="${s0.x}" y1="${s0.y}" x2="${utTop.x}" y2="${utTop.y}" stroke="#43c7c0" stroke-width="12" stroke-linecap="round"/>
+        <line x1="${s6.x}" y1="${s6.y}" x2="${utLow.x}" y2="${utLow.y}" stroke="#43c7c0" stroke-width="12" stroke-linecap="round"/>
+
+        ${this.utricle(u.x, u.y, 18)}
+        ${this.ampulla(a.x, a.y, 16)}
+        ${this.cupula(cup.x, cup.y, Math.PI / 2)}
+
+        ${this.smallLabel(u.x, u.y + 34, 'Utricule')}
+        ${this.smallLabel(a.x + sx * 46, a.y - 8, 'Ampoule')}
+        ${note}
+
+        ${active && cluster ? this.cluster(cluster.x, cluster.y, this.variant === 'cupulo' ? 0.9 : 1) : ''}
+        ${active ? flow : ''}
+      </g>
+    `;
+  }
+
+  horizontalFlow(tx, ty, sx) {
+    const shape = this.getStep().shape;
+    const isTowardAmpulla = (() => {
+      if (this.test === 'bowlean') {
+        if (shape === 'bow') return this.variant === 'geotropic';
+        if (shape === 'lean') return this.variant !== 'geotropic';
+      }
+
+      if (this.test === 'upright') {
+        return this.variant === 'geotropic';
+      }
+
+      if (this.test === 'supineroll') {
+        if (this.variant === 'cupulo') return false;
+        if (shape === 'roll-right') return this.side === 'right' ? this.variant === 'geotropic' : this.variant !== 'geotropic';
+        if (shape === 'roll-left') return this.side === 'left' ? this.variant === 'geotropic' : this.variant !== 'geotropic';
+      }
+
+      return this.variant === 'geotropic';
+    })();
+
+    const x1 = tx - sx * 46;
+    const x2 = tx + sx * 46;
+    const y = ty - 96;
+
+    return isTowardAmpulla
+      ? this.arrowLine(x1, y, x2, y, '#14b8a6', 3)
+      : this.arrowLine(x2, y, x1, y, '#14b8a6', 3);
+  }
+
+  earLabel(x, y, text, active) {
+    return `<text x="${x}" y="${y}" text-anchor="middle" font-size="13" font-weight="700" fill="${active ? '#16324f' : '#8ea2b8'}" font-family="Open Sans, sans-serif">${this.escape(text)}</text>`;
+  }
+
+  utricle(x, y, r) {
+    return `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#utricleGrad)" stroke="#6f85f3" stroke-width="2"/>`;
+  }
+
+  ampulla(x, y, r) {
+    return `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#ampullaGrad)" stroke="#a855f7" stroke-width="2"/>`;
+  }
+
+  cupula(x, y, rotation) {
+    const deg = rotation * 180 / Math.PI;
+    return `<ellipse cx="${x}" cy="${y}" rx="9" ry="16" fill="#92e2d4" transform="rotate(${deg} ${x} ${y})"/>`;
+  }
+
+  cluster(cx, cy, scale = 1) {
+    const dots = [
+      [-6, -4, 4.5],
+      [6, -2, 4],
+      [-2, 6, 4],
+      [7, 6, 4.5]
+    ];
+
+    return dots.map(([dx, dy, r]) => `
+      <circle cx="${cx + dx * scale}" cy="${cy + dy * scale}" r="${r * scale}" fill="#ef4444" stroke="rgba(255,255,255,.85)" stroke-width="1"/>
+    `).join('');
+  }
+
+  smallLabel(x, y, text, opacity = 1) {
+    return `<text x="${x}" y="${y}" text-anchor="middle" font-size="12" fill="#61758d" opacity="${opacity}" font-family="Open Sans, sans-serif">${this.escape(text)}</text>`;
+  }
+
+  arrowLine(x1, y1, x2, y2, color, width) {
+    const marker = color === '#14b8a6' ? 'url(#arrowTeal)' : 'url(#arrowRed)';
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" stroke-linecap="round" marker-end="${marker}"/>`;
+  }
+
+  buildEyes() {
+    const model = this.getEyeNystagmus();
+    return `
+      ${this.eye(340, 530, 'Œil gauche', model)}
+      ${this.eye(580, 530, 'Œil droit', model)}
+    `;
+  }
+
+  eye(x, y, label, model) {
+    let pupilX = x;
+    let pupilY = y;
+    let arrow = '';
+    let torsion = '';
+
+    if (model.type === 'horizontal') {
+      pupilX += model.dir === 'right' ? 14 : -14;
+      arrow = model.dir === 'right'
+        ? this.arrowLine(x - 24, y, x + 24, y, '#ef4444', 4)
+        : this.arrowLine(x + 24, y, x - 24, y, '#ef4444', 4);
+    }
+
+    if (model.type === 'vertical') {
+      pupilY += model.dir === 'down' ? 14 : -14;
+      arrow = model.dir === 'down'
+        ? this.arrowLine(x, y - 24, x, y + 24, '#ef4444', 4)
+        : this.arrowLine(x, y + 24, x, y - 24, '#ef4444', 4);
+    }
+
+    if (model.type === 'torsional') {
+      torsion = this.torsion(x, y, model.dir);
+    }
+
+    return `
+      <g>
+        <circle cx="${x}" cy="${y}" r="42" fill="#fff" stroke="#9ab0c7" stroke-width="2"/>
+        <circle cx="${pupilX}" cy="${pupilY}" r="13" fill="#1565c0"/>
+        <circle cx="${pupilX - 4}" cy="${pupilY - 4}" r="4" fill="#fff"/>
+        ${arrow}
+        ${torsion}
+        <text x="${x}" y="${y + 66}" text-anchor="middle" font-size="12" fill="#61758d" font-family="Open Sans, sans-serif">${this.escape(label)}</text>
+      </g>
+    `;
+  }
+
+  torsion(x, y, dir) {
+    const ccw = dir === 'ccw';
+    const start = ccw ? 0.15 * Math.PI : 0.85 * Math.PI;
+    const end = ccw ? 1.30 * Math.PI : -0.30 * Math.PI;
+    const largeArc = 1;
+    const sweep = ccw ? 1 : 0;
+    const r = 28;
+
+    const x1 = x + Math.cos(start) * r;
+    const y1 = y + Math.sin(start) * r;
+    const x2 = x + Math.cos(end) * r;
+    const y2 = y + Math.sin(end) * r;
+
+    return `
+      <path d="M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} ${sweep} ${x2} ${y2}" fill="none" stroke="#ef4444" stroke-width="4"/>
+      ${ccw ? this.arrowLine(x2 + 10, y2, x2, y2, '#ef4444', 3) : this.arrowLine(x2 - 10, y2, x2, y2, '#ef4444', 3)}
+      <text x="${x}" y="${y - 54}" text-anchor="middle" font-size="12" fill="#ef4444" font-family="Open Sans, sans-serif">${ccw ? 'anti-horaire' : 'horaire'}</text>
+    `;
   }
 
   getEyeNystagmus() {
@@ -493,16 +608,22 @@ class DiagnosticVisualizer {
 
       if (this.test === 'bowlean') {
         if (shape === 'bow') {
-          if (this.variant === 'cupulo') dir = this.side === 'right' ? 'left' : 'right';
-          else dir = this.side === 'right' ? 'right' : 'left';
+          dir = this.variant === 'geotropic'
+            ? (this.side === 'right' ? 'right' : 'left')
+            : (this.side === 'right' ? 'left' : 'right');
         } else if (shape === 'lean') {
-          if (this.variant === 'cupulo') dir = this.side === 'right' ? 'right' : 'left';
-          else dir = this.side === 'right' ? 'left' : 'right';
+          dir = this.variant === 'geotropic'
+            ? (this.side === 'right' ? 'left' : 'right')
+            : (this.side === 'right' ? 'right' : 'left');
         }
       } else if (this.test === 'supineroll') {
-        if (shape === 'roll-right') dir = this.variant === 'geotropic' ? 'right' : 'left';
-        else if (shape === 'roll-left') dir = this.variant === 'geotropic' ? 'left' : 'right';
-        else return { type: 'none' };
+        if (shape === 'roll-right') {
+          dir = this.variant === 'geotropic' ? 'right' : 'left';
+        } else if (shape === 'roll-left') {
+          dir = this.variant === 'geotropic' ? 'left' : 'right';
+        } else {
+          return { type: 'none' };
+        }
       } else {
         dir = this.variant === 'geotropic'
           ? (this.side === 'right' ? 'right' : 'left')
@@ -515,219 +636,29 @@ class DiagnosticVisualizer {
     return { type: 'none' };
   }
 
-  drawEyes() {
-    const cx = this.canvas.width / 2;
-    const y = 530;
-    const nyst = this.getEyeNystagmus();
-
-    this.drawEye(cx - 120, y, 'Œil gauche', nyst);
-    this.drawEye(cx + 120, y, 'Œil droit', nyst);
+  buildLegend() {
+    return `
+      <g>
+        <rect x="18" y="616" width="330" height="66" rx="12" fill="rgba(255,255,255,.96)" stroke="#dbe5ef"/>
+        <text x="28" y="634" font-size="12" font-weight="700" fill="#16324f" font-family="Open Sans, sans-serif">Légende</text>
+        ${this.cluster(40, 658, 0.55)}
+        <text x="62" y="662" font-size="11" fill="#61758d" font-family="Open Sans, sans-serif">Otoconies dans le canal</text>
+        ${this.arrowLine(28, 675, 46, 675, '#ef4444', 3)}
+        <text x="62" y="678" font-size="11" fill="#61758d" font-family="Open Sans, sans-serif">Sens du nystagmus</text>
+      </g>
+    `;
   }
 
-  drawEye(x, y, label, nyst) {
-    const ctx = this.ctx;
-    const r = 42;
-
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#9ab0c7';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    let px = x;
-    let py = y;
-
-    if (nyst.type === 'horizontal') px += nyst.dir === 'right' ? 14 : -14;
-    if (nyst.type === 'vertical') py += nyst.dir === 'down' ? 14 : -14;
-
-    ctx.fillStyle = '#1565c0';
-    ctx.beginPath();
-    ctx.arc(px, py, 13, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(px - 4, py - 4, 4, 0, Math.PI * 2);
-    ctx.fill();
-
-    if (nyst.type === 'horizontal') {
-      if (nyst.dir === 'right') this.drawArrow(x - 24, y, x + 24, y, '#ef4444', 4);
-      else this.drawArrow(x + 24, y, x - 24, y, '#ef4444', 4);
-    }
-
-    if (nyst.type === 'vertical') {
-      if (nyst.dir === 'down') this.drawArrow(x, y - 24, x, y + 24, '#ef4444', 4);
-      else this.drawArrow(x, y + 24, x, y - 24, '#ef4444', 4);
-    }
-
-    if (nyst.type === 'torsional') {
-      this.drawTorsion(x, y, nyst.dir);
-    }
-
-    ctx.fillStyle = '#5f7288';
-    ctx.font = '12px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(label, x, y + 66);
-  }
-
-  drawTorsion(x, y, dir) {
-    const ctx = this.ctx;
-    const ccw = dir === 'ccw';
-    const start = ccw ? Math.PI * 0.15 : Math.PI * 0.85;
-    const end = ccw ? Math.PI * 1.30 : Math.PI * -0.30;
-
-    ctx.strokeStyle = '#ef4444';
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.arc(x, y, 28, start, end, ccw);
-    ctx.stroke();
-
-    const ax = x + Math.cos(end) * 28;
-    const ay = y + Math.sin(end) * 28;
-    this.drawArrow(ax + (ccw ? 10 : -10), ay, ax, ay, '#ef4444', 3);
-
-    ctx.fillStyle = '#ef4444';
-    ctx.font = '12px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(ccw ? 'anti-horaire' : 'horaire', x, y - 54);
-  }
-
-  drawLegend() {
-    const ctx = this.ctx;
-    const x = 18;
-    const y = this.canvas.height - 88;
-    const w = 320;
-    const h = 66;
-
-    ctx.fillStyle = 'rgba(255,255,255,.96)';
-    ctx.fillRect(x, y, w, h);
-    ctx.strokeStyle = '#dbe5ef';
-    ctx.strokeRect(x, y, w, h);
-
-    ctx.fillStyle = '#16324f';
-    ctx.font = '700 12px sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText('Légende', x + 10, y + 16);
-
-    this.drawCluster(x + 24, y + 40, 0.55);
-    ctx.fillStyle = '#5f7288';
-    ctx.font = '11px sans-serif';
-    ctx.fillText('Otoconies dans le canal', x + 44, y + 44);
-
-    this.drawArrow(x + 10, y + 58, x + 28, y + 58, '#ef4444', 3);
-    ctx.fillText('Sens du nystagmus', x + 44, y + 61);
-  }
-
-  drawUtricle(x, y, r, alpha = 1) {
-    const ctx = this.ctx;
-    const g = ctx.createRadialGradient(x - 4, y - 4, 2, x, y, r);
-    g.addColorStop(0, '#ffffff');
-    g.addColorStop(1, '#d9e5ff');
-
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#6f85f3';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  drawAmpulla(x, y, r, alpha = 1) {
-    const ctx = this.ctx;
-    const g = ctx.createRadialGradient(x - 4, y - 4, 2, x, y, r);
-    g.addColorStop(0, '#f9f1ff');
-    g.addColorStop(1, '#c084fc');
-
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#a855f7';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  drawCupula(x, y, rotation, alpha = 1) {
-    const ctx = this.ctx;
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.translate(x, y);
-    ctx.rotate(rotation);
-    ctx.fillStyle = '#92e2d4';
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 9, 16, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  drawCluster(x, y, scale = 1) {
-    const ctx = this.ctx;
-    const dots = [
-      [-6, -4, 4.5],
-      [6, -2, 4],
-      [-2, 6, 4],
-      [7, 6, 4.5]
-    ];
-
-    dots.forEach(([dx, dy, dr]) => {
-      ctx.fillStyle = '#ef4444';
-      ctx.beginPath();
-      ctx.arc(x + dx * scale, y + dy * scale, dr * scale, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,.85)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    });
-  }
-
-  drawSmallLabel(text, x, y, alpha = 1) {
-    const ctx = this.ctx;
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle = '#5f7288';
-    ctx.textAlign = 'center';
-    ctx.font = '12px sans-serif';
-    ctx.fillText(text, x, y);
-    ctx.restore();
-  }
-
-  drawArrow(x1, y1, x2, y2, color = '#2563eb', width = 4) {
-    const ctx = this.ctx;
-    const angle = Math.atan2(y2 - y1, x2 - x1);
-    const head = 10;
-
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = width;
-    ctx.lineCap = 'round';
-
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(x2, y2);
-    ctx.lineTo(
-      x2 - head * Math.cos(angle - Math.PI / 6),
-      y2 - head * Math.sin(angle - Math.PI / 6)
-    );
-    ctx.lineTo(
-      x2 - head * Math.cos(angle + Math.PI / 6),
-      y2 - head * Math.sin(angle + Math.PI / 6)
-    );
-    ctx.closePath();
-    ctx.fill();
+  escape(str) {
+    return String(str)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => new DiagnosticVisualizer());
+window.addEventListener('DOMContentLoaded', () => {
+  new FixedSVGVPPBVisualizer();
+});
