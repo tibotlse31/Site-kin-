@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VestibLab VPPB — diagnostic</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <header class="header compact">
+    <div class="shell">
+      <div class="topbar">
+        <a class="back-link" href="vestibulaire.html">← Accueil</a>
+        <div class="brand">Module diagnostic</div>
+      </div>
+      <div class="tagline">Lecture clinique par canal : symptômes, tests, latence, nystagmus, règle de latéralisation et conclusion.</div>
+      <div class="nav-row" id="pageNav"></div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="shell main-grid">
+      <aside class="stack">
+        <div class="panel">
+          <h2 class="h2">Choisir un canal</h2>
+          <div class="btn-row" id="channelButtons"></div>
+        </div>
+        <div class="panel note info">
+          Ici, le but n’est pas de voir “tout” mais de lire juste : durée, latence, forme, sens et test approprié.
+        </div>
+      </aside>
+
+      <section class="stack">
+        <div class="hero-card">
+          <div class="split-head">
+            <div>
+              <div id="channelBadge"></div>
+              <h1 class="h1" id="channelTitle"></h1>
+              <p class="lead" id="channelSummary"></p>
+            </div>
+          </div>
+          <div class="kpi-grid" style="margin-top:16px">
+            <div class="kpi"><span class="label">Fréquence relative</span><div class="value" id="freqValue"></div></div>
+            <div class="kpi"><span class="label">Tests principaux</span><div class="value" id="testsValue"></div></div>
+            <div class="kpi"><span class="label">Conclusion pratique</span><div class="value" id="conclusionValue"></div></div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <h2 class="h2">Symptômes clés</h2>
+            <div id="symptomsBox"></div>
+          </div>
+          <div class="panel">
+            <h2 class="h2">Lecture du nystagmus</h2>
+            <div class="info-list">
+              <div class="info-item"><strong>Latence</strong><span id="latencyBox"></span></div>
+              <div class="info-item"><strong>Forme du nystagmus</strong><span id="nystagmusBox"></span></div>
+              <div class="info-item"><strong>Règle de côté</strong><span id="sideRuleBox"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <h2 class="h2">Traitements à connaître</h2>
+            <div id="treatmentLinks"></div>
+          </div>
+          <div class="panel">
+            <h2 class="h2">Restrictions et prudences</h2>
+            <div id="restrictionsBox"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="h2">Red flags à garder en tête</h2>
+          <div id="redFlagsBox"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    APP.pageNav('diagnostic.html');
+    let current = 'post';
+    function render(){
+      const c = COURSE_DATA.channels[current];
+      document.getElementById('channelBadge').innerHTML = `<span class="badge success">${c.icon} ${c.freq}</span>`;
+      document.getElementById('channelTitle').textContent = c.name;
+      document.getElementById('channelSummary').textContent = c.summary;
+      document.getElementById('freqValue').textContent = c.freq;
+      document.getElementById('testsValue').textContent = c.diagnostic.tests.join(' • ');
+      document.getElementById('conclusionValue').textContent = c.diagnostic.conclusion;
+      document.getElementById('symptomsBox').innerHTML = APP.renderList(c.symptoms);
+      document.getElementById('latencyBox').textContent = c.diagnostic.latency;
+      document.getElementById('nystagmusBox').textContent = c.diagnostic.nystagmus;
+      document.getElementById('sideRuleBox').textContent = c.diagnostic.sideRule;
+      document.getElementById('treatmentLinks').innerHTML = APP.renderList(c.treatmentLink.map(t => `À maîtriser : ${t}`));
+      document.getElementById('restrictionsBox').innerHTML = APP.renderList(c.restrictions);
+      document.getElementById('redFlagsBox').innerHTML = APP.renderList(c.redFlags);
+      APP.channelButtons('channelButtons', current, id => { current = id; render(); });
+    }
+    render();
+  </script>
+</body>
+</html>

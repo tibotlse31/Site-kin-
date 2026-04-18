@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VestibLab VPPB — cas cliniques</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <header class="header compact">
+    <div class="shell">
+      <div class="topbar">
+        <a class="back-link" href="vestibulaire.html">← Accueil</a>
+        <div class="brand">Module cas cliniques</div>
+      </div>
+      <div class="tagline">Entraînement par cas : lire, répondre mentalement, puis dévoiler la correction et le raisonnement.</div>
+      <div class="nav-row" id="pageNav"></div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="shell main-grid">
+      <aside class="stack">
+        <div class="panel">
+          <h2 class="h2">Filtrer par canal</h2>
+          <div class="btn-row" id="channelButtons"></div>
+        </div>
+        <div class="panel note info">Méthode utile : lire l’énoncé, identifier la forme du nystagmus, conclure sur le canal puis choisir la manœuvre.</div>
+      </aside>
+      <section class="stack" id="caseCards"></section>
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    APP.pageNav('cas-cliniques.html');
+    let current = 'post';
+    function toggleReveal(id){
+      document.getElementById(id).classList.toggle('visible');
+    }
+    function render(){
+      APP.channelButtons('channelButtons', current, id => { current = id; render(); });
+      const channel = COURSE_DATA.channels[current];
+      const items = COURSE_DATA.cases.filter(c => c.canal === current);
+      document.getElementById('caseCards').innerHTML = `
+        <div class="hero-card">
+          <div class="badge success">${channel.icon} ${channel.name}</div>
+          <h1 class="h1" style="margin-top:10px">Cas cliniques — ${channel.name}</h1>
+          <p class="lead">Travail conseillé : analyser d’abord sans la correction, puis vérifier le raisonnement.</p>
+        </div>
+      ` + items.map((item, idx) => `
+        <article class="panel case-card">
+          <div class="split-head">
+            <h2 class="h2">${item.title}</h2>
+            <button class="btn primary" onclick="toggleReveal('reveal-${idx}')">Afficher / masquer la correction</button>
+          </div>
+          <div class="card soft">
+            <h3 class="h3">Énoncé</h3>
+            <p>${item.stem}</p>
+            <p class="muted"><strong>Question :</strong> ${item.prompt}</p>
+          </div>
+          <div class="reveal" id="reveal-${idx}">
+            <div class="two-col">
+              <div class="card soft">
+                <h3 class="h3">Correction</h3>
+                <p>${item.answer}</p>
+              </div>
+              <div class="card soft">
+                <h3 class="h3">Raisonnement</h3>
+                ${APP.renderList(item.reasoning)}
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+    window.toggleReveal = toggleReveal;
+    render();
+  </script>
+</body>
+</html>

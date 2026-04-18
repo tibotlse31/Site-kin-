@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VestibLab VPPB — traitements</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <header class="header compact">
+    <div class="shell">
+      <div class="topbar">
+        <a class="back-link" href="vestibulaire.html">← Accueil</a>
+        <div class="brand">Module traitements</div>
+      </div>
+      <div class="tagline">Chaque manœuvre dans sa propre carte : indication, séquence, nystagmus attendu, erreurs et consignes post-manœuvre.</div>
+      <div class="nav-row" id="pageNav"></div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="shell main-grid">
+      <aside class="stack">
+        <div class="panel">
+          <h2 class="h2">Filtrer par canal</h2>
+          <div class="btn-row" id="channelButtons"></div>
+        </div>
+        <div class="panel note warn">Les manœuvres se lisent ici comme des séquences cliniques, pas comme de simples animations.</div>
+      </aside>
+      <section class="stack" id="treatmentCards"></section>
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    APP.pageNav('traitements.html');
+    let current = 'post';
+    function render(){
+      APP.channelButtons('channelButtons', current, id => { current = id; render(); });
+      const items = COURSE_DATA.treatments.filter(t => t.canal === current);
+      const channel = COURSE_DATA.channels[current];
+      document.getElementById('treatmentCards').innerHTML = `
+        <div class="hero-card">
+          <div class="split-head">
+            <div>
+              <div class="badge success">${channel.icon} ${channel.name}</div>
+              <h1 class="h1" style="margin-top:10px">Traitements du ${channel.name.toLowerCase()}</h1>
+              <p class="lead">${channel.diagnostic.conclusion}</p>
+            </div>
+          </div>
+        </div>
+      ` + items.map(item => `
+        <article class="panel">
+          <div class="split-head">
+            <div>
+              <h2 class="h2">${item.name}</h2>
+              <p class="lead"><strong>Indication :</strong> ${item.indication}</p>
+            </div>
+            <span class="badge warning">${channel.name}</span>
+          </div>
+          <div class="two-col">
+            <div class="card soft">
+              <h3 class="h3">Séquence</h3>
+              <ol class="step-list">${item.steps.map(step => `<li>${step}</li>`).join('')}</ol>
+            </div>
+            <div class="stack">
+              <div class="card soft">
+                <h3 class="h3">Nystagmus thérapeutique attendu</h3>
+                <p class="small">${item.expected}</p>
+              </div>
+              <div class="card soft">
+                <h3 class="h3">Erreurs fréquentes</h3>
+                ${APP.renderList(item.mistakes)}
+              </div>
+              <div class="card soft">
+                <h3 class="h3">Consignes post-manœuvre</h3>
+                ${APP.renderList(item.aftercare)}
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+    render();
+  </script>
+</body>
+</html>
