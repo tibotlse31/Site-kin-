@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Simulateur VPPB - Outil pédagogique interactif</title>
+    <title>Simulateur VPPB pédagogique</title>
     <style>
         * {
             margin: 0;
@@ -14,57 +14,46 @@
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --bg-light: #f8fafc;
-            --bg-white: #ffffff;
+            --bg: #f0f4f8;
+            --card: #ffffff;
             --border: #e2e8f0;
-            --text-dark: #1e293b;
-            --text-light: #64748b;
-            --panel-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+            --text: #1e293b;
+            --muted: #64748b;
+            --danger: #ef4444;
+            --success: #10b981;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
-            color: var(--text-dark);
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
         }
 
         .header {
             background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
             color: white;
-            padding: 2rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+            padding: 1.5rem 2rem 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
 
         .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
             margin-bottom: 1rem;
         }
 
         .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
+            display: inline-block;
             padding: 0.65rem 1rem;
+            border-radius: 8px;
             background: rgba(255,255,255,0.16);
             color: white;
             text-decoration: none;
-            border: 1px solid rgba(255,255,255,0.22);
-            border-radius: 8px;
             font-weight: 600;
-            transition: 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .back-link:hover {
-            background: rgba(255,255,255,0.26);
+            background: rgba(255,255,255,0.24);
         }
 
         .header h1 {
@@ -74,80 +63,60 @@
 
         .header p {
             opacity: 0.95;
-            font-size: 0.98rem;
-            max-width: 980px;
         }
 
         .container {
-            max-width: 1500px;
+            max-width: 1450px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 2rem 1rem 3rem;
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .panel h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid rgba(37,99,235,0.15);
+            padding-bottom: 0.5rem;
         }
 
         .layout {
             display: grid;
-            grid-template-columns: 1.05fr 0.95fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 1.5rem;
+            align-items: start;
         }
 
-        @media (max-width: 1200px) {
+        @media (max-width: 1100px) {
             .layout {
                 grid-template-columns: 1fr;
             }
         }
 
-        .panel {
-            background: var(--bg-white);
-            border-radius: 14px;
-            padding: 1.5rem;
-            box-shadow: var(--panel-shadow);
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-        }
-
-        .panel h2 {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-            border-bottom: 2px solid rgba(37,99,235,0.12);
-            padding-bottom: 0.6rem;
-        }
-
-        .controls {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.45rem;
-        }
-
-        .control-group label {
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 0.95rem;
-        }
-
         .btn-group {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 0.75rem;
         }
 
         .btn {
-            padding: 0.85rem 1rem;
+            padding: 0.75rem 1rem;
             border: 2px solid var(--border);
+            background: white;
+            color: var(--text);
             border-radius: 10px;
-            background: var(--bg-white);
-            color: var(--text-dark);
+            font-weight: 700;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.25s ease;
+            transition: 0.2s ease;
             font-size: 0.92rem;
-            text-align: center;
         }
 
         .btn:hover {
@@ -162,282 +131,120 @@
             border-color: var(--primary);
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            width: 100%;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-            color: white;
-        }
-
-        .slider-container {
-            display: flex;
-            align-items: center;
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 1rem;
         }
 
-        input[type="range"] {
-            flex: 1;
-            height: 6px;
-            border-radius: 3px;
-            background: var(--border);
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
+        @media (max-width: 700px) {
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-            border: none;
-        }
-
-        .value-display {
+        label {
+            display: block;
             font-weight: 700;
-            color: var(--primary);
-            min-width: 54px;
-            text-align: right;
+            margin-bottom: 0.45rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.8rem 0.9rem;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            background: white;
+            font-size: 0.95rem;
         }
 
         .info-box {
             background: #eff6ff;
             border-left: 4px solid var(--primary);
-            padding: 1rem;
             border-radius: 8px;
-            margin-top: 0.75rem;
-        }
-
-        .info-box h4 {
-            color: var(--primary);
-            margin-bottom: 0.45rem;
-            font-size: 0.98rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: var(--text);
         }
 
         .info-box p {
-            font-size: 0.92rem;
-            color: var(--text-light);
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.35rem;
         }
 
-        .interpretation-panel {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-left: 4px solid var(--warning);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
+        .small-note {
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin-top: 0.4rem;
         }
 
-        .interpretation-panel h4 {
-            color: #92400e;
-            margin-bottom: 0.45rem;
-        }
-
-        .interpretation-panel p,
-        .interpretation-panel li {
-            color: #78350f;
-            font-size: 0.92rem;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 0.5rem;
-            border-bottom: 2px solid var(--border);
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .tab {
-            padding: 0.75rem 1rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: 700;
-            color: var(--text-light);
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
-            transition: all 0.25s ease;
-            font-size: 0.94rem;
-        }
-
-        .tab:hover {
-            color: var(--primary);
-        }
-
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            padding: 1rem;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-
-        .stat-label {
-            font-size: 0.78rem;
-            color: var(--text-light);
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 1.35rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .simulator-canvas-wrap {
-            width: 100%;
-            height: 560px;
-            border: 1px solid var(--border);
+        .canvas-wrap {
+            background: white;
+            border: 2px solid var(--border);
             border-radius: 12px;
             overflow: hidden;
-            background: #111827;
-            position: relative;
         }
 
-        .canvas-container {
-            width: 100%;
-            height: 100%;
-        }
-
-        canvas#labyrinthe {
-            width: 100%;
-            height: 100%;
+        #labyrinthe {
             display: block;
+            width: 100%;
+            height: auto;
             background: white;
         }
 
-        .legend {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 0.85rem;
-            margin-top: 1rem;
+        .subpanel {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             padding: 1rem;
-            background: var(--bg-light);
-            border-radius: 8px;
+            margin-bottom: 1rem;
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.55rem;
-            font-size: 0.9rem;
+        .subpanel h3 {
+            margin-bottom: 0.75rem;
+            color: #334155;
+            font-size: 1rem;
         }
 
-        .legend-color {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-            flex-shrink: 0;
-        }
-
-        .eye-movement {
-            width: 72px;
-            height: 72px;
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            margin: 1rem auto;
-            position: relative;
-            background: white;
-        }
-
-        .eye-pupil {
-            width: 22px;
-            height: 22px;
-            background: var(--text-dark);
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .animation-controls {
-            display: flex;
+        .step-controls {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 0.6rem;
             margin-top: 1rem;
         }
 
-        .animation-controls button {
-            flex: 1;
+        @media (max-width: 700px) {
+            .step-controls {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
-        .position-indicator {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-            margin: 1rem 0;
-            text-align: center;
-            font-size: 0.86rem;
-        }
-
-        .pos-box {
-            padding: 0.55rem;
-            background: var(--bg-light);
+        .step-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
             border-radius: 8px;
-            border: 1px solid var(--border);
+            padding: 0.9rem;
+            margin-top: 1rem;
         }
 
-        .pos-box.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+        .step-box h4 {
+            margin-bottom: 0.35rem;
+            color: #1e40af;
+        }
+
+        .nystagmus-box {
+            background: #fef2f2;
+            border-left: 4px solid var(--danger);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: #991b1b;
             font-weight: 700;
-        }
-
-        select {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            background: var(--bg-white);
-            color: var(--text-dark);
-            font-size: 0.95rem;
         }
 
         .footer {
             text-align: center;
-            padding: 2rem;
-            color: var(--text-light);
+            padding: 2rem 1rem;
+            color: var(--muted);
             border-top: 1px solid var(--border);
             margin-top: 2rem;
         }
@@ -445,33 +252,21 @@
         .footer a {
             color: var(--primary);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .footer a:hover {
             text-decoration: underline;
-        }
-
-        ul {
-            margin-left: 1.2rem;
-        }
-
-        .small-note {
-            font-size: 0.85rem;
-            color: var(--text-light);
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="topbar">
-            <a href="index.html" class="back-link">← Retour à l’accueil</a>
+            <a href="vestibulaire.html" class="back-link">← Retour à l’accueil</a>
         </div>
-        <h1>🧬 Simulateur VPPB</h1>
-        <p>
-            Outil pédagogique interactif de visualisation des canaux semi-circulaires, de la migration otolithique
-            et du nystagmus pendant les tests diagnostiques et les manœuvres thérapeutiques.
-        </p>
+        <h1>🧬 Simulateur VPPB pédagogique</h1>
+        <p>Version simple et lisible : trajet des otolithes + sens du nystagmus</p>
     </div>
 
     <div class="container">
@@ -486,204 +281,92 @@
         </div>
 
         <div class="panel">
-            <h2>🧭 Paramètres cliniques</h2>
-            <div class="controls">
-                <div class="control-group">
+            <h2>🧭 Paramètres</h2>
+            <div class="controls-grid">
+                <div>
                     <label for="affectedSide">Côté atteint</label>
                     <select id="affectedSide">
                         <option value="right">Droite</option>
                         <option value="left">Gauche</option>
                     </select>
                 </div>
-
-                <div class="control-group">
+                <div>
                     <label for="horizontalVariant">Forme horizontale</label>
-                    <select id="horizontalVariant">
+                    <select id="horizontalVariant" disabled>
                         <option value="geotropic">Canalolithiase géotropique</option>
                         <option value="ageotropic">Canalolithiase agéotropique</option>
                         <option value="cupulo">Cupulolithiase</option>
                     </select>
+                    <div class="small-note">Actif uniquement pour le canal horizontal.</div>
                 </div>
-
-                <p class="small-note">
-                    La forme horizontale modifie la lecture du nystagmus et l’interprétation du côté atteint.
-                </p>
             </div>
         </div>
 
         <div class="layout">
             <div class="panel">
                 <h2>🎯 Visualisation</h2>
-                <div class="simulator-canvas-wrap">
-                    <div class="canvas-container">
-                        <canvas id="labyrinthe"></canvas>
-                    </div>
-                </div>
-
-                <div class="legend">
-                    <div class="legend-item">
-                        <div class="legend-color" style="background:#ff6b6b;"></div>
-                        <span>Otoconies / cristaux</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background:#4ecdc4;"></div>
-                        <span>Flux endolymphatique</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background:#95e1d3;"></div>
-                        <span>Cupule</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background:#c7a0e8;"></div>
-                        <span>Ampoule</span>
-                    </div>
+                <div class="canvas-wrap">
+                    <canvas id="labyrinthe" width="1000" height="620"></canvas>
                 </div>
             </div>
 
-            <div class="panel">
-                <h2>🎮 Contrôles</h2>
+            <div>
+                <div class="panel">
+                    <h2>🎮 Manœuvres thérapeutiques</h2>
+                    <div class="subpanel">
+                        <h3>Choisir une manœuvre</h3>
+                        <div class="btn-group" id="manoeuvreButtons"></div>
 
-                <div class="tabs">
-                    <button class="tab active" data-tab="manoeuvre">Manœuvre</button>
-                    <button class="tab" data-tab="test">Test diagnostique</button>
-                    <button class="tab" data-tab="analysis">Analyse</button>
-                </div>
-
-                <div id="manoeuvre" class="tab-content active">
-                    <div class="controls">
-                        <div class="control-group">
-                            <label>Sélectionner la manœuvre</label>
-                            <div class="btn-group" id="manoeuvreButtons"></div>
+                        <div class="step-controls">
+                            <button class="btn" id="prevStepBtn">← Précédent</button>
+                            <button class="btn" id="playStepsBtn">▶ Jouer</button>
+                            <button class="btn" id="nextStepBtn">Suivant →</button>
+                            <button class="btn" id="resetStepsBtn">↺ Réinitialiser</button>
                         </div>
 
-                        <div class="control-group">
-                            <label>Progression manœuvre</label>
-                            <div class="slider-container">
-                                <input type="range" id="manoeuvreSlider" min="0" max="100" value="0" />
-                                <span class="value-display" id="progressDisplay">0%</span>
-                            </div>
+                        <div class="step-box" id="stepInfo">
+                            <h4>Aucune manœuvre sélectionnée</h4>
+                            <p>Choisis une manœuvre pour commencer.</p>
                         </div>
-
-                        <div class="animation-controls">
-                            <button class="btn btn-primary" id="playAnimationBtn">▶ Jouer</button>
-                            <button class="btn btn-primary" id="pauseAnimationBtn">⏸ Pause</button>
-                            <button class="btn btn-primary" id="resetAnimationBtn">↺ Réinitialiser</button>
-                        </div>
-
-                        <div class="control-group">
-                            <label>Vitesse</label>
-                            <div class="slider-container">
-                                <input type="range" id="speedSlider" min="0.5" max="3" step="0.5" value="1" />
-                                <span class="value-display" id="speedDisplay">1x</span>
-                            </div>
-                        </div>
-
-                        <div class="interpretation-panel" id="manoeuvreInfo"></div>
                     </div>
                 </div>
 
-                <div id="test" class="tab-content">
-                    <div class="controls">
-                        <div class="control-group">
-                            <label>Sélectionner le test</label>
-                            <div class="btn-group" id="testButtons"></div>
+                <div class="panel">
+                    <h2>🧪 Tests diagnostiques</h2>
+                    <div class="subpanel">
+                        <h3>Choisir un test</h3>
+                        <div class="btn-group" id="testButtons"></div>
+
+                        <div class="step-controls">
+                            <button class="btn" id="prevTestBtn">← Précédent</button>
+                            <button class="btn" id="playTestBtn">▶ Jouer</button>
+                            <button class="btn" id="nextTestBtn">Suivant →</button>
+                            <button class="btn" id="resetTestBtn">↺ Réinitialiser</button>
                         </div>
 
-                        <div class="control-group">
-                            <label>Progression test</label>
-                            <div class="slider-container">
-                                <input type="range" id="testSlider" min="0" max="100" value="0" />
-                                <span class="value-display" id="testProgressDisplay">0%</span>
-                            </div>
+                        <div class="step-box" id="testInfo">
+                            <h4>Aucun test sélectionné</h4>
+                            <p>Choisis un test pour commencer.</p>
                         </div>
-
-                        <div class="animation-controls">
-                            <button class="btn btn-primary" id="playTestBtn">▶ Jouer</button>
-                            <button class="btn btn-primary" id="pauseTestBtn">⏸ Pause</button>
-                            <button class="btn btn-primary" id="resetTestBtn">↺ Réinitialiser</button>
-                        </div>
-
-                        <div class="interpretation-panel" id="testInfo"></div>
                     </div>
                 </div>
 
-                <div id="analysis" class="tab-content">
-                    <div class="controls">
-                        <h3>📊 Analyse du nystagmus</h3>
-
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="stat-label">Latence</div>
-                                <div class="stat-value" id="latenceValue">-</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-label">Direction</div>
-                                <div class="stat-value" id="directionValue" style="font-size:1rem;">-</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-label">Amplitude</div>
-                                <div class="stat-value" id="amplitudeValue">-</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-label">Fréquence</div>
-                                <div class="stat-value" id="frequencyValue">-</div>
-                            </div>
-                        </div>
-
-                        <h3 style="margin-top:1.5rem;">👁️ Mouvement oculaire</h3>
-                        <div class="eye-movement">
-                            <div class="eye-pupil" id="eyePupil"></div>
-                        </div>
-
-                        <h3 style="margin-top:1.5rem;">📍 Position de la tête</h3>
-                        <div class="position-indicator">
-                            <div class="pos-box" id="pos-left">Gauche</div>
-                            <div class="pos-box active" id="pos-center">Centre</div>
-                            <div class="pos-box" id="pos-right">Droite</div>
-                        </div>
-
-                        <div class="interpretation-panel" id="analysisInterpretation"></div>
+                <div class="panel">
+                    <h2>👁️ Sens du nystagmus</h2>
+                    <div class="nystagmus-box" id="nystagmusInfo">
+                        Aucun nystagmus
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="panel">
-            <h2>🧪 Cas cliniques</h2>
-            <div class="controls">
-                <div class="control-group">
-                    <label for="caseSelector">Choisir un cas</label>
-                    <select id="caseSelector">
-                        <option value="">-- Sélectionner --</option>
-                        <option value="post_1">Postérieur - Cas 1</option>
-                        <option value="post_4">Postérieur - Cas 4</option>
-                        <option value="horiz_9">Horizontal - Cas 9</option>
-                        <option value="horiz_10">Horizontal - Cas 10</option>
-                        <option value="ant_13">Antérieur - Cas 13</option>
-                        <option value="ant_15">Antérieur - Cas 15</option>
-                    </select>
-                </div>
-
-                <div class="info-box" id="clinicalCaseBox">
-                    <h4>Cas clinique</h4>
-                    <p>Sélectionne un cas pour afficher l’énoncé, le diagnostic attendu et la manœuvre adaptée.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel">
-            <h2>📚 Interprétation clinique</h2>
-            <div id="clinicalInfo"></div>
         </div>
     </div>
 
     <div class="footer">
-        <p>Simulateur VPPB | Outil pédagogique de vestibulologie</p>
-        <p><a href="index.html">Retour à l’accueil</a></p>
+        <p><strong>Simulateur VPPB</strong> — version simple</p>
+        <p><a href="vestibulaire.html">Retour à l’accueil</a></p>
     </div>
 
     <script src="simulator.js"></script>
     <script src="visualization.js"></script>
-    <script src="analysis.js"></script>
 </body>
 </html>
