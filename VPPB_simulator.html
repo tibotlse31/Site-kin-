@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simulateur VPPB pédagogique complet</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :root {
+            --primary:#2563eb; --primary-dark:#1d4ed8; --bg:#f0f4f8; --card:#ffffff;
+            --border:#e2e8f0; --text:#1e293b; --muted:#64748b; --danger:#ef4444;
+            --warning:#f59e0b; --success:#10b981;
+        }
+        body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+        .header { background:linear-gradient(135deg,var(--primary) 0%, #1e40af 100%); color:white; padding:1.5rem 2rem 2rem; box-shadow:0 4px 10px rgba(0,0,0,0.08); }
+        .topbar { margin-bottom:1rem; }
+        .back-link { display:inline-block; padding:0.65rem 1rem; border-radius:8px; background:rgba(255,255,255,0.16); color:white; text-decoration:none; font-weight:600; border:1px solid rgba(255,255,255,0.2); }
+        .back-link:hover { background:rgba(255,255,255,0.24); }
+        .header h1 { font-size:2rem; margin-bottom:0.35rem; }
+        .header p { opacity:0.95; }
+        .container { max-width:1500px; margin:0 auto; padding:2rem 1rem 3rem; }
+        .panel { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; box-shadow:0 2px 8px rgba(15,23,42,0.05); margin-bottom:1.5rem; }
+        .panel h2 { color:var(--primary); margin-bottom:1rem; font-size:1.2rem; border-bottom:2px solid rgba(37,99,235,0.15); padding-bottom:0.5rem; }
+        .layout { display:grid; grid-template-columns:1.15fr 0.85fr; gap:1.5rem; align-items:start; }
+        .edu-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+        @media (max-width:1100px) { .layout, .edu-grid { grid-template-columns:1fr; } }
+        .btn-group { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:0.75rem; }
+        .btn { padding:0.75rem 1rem; border:2px solid var(--border); background:white; color:var(--text); border-radius:10px; font-weight:700; cursor:pointer; transition:0.2s ease; font-size:0.92rem; }
+        .btn:hover { border-color:var(--primary); color:var(--primary); transform:translateY(-1px); }
+        .btn.active { background:var(--primary); color:white; border-color:var(--primary); }
+        .controls-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        @media (max-width:700px) { .controls-grid { grid-template-columns:1fr; } }
+        label { display:block; font-weight:700; margin-bottom:0.45rem; }
+        select { width:100%; padding:0.8rem 0.9rem; border-radius:10px; border:2px solid var(--border); background:white; font-size:0.95rem; }
+        .info-box { background:#eff6ff; border-left:4px solid var(--primary); border-radius:8px; padding:1rem; margin-top:1rem; color:var(--text); }
+        .info-box p { margin-bottom:0.35rem; }
+        .small-note { color:var(--muted); font-size:0.88rem; margin-top:0.4rem; }
+        .canvas-wrap { background:white; border:2px solid var(--border); border-radius:12px; overflow:hidden; }
+        #labyrinthe { display:block; width:100%; height:auto; background:white; }
+        .subpanel { background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:1rem; margin-bottom:1rem; }
+        .subpanel h3 { margin-bottom:0.75rem; color:#334155; font-size:1rem; }
+        .step-controls { display:grid; grid-template-columns:repeat(4,1fr); gap:0.6rem; margin-top:1rem; }
+        @media (max-width:700px) { .step-controls { grid-template-columns:repeat(2,1fr); } }
+        .step-box, .case-box, .teaching-box { background:#eff6ff; border-left:4px solid var(--primary); border-radius:8px; padding:0.9rem; margin-top:1rem; }
+        .step-box h4, .case-box h4, .teaching-box h4 { margin-bottom:0.35rem; color:#1e40af; }
+        .nystagmus-box { background:#fef2f2; border-left:4px solid var(--danger); border-radius:8px; padding:1rem; margin-top:1rem; color:#991b1b; font-weight:700; }
+        .checklist-box { background:#f8fafc; border-left:4px solid var(--success); border-radius:8px; padding:1rem; }
+        .warning-box { background:#fff7ed; border-left:4px solid var(--warning); border-radius:8px; padding:1rem; }
+        .redflag-box { background:#fef2f2; border-left:4px solid var(--danger); border-radius:8px; padding:1rem; }
+        ul { margin-left:1.1rem; }
+        li { margin-bottom:0.35rem; }
+        .footer { text-align:center; padding:2rem 1rem; color:var(--muted); border-top:1px solid var(--border); margin-top:2rem; }
+        .footer a { color:var(--primary); text-decoration:none; font-weight:700; }
+        .footer a:hover { text-decoration:underline; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="topbar">
+            <a href="vestibulaire.html" class="back-link">← Retour à l’accueil</a>
+        </div>
+        <h1>🧬 Simulateur VPPB pédagogique complet</h1>
+        <p>Version simple + checklist + cas cliniques + logique diagnostique + consignes + red flags</p>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <h2>1️⃣ Sélection du canal</h2>
+            <div class="btn-group" id="canalButtons">
+                <button class="btn active" data-canal="post">Canal postérieur</button>
+                <button class="btn" data-canal="horiz">Canal horizontal</button>
+                <button class="btn" data-canal="ant">Canal antérieur</button>
+            </div>
+            <div class="info-box" id="canalInfo"></div>
+        </div>
+
+        <div class="panel">
+            <h2>🧭 Paramètres</h2>
+            <div class="controls-grid">
+                <div>
+                    <label for="affectedSide">Côté atteint</label>
+                    <select id="affectedSide">
+                        <option value="right">Droite</option>
+                        <option value="left">Gauche</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="horizontalVariant">Forme horizontale</label>
+                    <select id="horizontalVariant" disabled>
+                        <option value="geotropic">Canalolithiase géotropique</option>
+                        <option value="ageotropic">Canalolithiase agéotropique</option>
+                        <option value="cupulo">Cupulolithiase</option>
+                    </select>
+                    <div class="small-note">Actif uniquement pour le canal horizontal.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layout">
+            <div class="panel">
+                <h2>🎯 Visualisation</h2>
+                <div class="canvas-wrap">
+                    <canvas id="labyrinthe" width="1000" height="620"></canvas>
+                </div>
+            </div>
+
+            <div>
+                <div class="panel">
+                    <h2>🎮 Manœuvres thérapeutiques</h2>
+                    <div class="subpanel">
+                        <h3>Choisir une manœuvre</h3>
+                        <div class="btn-group" id="manoeuvreButtons"></div>
+
+                        <div class="step-controls">
+                            <button class="btn" id="prevStepBtn">← Précédent</button>
+                            <button class="btn" id="playStepsBtn">▶ Jouer</button>
+                            <button class="btn" id="nextStepBtn">Suivant →</button>
+                            <button class="btn" id="resetStepsBtn">↺ Réinitialiser</button>
+                        </div>
+
+                        <div class="step-box" id="stepInfo">
+                            <h4>Aucune manœuvre sélectionnée</h4>
+                            <p>Choisis une manœuvre pour commencer.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>🧪 Tests diagnostiques</h2>
+                    <div class="subpanel">
+                        <h3>Choisir un test</h3>
+                        <div class="btn-group" id="testButtons"></div>
+
+                        <div class="step-controls">
+                            <button class="btn" id="prevTestBtn">← Précédent</button>
+                            <button class="btn" id="playTestBtn">▶ Jouer</button>
+                            <button class="btn" id="nextTestBtn">Suivant →</button>
+                            <button class="btn" id="resetTestBtn">↺ Réinitialiser</button>
+                        </div>
+
+                        <div class="step-box" id="testInfo">
+                            <h4>Aucun test sélectionné</h4>
+                            <p>Choisis un test pour commencer.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>👁️ Sens du nystagmus</h2>
+                    <div class="nystagmus-box" id="nystagmusInfo">Aucun nystagmus</div>
+                    <div class="teaching-box" id="interpretationBox" style="margin-top:1rem;">
+                        <h4>Lecture clinique</h4>
+                        <p>Choisis une manœuvre ou un test pour afficher la logique diagnostique.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="edu-grid">
+            <div class="panel">
+                <h2>🩺 Checklist d’observation</h2>
+                <div class="checklist-box" id="checklistBox"></div>
+            </div>
+            <div class="panel">
+                <h2>💡 Consignes et précautions</h2>
+                <div class="warning-box" id="consignesBox"></div>
+                <div class="redflag-box" id="redFlagsBox" style="margin-top:1rem;"></div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>🧪 Cas cliniques / corrigés</h2>
+            <label for="caseSelector">Choisir un cas</label>
+            <select id="caseSelector">
+                <option value="">-- Sélectionner un cas --</option>
+                <option value="post_1">Postérieur - Cas 1</option>
+                <option value="post_4">Postérieur - Cas 4</option>
+                <option value="horiz_9">Horizontal - Cas 9</option>
+                <option value="horiz_10">Horizontal - Cas 10</option>
+                <option value="ant_13">Antérieur - Cas 13</option>
+                <option value="ant_15">Antérieur - Cas 15</option>
+            </select>
+            <div class="case-box" id="caseBox">
+                <h4>Cas clinique</h4>
+                <p>Sélectionne un cas pour afficher l’énoncé, le diagnostic attendu, la manœuvre et les consignes.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>Simulateur VPPB</strong> — version pédagogique enrichie</p>
+        <p><a href="vestibulaire.html">Retour à l’accueil</a></p>
+    </div>
+
+    <script src="simulator.js"></script>
+    <script src="visualization.js"></script>
+</body>
+</html>
