@@ -3,80 +3,309 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VestibLab VPPB — cas cliniques</title>
+  <title>Cas cliniques — VestibLab VPPB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="app.css" />
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: linear-gradient(180deg, #eef4fb 0%, #e6eef8 100%);
+      margin: 0;
+      color: #173d70;
+    }
+
+    .topbar {
+      background: linear-gradient(135deg, #1f66c1 0%, #0f4fa8 100%);
+      color: white;
+      padding: 20px 24px 30px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    .topbar-inner,
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: rgba(255,255,255,0.95);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 16px;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+    }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.3rem;
+      margin: 0 0 10px;
+    }
+
+    .subtitle {
+      margin: 0;
+      opacity: 0.95;
+      font-size: 1.05rem;
+    }
+
+    .container {
+      padding: 28px 18px 50px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #dbe7f5;
+      border-radius: 20px;
+      box-shadow: 0 10px 28px rgba(20, 55, 110, 0.10);
+      padding: 24px;
+      margin-bottom: 22px;
+    }
+
+    .card h2, .card h3 {
+      font-family: 'Montserrat', sans-serif;
+      margin-top: 0;
+      color: #173d70;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #173d70;
+    }
+
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid #cfe0f5;
+      font-size: 1rem;
+      background: #fff;
+      color: #173d70;
+    }
+
+    .case-title {
+      display: inline-block;
+      background: #eaf3ff;
+      color: #0f4fa8;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .question-box,
+    .answer-box,
+    .reasoning-box {
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-top: 14px;
+    }
+
+    .question-box {
+      background: #f7fbff;
+      border: 1px solid #dce9f8;
+    }
+
+    .answer-box {
+      background: #eefaf2;
+      border: 1px solid #cfe9d7;
+    }
+
+    .reasoning-box {
+      background: #fff9ed;
+      border: 1px solid #f0dfb2;
+    }
+
+    .muted {
+      color: #5f7288;
+    }
+
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.98rem;
+    }
+
+    .primary {
+      background: #1f66c1;
+      color: white;
+    }
+
+    .secondary {
+      background: #eaf3ff;
+      color: #0f4fa8;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    ul {
+      margin: 10px 0 0 18px;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .empty {
+      color: #5f7288;
+      font-style: italic;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .card {
+        padding: 18px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header class="header compact">
-    <div class="shell">
-      <div class="topbar">
-        <a class="back-link" href="vestibulaire.html">← Accueil</a>
-        <div class="brand">Module cas cliniques</div>
-      </div>
-      <div class="tagline">Entraînement par cas : lire, répondre mentalement, puis dévoiler la correction et le raisonnement.</div>
-      <div class="nav-row" id="pageNav"></div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="back-link" href="vestibulaire.html">← Retour au module vestibulaire</a>
+      <h1>Cas cliniques</h1>
+      <p class="subtitle">Entraînement sans spoiler : lecture du cas d’abord, correction ensuite.</p>
     </div>
   </header>
 
-  <main class="page">
-    <div class="shell main-grid">
-      <aside class="stack">
-        <div class="panel">
-          <h2 class="h2">Filtrer par canal</h2>
-          <div class="btn-row" id="channelButtons"></div>
+  <main class="container">
+    <section class="card">
+      <h2>Choisir un cas</h2>
+      <div class="controls">
+        <div>
+          <label for="caseSelect">Sélection</label>
+          <select id="caseSelect">
+            <option value="">-- Sélectionner un cas --</option>
+          </select>
         </div>
-        <div class="panel note info">Méthode utile : lire l’énoncé, identifier la forme du nystagmus, conclure sur le canal puis choisir la manœuvre.</div>
-      </aside>
-      <section class="stack" id="caseCards"></section>
-    </div>
+      </div>
+    </section>
+
+    <section class="card" id="caseCard">
+      <p class="empty">Choisis un cas pour afficher l’énoncé.</p>
+    </section>
   </main>
 
   <script src="data.js"></script>
-  <script src="app.js"></script>
   <script>
-    APP.pageNav('cas-cliniques.html');
-    let current = 'post';
-    function toggleReveal(id){
-      document.getElementById(id).classList.toggle('visible');
+    function getCaseNumber(title) {
+      const match = String(title || '').match(/Cas\\s*(\\d+)/i);
+      return match ? Number(match[1]) : 999;
     }
-    function render(){
-      APP.channelButtons('channelButtons', current, id => { current = id; render(); });
-      const channel = COURSE_DATA.channels[current];
-      const items = COURSE_DATA.cases.filter(c => c.canal === current);
-      document.getElementById('caseCards').innerHTML = `
-        <div class="hero-card">
-          <div class="badge success">${channel.icon} ${channel.name}</div>
-          <h1 class="h1" style="margin-top:10px">Cas cliniques — ${channel.name}</h1>
-          <p class="lead">Travail conseillé : analyser d’abord sans la correction, puis vérifier le raisonnement.</p>
+
+    function escapeHtml(text) {
+      return String(text ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    const allCases = Array.isArray(window.COURSE_DATA?.cases)
+      ? [...window.COURSE_DATA.cases].sort((a, b) => getCaseNumber(a.title) - getCaseNumber(b.title))
+      : [];
+
+    const caseSelect = document.getElementById('caseSelect');
+    const caseCard = document.getElementById('caseCard');
+
+    allCases.forEach(item => {
+      const option = document.createElement('option');
+      option.value = item.id;
+      option.textContent = `Cas ${getCaseNumber(item.title)}`;
+      caseSelect.appendChild(option);
+    });
+
+    function renderCase(id) {
+      const item = allCases.find(c => c.id === id);
+
+      if (!item) {
+        caseCard.innerHTML = '<p class="empty">Choisis un cas pour afficher l’énoncé.</p>';
+        return;
+      }
+
+      const number = getCaseNumber(item.title);
+      const reasoning = Array.isArray(item.reasoning) ? item.reasoning : [];
+
+      caseCard.innerHTML = `
+        <div class="case-title">Cas ${number}</div>
+
+        <h2>Énoncé</h2>
+        <div class="question-box">
+          <p>${escapeHtml(item.stem)}</p>
         </div>
-      ` + items.map((item, idx) => `
-        <article class="panel case-card">
-          <div class="split-head">
-            <h2 class="h2">${item.title}</h2>
-            <button class="btn primary" onclick="toggleReveal('reveal-${idx}')">Afficher / masquer la correction</button>
+
+        <h3 style="margin-top:18px;">Questions</h3>
+        <div class="question-box">
+          <p>${escapeHtml(item.prompt)}</p>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="toggleCorrectionBtn">Afficher la correction</button>
+          <button class="secondary hidden" id="hideCorrectionBtn">Masquer la correction</button>
+        </div>
+
+        <div id="correctionBlock" class="hidden">
+          <div class="answer-box">
+            <h3>Correction</h3>
+            <p>${escapeHtml(item.answer)}</p>
           </div>
-          <div class="card soft">
-            <h3 class="h3">Énoncé</h3>
-            <p>${item.stem}</p>
-            <p class="muted"><strong>Question :</strong> ${item.prompt}</p>
+
+          <div class="reasoning-box">
+            <h3>Raisonnement</h3>
+            ${
+              reasoning.length
+                ? `<ul>${reasoning.map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>`
+                : `<p class="muted">Aucun détail supplémentaire.</p>`
+            }
           </div>
-          <div class="reveal" id="reveal-${idx}">
-            <div class="two-col">
-              <div class="card soft">
-                <h3 class="h3">Correction</h3>
-                <p>${item.answer}</p>
-              </div>
-              <div class="card soft">
-                <h3 class="h3">Raisonnement</h3>
-                ${APP.renderList(item.reasoning)}
-              </div>
-            </div>
-          </div>
-        </article>
-      `).join('');
+        </div>
+      `;
+
+      const toggleBtn = document.getElementById('toggleCorrectionBtn');
+      const hideBtn = document.getElementById('hideCorrectionBtn');
+      const correctionBlock = document.getElementById('correctionBlock');
+
+      toggleBtn.addEventListener('click', () => {
+        correctionBlock.classList.remove('hidden');
+        toggleBtn.classList.add('hidden');
+        hideBtn.classList.remove('hidden');
+      });
+
+      hideBtn.addEventListener('click', () => {
+        correctionBlock.classList.add('hidden');
+        hideBtn.classList.add('hidden');
+        toggleBtn.classList.remove('hidden');
+      });
     }
-    window.toggleReveal = toggleReveal;
-    render();
+
+    caseSelect.addEventListener('change', e => renderCase(e.target.value));
   </script>
 </body>
 </html>
