@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VPPB Simulator - Outil pédagogique interactif</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simulateur VPPB - Outil pédagogique interactif</title>
     <style>
         * {
             margin: 0;
@@ -13,6 +13,7 @@
 
         :root {
             --primary: #2563eb;
+            --primary-dark: #1d4ed8;
             --secondary: #64748b;
             --success: #10b981;
             --warning: #f59e0b;
@@ -22,11 +23,12 @@
             --border: #e2e8f0;
             --text-dark: #1e293b;
             --text-light: #64748b;
+            --panel-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-light);
+            background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
             color: var(--text-dark);
             line-height: 1.6;
         }
@@ -35,28 +37,56 @@
             background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
             color: white;
             padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.65rem 1rem;
+            background: rgba(255,255,255,0.16);
+            color: white;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.22);
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.26);
         }
 
         .header h1 {
             font-size: 2rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.35rem;
         }
 
         .header p {
-            opacity: 0.9;
-            font-size: 0.95rem;
+            opacity: 0.95;
+            font-size: 0.98rem;
+            max-width: 980px;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1500px;
             margin: 0 auto;
             padding: 2rem;
         }
 
         .layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.05fr 0.95fr;
             gap: 2rem;
             margin-bottom: 2rem;
         }
@@ -69,18 +99,19 @@
 
         .panel {
             background: var(--bg-white);
-            border-radius: 8px;
+            border-radius: 14px;
             padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: var(--panel-shadow);
             border: 1px solid var(--border);
+            margin-bottom: 2rem;
         }
 
         .panel h2 {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             margin-bottom: 1rem;
             color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(37,99,235,0.12);
+            padding-bottom: 0.6rem;
         }
 
         .controls {
@@ -91,7 +122,7 @@
         .control-group {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.45rem;
         }
 
         .control-group label {
@@ -102,27 +133,27 @@
 
         .btn-group {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
             gap: 0.75rem;
         }
 
         .btn {
-            padding: 0.75rem 1rem;
+            padding: 0.85rem 1rem;
             border: 2px solid var(--border);
-            border-radius: 6px;
+            border-radius: 10px;
             background: var(--bg-white);
             color: var(--text-dark);
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
+            transition: all 0.25s ease;
+            font-size: 0.92rem;
             text-align: center;
         }
 
         .btn:hover {
             border-color: var(--primary);
             color: var(--primary);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
 
         .btn.active {
@@ -139,8 +170,9 @@
         }
 
         .btn-primary:hover {
-            background: #1d4ed8;
-            border-color: #1d4ed8;
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: white;
         }
 
         .slider-container {
@@ -156,61 +188,52 @@
             background: var(--border);
             outline: none;
             -webkit-appearance: none;
+            appearance: none;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: var(--primary);
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
 
         input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: var(--primary);
             cursor: pointer;
             border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .value-display {
-            font-weight: 600;
+            font-weight: 700;
             color: var(--primary);
-            min-width: 50px;
+            min-width: 54px;
             text-align: right;
         }
 
-        canvas {
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: white;
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-
         .info-box {
-            background: #f0f9ff;
+            background: #eff6ff;
             border-left: 4px solid var(--primary);
             padding: 1rem;
-            border-radius: 4px;
-            margin-top: 1rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
         }
 
         .info-box h4 {
             color: var(--primary);
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
+            margin-bottom: 0.45rem;
+            font-size: 0.98rem;
         }
 
         .info-box p {
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             color: var(--text-light);
             margin-bottom: 0.3rem;
         }
@@ -219,37 +242,19 @@
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
             border-left: 4px solid var(--warning);
             padding: 1rem;
-            border-radius: 4px;
+            border-radius: 8px;
             margin-top: 1rem;
         }
 
         .interpretation-panel h4 {
             color: #92400e;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.45rem;
         }
 
-        .interpretation-panel p {
+        .interpretation-panel p,
+        .interpretation-panel li {
             color: #78350f;
-            font-size: 0.9rem;
-        }
-
-        .alert {
-            padding: 1rem;
-            border-radius: 6px;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .alert-danger {
-            background: #fee2e2;
-            border-left: 4px solid var(--danger);
-            color: #7f1d1d;
-        }
-
-        .alert-success {
-            background: #dcfce7;
-            border-left: 4px solid var(--success);
-            color: #166534;
+            font-size: 0.92rem;
         }
 
         .tabs {
@@ -265,12 +270,12 @@
             background: none;
             border: none;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-light);
             border-bottom: 3px solid transparent;
             margin-bottom: -2px;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            font-size: 0.94rem;
         }
 
         .tab:hover {
@@ -292,7 +297,7 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
             gap: 1rem;
             margin-top: 1rem;
         }
@@ -300,93 +305,74 @@
         .stat-card {
             background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
             padding: 1rem;
-            border-radius: 6px;
+            border-radius: 10px;
             text-align: center;
             border: 1px solid var(--border);
         }
 
         .stat-label {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: var(--text-light);
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 0.5rem;
         }
 
         .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.35rem;
+            font-weight: 800;
             color: var(--primary);
         }
 
-        .unity-container {
+        .simulator-canvas-wrap {
             width: 100%;
-            height: 500px;
+            height: 560px;
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 12px;
             overflow: hidden;
-            background: #1a1a2e;
+            background: #111827;
             position: relative;
         }
 
         .canvas-container {
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         canvas#labyrinthe {
-            max-width: 100%;
-            max-height: 100%;
+            width: 100%;
+            height: 100%;
+            display: block;
             background: white;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-light);
-            border-top: 1px solid var(--border);
-            margin-top: 3rem;
-        }
-
-        .footer a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
         }
 
         .legend {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.85rem;
             margin-top: 1rem;
             padding: 1rem;
             background: var(--bg-light);
-            border-radius: 4px;
+            border-radius: 8px;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.55rem;
             font-size: 0.9rem;
         }
 
         .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
             flex-shrink: 0;
         }
 
         .eye-movement {
-            width: 60px;
-            height: 60px;
+            width: 72px;
+            height: 72px;
             border: 2px solid var(--border);
             border-radius: 50%;
             margin: 1rem auto;
@@ -395,8 +381,8 @@
         }
 
         .eye-pupil {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             background: var(--text-dark);
             border-radius: 50%;
             position: absolute;
@@ -407,7 +393,7 @@
 
         .animation-controls {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.6rem;
             margin-top: 1rem;
         }
 
@@ -415,28 +401,19 @@
             flex: 1;
         }
 
-        .speed-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--success);
-            margin-left: 0.5rem;
-        }
-
         .position-indicator {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 0.5rem;
             margin: 1rem 0;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.86rem;
         }
 
         .pos-box {
-            padding: 0.5rem;
+            padding: 0.55rem;
             background: var(--bg-light);
-            border-radius: 4px;
+            border-radius: 8px;
             border: 1px solid var(--border);
         }
 
@@ -444,117 +421,159 @@
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+            font-weight: 700;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
             font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            margin-left: 1.2rem;
+        }
+
+        .small-note {
+            font-size: 0.85rem;
+            color: var(--text-light);
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🧬 VPPB Simulator</h1>
-        <p>Outil pédagogique interactif - Visualisation biomécanique 3D des otholites et nystagmus</p>
-    </div>
-
-
-    <div class="container" style="padding-bottom: 0;">
-        <p><a href="index.html" style="display:inline-block;padding:0.7rem 1rem;background:#2563eb;color:white;text-decoration:none;border-radius:8px;font-weight:600;">← Retour à l’accueil</a></p>
+        <div class="topbar">
+            <a href="index.html" class="back-link">← Retour à l’accueil</a>
+        </div>
+        <h1>🧬 Simulateur VPPB</h1>
+        <p>
+            Outil pédagogique interactif de visualisation des canaux semi-circulaires, de la migration otolithique
+            et du nystagmus pendant les tests diagnostiques et les manœuvres thérapeutiques.
+        </p>
     </div>
 
     <div class="container">
-        <!-- Sélection du canal -->
         <div class="panel">
-            <h2>1️⃣ Sélectionner le canal atteint</h2>
-            <div class="btn-group">
-                <button class="btn active canal-btn" onclick="setCanal('post', event)">Canal postérieur (90%)</button>
-                <button class="btn canal-btn" onclick="setCanal('horiz', event)">Canal horizontal (9%)</button>
-                <button class="btn canal-btn" onclick="setCanal('ant', event)">Canal antérieur (1%)</button>
+            <h2>1️⃣ Sélection du canal</h2>
+            <div class="btn-group" id="canalButtons">
+                <button class="btn active" data-canal="post">Canal postérieur</button>
+                <button class="btn" data-canal="horiz">Canal horizontal</button>
+                <button class="btn" data-canal="ant">Canal antérieur</button>
             </div>
             <div class="info-box" id="canalInfo"></div>
-            <div class="controls" style="margin-top: 1rem; grid-template-columns: 1fr 1fr;">
+        </div>
+
+        <div class="panel">
+            <h2>🧭 Paramètres cliniques</h2>
+            <div class="controls">
                 <div class="control-group">
-                    <label for="affectedSide">Côté atteint simulé</label>
-                    <select id="affectedSide" onchange="setAffectedSide(this.value)" style="padding:0.7rem;border:1px solid var(--border);border-radius:6px;">
+                    <label for="affectedSide">Côté atteint</label>
+                    <select id="affectedSide">
                         <option value="right">Droite</option>
                         <option value="left">Gauche</option>
                     </select>
                 </div>
+
                 <div class="control-group">
                     <label for="horizontalVariant">Forme horizontale</label>
-                    <select id="horizontalVariant" onchange="setHorizontalVariant(this.value)" style="padding:0.7rem;border:1px solid var(--border);border-radius:6px;">
+                    <select id="horizontalVariant">
                         <option value="geotropic">Canalolithiase géotropique</option>
                         <option value="ageotropic">Canalolithiase agéotropique</option>
                         <option value="cupulo">Cupulolithiase</option>
                     </select>
                 </div>
-            </div>
 
+                <p class="small-note">
+                    La forme horizontale modifie la lecture du nystagmus et l’interprétation du côté atteint.
+                </p>
+            </div>
         </div>
 
-        <!-- Layout principal: Visualisation 3D et Contrôles -->
         <div class="layout">
-            <!-- Visualisation 3D du labyrinthe -->
             <div class="panel">
-                <h2>🎯 Visualisation 3D du labyrinthe</h2>
-                <div class="unity-container">
-                    <canvas id="labyrinthe"></canvas>
+                <h2>🎯 Visualisation</h2>
+                <div class="simulator-canvas-wrap">
+                    <div class="canvas-container">
+                        <canvas id="labyrinthe"></canvas>
+                    </div>
                 </div>
+
                 <div class="legend">
                     <div class="legend-item">
-                        <div class="legend-color" style="background: #ff6b6b;"></div>
-                        <span>Cristaux (otholites)</span>
+                        <div class="legend-color" style="background:#ff6b6b;"></div>
+                        <span>Otoconies / cristaux</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="background: #4ecdc4;"></div>
-                        <span>Endolymphe</span>
+                        <div class="legend-color" style="background:#4ecdc4;"></div>
+                        <span>Flux endolymphatique</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="background: #95e1d3;"></div>
+                        <div class="legend-color" style="background:#95e1d3;"></div>
                         <span>Cupule</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="background: #c7a0e8;"></div>
+                        <div class="legend-color" style="background:#c7a0e8;"></div>
                         <span>Ampoule</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Contrôles des manoeuvres -->
             <div class="panel">
-                <h2>🎮 Contrôles des manoeuvres</h2>
-                
+                <h2>🎮 Contrôles</h2>
+
                 <div class="tabs">
-                    <button class="tab active" onclick="switchTab('manoeuvre', event)">Manoeuvre</button>
-                    <button class="tab" onclick="switchTab('test', event)">Test diagnostic</button>
-                    <button class="tab" onclick="switchTab('analysis', event)">Analyse</button>
+                    <button class="tab active" data-tab="manoeuvre">Manœuvre</button>
+                    <button class="tab" data-tab="test">Test diagnostique</button>
+                    <button class="tab" data-tab="analysis">Analyse</button>
                 </div>
 
-                <!-- TAB: Manoeuvre -->
                 <div id="manoeuvre" class="tab-content active">
                     <div class="controls">
                         <div class="control-group">
-                            <label>Sélectionner la manoeuvre:</label>
+                            <label>Sélectionner la manœuvre</label>
                             <div class="btn-group" id="manoeuvreButtons"></div>
                         </div>
 
                         <div class="control-group">
-                            <label>Progress de la manoeuvre:</label>
+                            <label>Progression manœuvre</label>
                             <div class="slider-container">
-                                <input type="range" id="manoeuvreSlider" min="0" max="100" value="0" 
-                                       oninput="updateManoeuvreProgress(this.value)">
+                                <input type="range" id="manoeuvreSlider" min="0" max="100" value="0" />
                                 <span class="value-display" id="progressDisplay">0%</span>
                             </div>
                         </div>
 
                         <div class="animation-controls">
-                            <button class="btn-primary" onclick="playAnimation()">▶️ Jouer</button>
-                            <button class="btn-primary" onclick="pauseAnimation()">⏸️ Pause</button>
-                            <button class="btn-primary" onclick="resetAnimation()">🔄 Réinitialiser</button>
+                            <button class="btn btn-primary" id="playAnimationBtn">▶ Jouer</button>
+                            <button class="btn btn-primary" id="pauseAnimationBtn">⏸ Pause</button>
+                            <button class="btn btn-primary" id="resetAnimationBtn">↺ Réinitialiser</button>
                         </div>
 
                         <div class="control-group">
-                            <label>Vitesse d'animation:</label>
+                            <label>Vitesse</label>
                             <div class="slider-container">
-                                <input type="range" id="speedSlider" min="0.5" max="3" step="0.5" value="1" 
-                                       oninput="updateSpeed(this.value)">
+                                <input type="range" id="speedSlider" min="0.5" max="3" step="0.5" value="1" />
                                 <span class="value-display" id="speedDisplay">1x</span>
                             </div>
                         </div>
@@ -563,38 +582,35 @@
                     </div>
                 </div>
 
-                <!-- TAB: Test diagnostic -->
                 <div id="test" class="tab-content">
                     <div class="controls">
                         <div class="control-group">
-                            <label>Sélectionner le test:</label>
+                            <label>Sélectionner le test</label>
                             <div class="btn-group" id="testButtons"></div>
                         </div>
 
                         <div class="control-group">
-                            <label>Progress du test:</label>
+                            <label>Progression test</label>
                             <div class="slider-container">
-                                <input type="range" id="testSlider" min="0" max="100" value="0"
-                                       oninput="updateTestProgress(this.value)">
+                                <input type="range" id="testSlider" min="0" max="100" value="0" />
                                 <span class="value-display" id="testProgressDisplay">0%</span>
                             </div>
                         </div>
 
                         <div class="animation-controls">
-                            <button class="btn-primary" onclick="playTest()">▶️ Jouer</button>
-                            <button class="btn-primary" onclick="pauseTest()">⏸️ Pause</button>
-                            <button class="btn-primary" onclick="resetTest()">🔄 Réinitialiser</button>
+                            <button class="btn btn-primary" id="playTestBtn">▶ Jouer</button>
+                            <button class="btn btn-primary" id="pauseTestBtn">⏸ Pause</button>
+                            <button class="btn btn-primary" id="resetTestBtn">↺ Réinitialiser</button>
                         </div>
 
                         <div class="interpretation-panel" id="testInfo"></div>
                     </div>
                 </div>
 
-                <!-- TAB: Analyse -->
                 <div id="analysis" class="tab-content">
                     <div class="controls">
                         <h3>📊 Analyse du nystagmus</h3>
-                        
+
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-label">Latence</div>
@@ -602,22 +618,24 @@
                             </div>
                             <div class="stat-card">
                                 <div class="stat-label">Direction</div>
-                                <div class="stat-value" id="directionValue" style="font-size: 1rem;">-</div>
+                                <div class="stat-value" id="directionValue" style="font-size:1rem;">-</div>
                             </div>
                             <div class="stat-card">
                                 <div class="stat-label">Amplitude</div>
                                 <div class="stat-value" id="amplitudeValue">-</div>
                             </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Fréquence</div>
+                                <div class="stat-value" id="frequencyValue">-</div>
+                            </div>
                         </div>
 
-                        <h3 style="margin-top: 1.5rem;">👁️ Mouvement oculaire</h3>
+                        <h3 style="margin-top:1.5rem;">👁️ Mouvement oculaire</h3>
                         <div class="eye-movement">
                             <div class="eye-pupil" id="eyePupil"></div>
                         </div>
-                        <p id="nystagmusMeta" style="text-align:center;color:var(--text-light);font-size:0.9rem;">-</p>
 
-                        <h3 style="margin-top: 1.5rem;">📍 Position de la tête</h3>
-                        <p id="headPositionLabel" style="font-weight:600;color:var(--primary);margin:0.5rem 0;">Neutre</p>
+                        <h3 style="margin-top:1.5rem;">📍 Position de la tête</h3>
                         <div class="position-indicator">
                             <div class="pos-box" id="pos-left">Gauche</div>
                             <div class="pos-box active" id="pos-center">Centre</div>
@@ -630,7 +648,29 @@
             </div>
         </div>
 
-        <!-- Section infos détaillées -->
+        <div class="panel">
+            <h2>🧪 Cas cliniques</h2>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="caseSelector">Choisir un cas</label>
+                    <select id="caseSelector">
+                        <option value="">-- Sélectionner --</option>
+                        <option value="post_1">Postérieur - Cas 1</option>
+                        <option value="post_4">Postérieur - Cas 4</option>
+                        <option value="horiz_9">Horizontal - Cas 9</option>
+                        <option value="horiz_10">Horizontal - Cas 10</option>
+                        <option value="ant_13">Antérieur - Cas 13</option>
+                        <option value="ant_15">Antérieur - Cas 15</option>
+                    </select>
+                </div>
+
+                <div class="info-box" id="clinicalCaseBox">
+                    <h4>Cas clinique</h4>
+                    <p>Sélectionne un cas pour afficher l’énoncé, le diagnostic attendu et la manœuvre adaptée.</p>
+                </div>
+            </div>
+        </div>
+
         <div class="panel">
             <h2>📚 Interprétation clinique</h2>
             <div id="clinicalInfo"></div>
@@ -638,9 +678,8 @@
     </div>
 
     <div class="footer">
-        <p>VPPB Simulator v1.0 | Outil pédagogique pour la formation en vestibulologie</p>
-        <p><a href="https://github.com" target="_blank">📱 GitHub Repository</a> | 
-           <a href="#" onclick="openDocumentation()">📖 Documentation</a></p>
+        <p>Simulateur VPPB | Outil pédagogique de vestibulologie</p>
+        <p><a href="index.html">Retour à l’accueil</a></p>
     </div>
 
     <script src="simulator.js"></script>
