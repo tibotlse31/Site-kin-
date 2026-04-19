@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VestibLab VPPB — checklists</title>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <header class="header compact">
+    <div class="shell">
+      <div class="topbar">
+        <a class="back-link" href="vestibulaire.html">← Accueil</a>
+        <div class="brand">Module checklists</div>
+      </div>
+      <div class="tagline">Critères à vérifier avant, pendant et après les tests et manœuvres.</div>
+      <div class="nav-row" id="pageNav"></div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="shell main-grid">
+      <aside class="stack">
+        <div class="panel">
+          <h2 class="h2">Choisir un canal</h2>
+          <div class="btn-row" id="channelButtons"></div>
+        </div>
+      </aside>
+      <section class="stack">
+        <div class="hero-card" id="heroBox"></div>
+        <div class="two-col">
+          <div class="panel">
+            <h2 class="h2">Checklist diagnostique</h2>
+            <div id="diagBox"></div>
+          </div>
+          <div class="panel">
+            <h2 class="h2">Checklist thérapeutique</h2>
+            <div id="therBox"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    APP.pageNav('checklists.html');
+    let current = 'post';
+    function render(){
+      APP.channelButtons('channelButtons', current, id => { current = id; render(); });
+      const c = COURSE_DATA.channels[current];
+      const lists = COURSE_DATA.checklists[current];
+      document.getElementById('heroBox').innerHTML = `
+        <div class="badge success">${c.icon} ${c.name}</div>
+        <h1 class="h1" style="margin-top:10px">Checklists — ${c.name}</h1>
+        <p class="lead">Objectif : savoir quoi regarder, quoi annoncer et quoi sécuriser.</p>
+      `;
+      document.getElementById('diagBox').innerHTML = APP.renderList(lists.diagnostic);
+      document.getElementById('therBox').innerHTML = APP.renderList(lists.therapeutic);
+    }
+    render();
+  </script>
+</body>
+</html>
