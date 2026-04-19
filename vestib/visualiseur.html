@@ -8,7 +8,6 @@
   <style>
     .dm-hero { display:grid; gap:14px; }
     .dm-title { margin:0; font-size:2rem; font-weight:850; color:#0f3e77; }
-    .dm-subtitle { margin:0; color:#4f6680; line-height:1.55; }
     .dm-toggle { display:flex; gap:10px; flex-wrap:wrap; }
     .dm-toggle .btn { min-width:160px; }
     .dm-image-card { display:grid; gap:14px; }
@@ -16,7 +15,6 @@
     .dm-image-frame img { width:100%; height:100%; object-fit:contain; display:block; background:#eef4fb; }
     .dm-image-frame img.mirror { transform:scaleX(-1); }
     .dm-placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:24px; text-align:center; color:#5f7288; background:repeating-linear-gradient(45deg,#f5f8fc,#f5f8fc 14px,#edf3fa 14px,#edf3fa 28px); }
-    .dm-caption { color:#31506d; line-height:1.55; }
     .dm-step-row { display:flex; gap:10px; flex-wrap:wrap; }
     .dm-step-btn { padding:10px 14px; border-radius:999px; border:1px solid #d6e3f2; background:#fff; color:#16324f; font:inherit; cursor:pointer; }
     .dm-step-btn.active { background:#1565c0; border-color:#1565c0; color:#fff; }
@@ -50,7 +48,7 @@
       <aside class="stack">
         <div class="panel dm-hero">
           <h1 class="dm-title">Diagnostiques et manœuvres</h1>
-                    <div class="dm-toggle" id="modeButtons"></div>
+          <div class="dm-toggle" id="modeButtons"></div>
         </div>
 
         <div class="panel">
@@ -88,9 +86,7 @@
         <div class="hero-card">
           <div class="dm-badges" id="badgeRow"></div>
           <h2 class="h2" id="sequenceTitle" style="margin-top:10px"></h2>
-          <p class="lead" id="sequenceDesc"></p>
-          <div class="note warn" id="sequenceCourseNote"></div>
-        </div>
+                  </div>
 
         <div class="dm-grid">
           <div class="panel dm-image-card">
@@ -99,7 +95,6 @@
               <img id="stepImage" alt="Illustration de la position" />
               <div class="dm-placeholder" id="imagePlaceholder"></div>
             </div>
-                        <div class="dm-caption" id="stepCaption"></div>
           </div>
 
           <div class="stack">
