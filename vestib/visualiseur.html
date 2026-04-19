@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visualiseur — VestibLab VPPB</title>
+  <link rel="stylesheet" href="app.css" />
+  <style>
+    .visualizer-note{
+      padding:14px 16px;
+      border-radius:14px;
+      border:1px solid #d6e7ff;
+      background:#edf5ff;
+      color:#1e4f82;
+      line-height:1.55;
+    }
+    .viz-layout{
+      display:grid;
+      grid-template-columns:minmax(0,1.5fr) minmax(320px,.9fr);
+      gap:18px;
+      align-items:start;
+    }
+    .viz-stage{
+      background:#f8fbff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      min-height:560px;
+    }
+    #anatomyHost{
+      width:100%;
+      min-height:560px;
+    }
+    .side-stack{
+      display:grid;
+      gap:18px;
+    }
+    .step-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .step-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:120px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .step-btn.active{
+      background:var(--primary);
+      border-color:var(--primary);
+      color:#fff;
+    }
+    .mini-grid{
+      display:grid;
+      gap:12px;
+    }
+    .mini-card{
+      padding:14px;
+      border:1px solid #e3edf8;
+      border-radius:14px;
+      background:#fbfdff;
+    }
+    .mini-card strong{
+      display:block;
+      margin-bottom:6px;
+      color:#0f3e77;
+    }
+    #eyeHost{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:260px;
+    }
+    .helper{
+      color:var(--muted);
+      font-size:.94rem;
+      line-height:1.5;
+    }
+    @media (max-width:1024px){
+      .viz-layout{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <header class="header compact">
+    <div class="shell">
+      <div class="topbar">
+        <a class="back-link" href="vestibulaire.html">← Accueil</a>
+        <div class="brand">Module visualiseur</div>
+      </div>
+      <div class="tagline">Version statique de travail : gabarits fixes, repères anatomiques verrouillés, puis seulement lecture clinique test par test.</div>
+      <div class="nav-row" id="pageNav"></div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="shell stack">
+      <section class="visualizer-note">
+        Le visuel ne cherche pas à faire de la 3D. Il sert à montrer correctement l’utricule, l’ampoule, la cupule, le bras commun et la situation des otoconies selon le test.
+      </section>
+
+      <section class="panel">
+        <div class="two-col" style="grid-template-columns:repeat(4,minmax(0,1fr));">
+          <div>
+            <label class="h3" for="channelSelect" style="display:block;margin-bottom:8px;">Canal</label>
+            <select id="channelSelect"></select>
+          </div>
+          <div>
+            <label class="h3" for="testSelect" style="display:block;margin-bottom:8px;">Test</label>
+            <select id="testSelect"></select>
+          </div>
+          <div>
+            <label class="h3" for="sideSelect" style="display:block;margin-bottom:8px;">Oreille atteinte</label>
+            <select id="sideSelect">
+              <option value="right">Droite</option>
+              <option value="left">Gauche</option>
+            </select>
+          </div>
+          <div id="variantWrap">
+            <label class="h3" for="variantSelect" style="display:block;margin-bottom:8px;">Variante</label>
+            <select id="variantSelect"></select>
+          </div>
+        </div>
+      </section>
+
+      <section class="viz-layout">
+        <div class="viz-stage">
+          <div id="anatomyHost"></div>
+        </div>
+
+        <div class="side-stack">
+          <section class="panel">
+            <h2 class="h2">Étapes</h2>
+            <div class="step-row" id="stepButtons"></div>
+          </section>
+
+          <section class="panel">
+            <h2 class="h2">Lecture clinique</h2>
+            <div class="mini-grid" id="infoBox"></div>
+          </section>
+
+          <section class="panel">
+            <h2 class="h2">Sens du nystagmus</h2>
+            <div id="eyeHost"></div>
+            <p class="helper" id="eyeCaption"></p>
+          </section>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script src="visualiseur.js"></script>
+</body>
+</html>
