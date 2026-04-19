@@ -856,21 +856,21 @@ function getNystagmus(state, item, step) {
 
 function renderEye(model) {
   const w = 280;
-  const h = 240;
+  const h = 230;
   const cx = 140;
-  const cy = 104;
+  const cy = 92;
 
   const linearArrow = (() => {
     if (model.type === 'horizontal') {
       return model.dir === 'right'
-        ? `<line x1="92" y1="104" x2="188" y2="104" stroke="#dc2626" stroke-width="6" stroke-linecap="round" marker-end="url(#arrowRed)"/>`
-        : `<line x1="188" y1="104" x2="92" y2="104" stroke="#dc2626" stroke-width="6" stroke-linecap="round" marker-end="url(#arrowRed)"/>`;
+        ? `<line x1="86" y1="92" x2="194" y2="92" stroke="#dc2626" stroke-width="6" stroke-linecap="round" marker-end="url(#arrowRed)"/>`
+        : `<line x1="194" y1="92" x2="86" y2="92" stroke="#dc2626" stroke-width="6" stroke-linecap="round" marker-end="url(#arrowRed)"/>`;
     }
     if (model.type === 'vertical' || model.type === 'vertical-possible' || model.type === 'torsional-vertical') {
-      const dash = model.type === 'vertical-possible' ? 'stroke-dasharray="8 8"' : '';
+      const dash = model.type === 'vertical-possible' ? 'stroke-dasharray="6 6"' : '';
       return model.vertical === 'down'
-        ? `<line x1="220" y1="56" x2="220" y2="152" stroke="#dc2626" stroke-width="6" stroke-linecap="round" ${dash} marker-end="url(#arrowRed)"/>`
-        : `<line x1="220" y1="152" x2="220" y2="56" stroke="#dc2626" stroke-width="6" stroke-linecap="round" ${dash} marker-end="url(#arrowRed)"/>`;
+        ? `<line x1="222" y1="54" x2="222" y2="130" stroke="#dc2626" stroke-width="6" stroke-linecap="round" ${dash} marker-end="url(#arrowRed)"/>`
+        : `<line x1="222" y1="130" x2="222" y2="54" stroke="#dc2626" stroke-width="6" stroke-linecap="round" ${dash} marker-end="url(#arrowRed)"/>`;
     }
     return '';
   })();
@@ -878,25 +878,35 @@ function renderEye(model) {
   const torsion = (() => {
     if (model.type !== 'torsional-vertical') return '';
     const clockwise = model.torsion === 'horaire';
-    const start = clockwise ? Math.PI * 0.15 : Math.PI * 0.85;
-    const end = clockwise ? Math.PI * 1.3 : Math.PI * -0.3;
     const r = 40;
+    const start = clockwise ? Math.PI * 0.95 : Math.PI * 0.05;
+    const end = clockwise ? Math.PI * -0.10 : Math.PI * 1.10;
     const x1 = cx + Math.cos(start) * r;
     const y1 = cy + Math.sin(start) * r;
     const x2 = cx + Math.cos(end) * r;
     const y2 = cy + Math.sin(end) * r;
+    const sweep = clockwise ? 0 : 1;
+    const tangent = clockwise ? end - Math.PI / 2 : end + Math.PI / 2;
+    const ax = Math.cos(tangent);
+    const ay = Math.sin(tangent);
+    const px = -ay;
+    const py = ax;
+    const headLen = 10;
+    const halfW = 5;
+    const tipX = x2;
+    const tipY = y2;
+    const b1x = tipX - ax * headLen + px * halfW;
+    const b1y = tipY - ay * headLen + py * halfW;
+    const b2x = tipX - ax * headLen - px * halfW;
+    const b2y = tipY - ay * headLen - py * halfW;
     return `
-      <path d="M ${x1} ${y1} A ${r} ${r} 0 1 ${clockwise ? 1 : 0} ${x2} ${y2}" fill="none" stroke="#dc2626" stroke-width="5" marker-end="url(#arrowRed)"/>
-      <text x="140" y="182" text-anchor="middle" font-size="13" fill="#dc2626" font-family="inherit">torsion ${model.torsion}</text>
+      <path d="M ${x1} ${y1} A ${r} ${r} 0 1 ${sweep} ${x2} ${y2}" fill="none" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/>
+      <polygon points="${tipX},${tipY} ${b1x},${b1y} ${b2x},${b2y}" fill="#dc2626"/>
     `;
   })();
 
-  const verticalCaption = (model.type === 'vertical' || model.type === 'vertical-possible' || model.type === 'torsional-vertical')
-    ? `<text x="220" y="182" text-anchor="middle" font-size="13" fill="#dc2626" font-family="inherit">${model.vertical === 'up' ? 'vertical supérieur' : 'vertical inférieur'}</text>`
-    : '';
-
   return `
-    <svg viewBox="0 0 ${w} ${h}" width="100%" height="240" xmlns="http://www.w3.org/2000/svg" aria-label="Schéma du nystagmus">
+    <svg viewBox="0 0 ${w} ${h}" width="100%" height="230" xmlns="http://www.w3.org/2000/svg" aria-label="Schéma du nystagmus">
       <defs>
         <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
           <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"></path>
@@ -904,13 +914,12 @@ function renderEye(model) {
       </defs>
       <rect x="0" y="0" width="${w}" height="${h}" rx="16" fill="#ffffff"/>
       <text x="140" y="24" text-anchor="middle" font-size="18" font-weight="700" fill="#16324f" font-family="inherit">Œil</text>
-      <circle cx="140" cy="104" r="54" fill="#f8fbff" stroke="#9ab0c7" stroke-width="3"/>
-      <circle cx="140" cy="104" r="16" fill="#1565c0"/>
-      <circle cx="134" cy="98" r="4.5" fill="#fff"/>
+      <circle cx="140" cy="92" r="54" fill="#f8fbff" stroke="#9ab0c7" stroke-width="3"/>
+      <circle cx="140" cy="92" r="16" fill="#1565c0"/>
+      <circle cx="134" cy="86" r="4.5" fill="#fff"/>
       ${linearArrow}
       ${torsion}
-      ${verticalCaption}
-      <text x="140" y="214" text-anchor="middle" font-size="14" fill="#16324f" font-family="inherit">${model.summary || 'Aucun nystagmus attendu'}</text>
+      <text x="140" y="208" text-anchor="middle" font-size="14" fill="#16324f" font-family="inherit">${model.summary || 'Aucun nystagmus attendu'}</text>
     </svg>
   `;
 }
@@ -1028,8 +1037,6 @@ class DiagnosticsManoeuvresUI {
     ].filter(Boolean).join('');
 
     document.getElementById('sequenceTitle').textContent = item.label;
-    document.getElementById('sequenceDesc').textContent = item.description;
-    document.getElementById('sequenceCourseNote').innerHTML = `<strong>Repère de cours :</strong> ${item.subtitle}`;
 
     const stepButtons = document.getElementById('stepButtons');
     stepButtons.innerHTML = '';
@@ -1053,7 +1060,6 @@ class DiagnosticsManoeuvresUI {
     };
     placeholder.style.display = 'none';
     img.src = imagePath;
-    document.getElementById('stepCaption').textContent = step.caption;
 
     document.getElementById('eyeBox').innerHTML = renderEye(model);
     document.getElementById('infoBubble').innerHTML = `
