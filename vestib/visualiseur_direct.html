@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visualiseur diagnostique — VestibLab VPPB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#eef4fb;
+      --card:#ffffff;
+      --line:#43c7c0;
+      --line-dark:#16324f;
+      --muted:#61758d;
+      --border:#d8e5f2;
+      --blue:#1f66c1;
+      --blue-dark:#0f4fa8;
+      --danger:#ef4444;
+      --otolith:#ef4444;
+      --teal:#14b8a6;
+      --cupula:#92e2d4;
+      --ampulla:#c084fc;
+      --utricle:#d9e5ff;
+      --shadow:0 10px 28px rgba(20,55,110,.10);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:'Open Sans',sans-serif;
+      background:linear-gradient(180deg,var(--bg) 0%, #e7eef8 100%);
+      color:var(--line-dark);
+    }
+
+    .topbar{
+      background:linear-gradient(135deg,var(--blue) 0%, var(--blue-dark) 100%);
+      color:#fff;
+      padding:20px 24px 28px;
+      box-shadow:0 4px 18px rgba(0,0,0,.08);
+    }
+
+    .topbar-inner,.container{
+      max-width:1240px;
+      margin:0 auto;
+    }
+
+    .back-link{
+      display:inline-block;
+      margin-bottom:16px;
+      color:rgba(255,255,255,.96);
+      text-decoration:none;
+      font-weight:600;
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.22);
+    }
+
+    h1{
+      font-family:'Montserrat',sans-serif;
+      font-size:2.2rem;
+      margin:0 0 8px;
+    }
+
+    .subtitle{
+      margin:0;
+      opacity:.95;
+      font-size:1.02rem;
+    }
+
+    .container{
+      padding:26px 18px 46px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      padding:22px;
+      margin-bottom:20px;
+    }
+
+    .controls{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+      align-items:end;
+    }
+
+    .control{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .control label{
+      font-weight:700;
+      color:var(--line-dark);
+    }
+
+    select{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid #cfe0f5;
+      background:#fff;
+      color:var(--line-dark);
+      font-size:1rem;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:1.55fr .85fr;
+      gap:18px;
+    }
+
+    .viz-shell{
+      background:#f8fbff;
+      border:1px solid var(--border);
+      border-radius:18px;
+      overflow:hidden;
+      min-height:720px;
+      padding:0;
+    }
+
+    #diagramHost{
+      width:100%;
+      min-height:720px;
+    }
+
+    .sidecol{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .box{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:0 10px 28px rgba(20,55,110,.08);
+      padding:20px;
+    }
+
+    .box h2,.box h3{
+      font-family:'Montserrat',sans-serif;
+      margin-top:0;
+      color:var(--line-dark);
+    }
+
+    .step-actions{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+    }
+
+    .step-actions button{
+      border:none;
+      border-radius:999px;
+      padding:12px 14px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:.96rem;
+    }
+
+    .btn-primary{
+      background:var(--blue);
+      color:#fff;
+    }
+
+    .btn-soft{
+      background:#eaf3ff;
+      color:var(--blue-dark);
+    }
+
+    .note{
+      border-radius:16px;
+      padding:14px 16px;
+      margin-top:12px;
+      line-height:1.55;
+    }
+
+    .note.info{
+      background:#eef7ff;
+      border:1px solid #d5e9ff;
+    }
+
+    .note.warn{
+      background:#fff8ec;
+      border:1px solid #f2dfb4;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:7px 12px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:.92rem;
+    }
+
+    .badge.success{
+      background:#eaf6ee;
+      color:#1e7b45;
+      border:1px solid #cde6d6;
+    }
+
+    template{display:none}
+
+    @media (max-width:1080px){
+      .layout{grid-template-columns:1fr}
+      .controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media (max-width:640px){
+      h1{font-size:1.8rem}
+      .controls{grid-template-columns:1fr}
+      .step-actions{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="back-link" href="vestibulaire.html">← Retour au module vestibulaire</a>
+      <h1>Visualiseur diagnostique</h1>
+      <p class="subtitle">Support visuel d’appoint pour les tests diagnostiques VPPB.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="controls">
+        <div class="control">
+          <label for="channelSelect">Canal</label>
+          <select id="channelSelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="testSelect">Test</label>
+          <select id="testSelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="sideSelect">Côté atteint</label>
+          <select id="sideSelect">
+            <option value="right">Droite</option>
+            <option value="left">Gauche</option>
+          </select>
+        </div>
+
+        <div class="control" id="variantWrap">
+          <label for="variantSelect">Variante horizontale</label>
+          <select id="variantSelect">
+            <option value="geotropic">Géotropique</option>
+            <option value="ageotropic">Agéotropique</option>
+            <option value="cupulo">Cupulolithiase</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="viz-shell">
+        <div id="diagramHost"></div>
+      </div>
+
+      <div class="sidecol">
+        <div class="box">
+          <div class="step-actions">
+            <button class="btn-soft" id="prevBtn">← Précédent</button>
+            <button class="btn-primary" id="playBtn">▶ Jouer</button>
+            <button class="btn-soft" id="nextBtn">Suivant →</button>
+            <button class="btn-soft" id="resetBtn">↺ Réinitialiser</button>
+          </div>
+        </div>
+
+        <div class="box" id="stepBox"></div>
+        <div class="box" id="interpretBox"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================= -->
+  <!-- 6 TEMPLATES SVG FIXES    -->
+  <!-- ========================= -->
+
+  <!-- POSTERIEUR DROIT -->
+  <template id="tpl-post-right">
+    <svg viewBox="0 0 920 720" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-label="Canal postérieur droit">
+      <defs>
+        <radialGradient id="utricleGradPR" cx="35%" cy="30%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#d9e5ff"/>
+        </radialGradient>
+        <radialGradient id="ampullaGradPR" cx="35%" cy="30%">
+          <stop offset="0%" stop-color="#fff7ff"/>
+          <stop offset="100%" stop-color="#c084fc"/>
+        </radialGradient>
+        <marker id="arrowRedPR" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#ef4444"></path>
+        </marker>
+        <marker id="arrowTealPR" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#14b8a6"></path>
+        </marker>
+      </defs>
+
+      <rect x="0" y="0" width="920" height="720" fill="#f8fbff"/>
+      <text x="460" y="36" text-anchor="middle" font-size="24" font-weight="700" fill="#16324f" font-family="Open Sans, sans-serif" id="svgTitle">Canal postérieur — Dix-Hallpike</text>
+      <text x="460" y="60" text-anchor="middle" font-size="14" fill="#61758d" font-family="Open Sans, sans-serif" id="svgSubtitle">Oreille atteinte : droite</text>
+
+      <rect x="34" y="84" width="852" height="306" rx="18" fill="#eef5fc" stroke="#d8e5f2"/>
+      <text x="460" y="106" text-anchor="middle" font-size="12" fill="#6c8097" font-family="Open Sans, sans-serif">Schéma conventionnel simplifié</text>
+      <text x="460" y="132" text-anchor="middle" font-size="14" font-weight="700" fill="#16324f" font-family="Open Sans, sans-serif">Oreille droite</text>
+
+      <path d="M 400 128
+               C 535 96, 665 154, 680 252
+               C 692 358, 604 420, 486 398
+               C 396 382, 356 314, 358 244
+               C 360 212, 372 192, 392 188"
+            fill="none" stroke="#43c7c0" stroke-width="17" stroke-linecap="round"/>
+
+      <line x1="400" y1="128" x2="304" y2="194" stroke="#43c7c0" stroke-width="12" stroke-linecap="round"/>
+      <line x1="392" y1="188" x2="306" y2="230" stroke="#43c7c0" stroke-width="12" stroke-linecap="round"/>
+
+      <circle cx="286" cy="212" r="22" fill="url(#utricleGradPR)" stroke="#6f85f3" stroke-width="2"/>
+      <text x="286" y="252" text-anchor="middle" font-size="12" fill="#61758d" font-family="Open Sans, sans-serif">Utricule</text>
+
+      <circle cx="392" cy="188" r="18" fill="url(#ampullaGradPR)" stroke="#a855f7" stroke-width="2"/>
+      <text x="454" y="182" text-anchor="middle" font-size="12" fill="#61758d" font-family="Open Sans, sans-serif">Ampoule</text>
+
+      <ellipse cx="378" cy="188" rx="9" ry="16" fill="#92e2d4" transform="rotate(16 378 188)"/>
+
+      <text x="456" y="120" text-anchor="middle" font-size="12" fill="#61758d" font-family="Open Sans, sans-serif">Bras commun</text>
+
+      <g id="otoconia">
+        <circle cx="-6" cy="-4" r="4.5" fill="#ef4444" stroke="rgba(255,255,255,.85)" stroke-width="1"/>
+        <circle cx="6" cy="-2" r="4" fill="#ef4444" stroke="rgba(255,255,255,.85)" stroke-width="1"/>
+        <circle cx="-2" cy="6" r="4" fill="#ef4444" stroke="rgba(255,255,255,.85)" stroke-width="1"/>
+        <circle cx="7" cy="6" r="4.5" fill="#ef4444" stroke="rgba(255,255,255,.85)" stroke-width="1"/>
+      </g>
+
+      <line id="flowArrow" x1="0" y1="0" x2="0" y2="0" stroke="#14b8a6" stroke-width="3" stroke-linecap="round" marker-end="url(#arrowTealPR)"/>
+
+      <text x="460" y="430" text-anchor="middle" font-size="22" font-weight="700" fill="#16324f" font-family="Open Sans, sans-serif">Illustration du nystagmus</text>
+      <g id="eyes">
+        <g transform="translate(340,530)">
+          <circle cx="0" cy="0" r="42" fill="#fff" stroke="#9ab0c7" stroke-width="2"/>
+          <circle id="pupilLeft" cx="0" cy="0" r="13" fill="#1565c0"/>
+          <circle id="pupilLeftGlow" cx="-4" cy="-4" r="4" fill="#fff"/>
+          <path id="torsionLeft" d="" fill="none" stroke="#ef4444" stroke-width="4"/>
+          <line id="eyeArrowLeft" x1="0" y1="0" x2="0" y2="0" stroke="#ef4444" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowRedPR)"/>
+          <text id="torsionLabelLeft" x="0" y="-54" text-anchor="middle" font-size="12" fill="#ef4444" font-family="Open Sans, sans-serif"></text>
+          <text x="0" y="66" text-anchor="middle" font-size="12" fill="#61758d" font-family="Open Sans, sans-serif">Œil gauche</text>
+        </g>
+        <g transform="translate(580,530)">
+          <circle cx="0" cy="0" r="42" fill="#fff" stroke="#9ab0c7" stroke-width="2"/>
+          <circle id="pupilRight" cx="0" cy="0" r="13" fill="#1565c0"/>
+          <circle id="pupilRightGlow" cx="-4" cy="-4" r="4" fill="#fff"/>
+          <path id="torsionRight" d="" fill="none" stroke="#ef4444" stroke-width="4"/>
+          <line id="eyeArrowRight" x1="0" y1="0" x2="0" y2="0" stroke="#ef4444" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowRedPR)"/>
+          <text id="torsionLabelRight" x="0" y="-54" text-anchor="middle" font-size="12" fill="#ef4444" font-family="Open Sans, sans-serif"></text>
+          <text x="0" y="66" text-anchor="middle" font-size="12" fill="#61758d" font-family="Open Sans, sans-serif">Œil droit</text>
+        </g>
+      </g>
+
+      <g>
+        <rect x="18" y="616" width="332" height="66" rx="12" fill="rgba(255,255,255,.96)" stroke="#dbe5ef"/>
+        <text x="28" y="634" font-size="12" font-weight="700" fill="#16324f" font-family="Open Sans, sans-serif">Légende</text>
+        <g transform="translate(40,658) scale(.55)">
+          <circle cx="-6" cy="-4" r="4.5" fill="#ef4444" stroke="rgba(255,255,255,.85)" stroke-width="1"/>
+          <circle cx="6" cy="-2" r="4" fill="#ef4444" stroke="rgba(255,255,255,.85)" stroke-width="1"/>
+          <circle cx="-2" cy="6" r="4" fill="#ef4444" stroke="rgba(255,255,255,.85)" stroke-width="1"/>
+          <circle cx="7" cy="6" r="4.5" fill="#ef4444" stroke="rgba(255,255,255,.85)" stroke-width="1"/>
+        </g>
+        <text x="62" y="662" font-size="11" fill="#61758d" font-family="Open Sans, sans-serif">Otoconies</text>
+        <line x1="28" y1="675" x2="46" y2="675" stroke="#ef4444" stroke-width="3" marker-end="url(#arrowRedPR)"/>
+        <text x="62" y="678" font-size="11" fill="#61758d" font-family="Open Sans, sans-serif">Sens du nystagmus</text>
+      </g>
+    </svg>
+  </template>
+
+  <template id="tpl-post-left"></template>
+  <template id="tpl-ant-right"></template>
+  <template id="tpl-ant-left"></template>
+  <template id="tpl-horiz-right"></template>
+  <template id="tpl-horiz-left"></template>
+
+  <script src="data.js"></script>
+  <script>
+    (() => {
+      const COURSE = window.COURSE_DATA || {
+        channels: {
+          post: { name: 'Canal postérieur' },
+          ant: { name: 'Canal antérieur' },
+          horiz: { name: 'Canal horizontal' }
+        },
+        visualizer: {
+          post: { tests: { dixhallpike: { name: 'Dix-Hallpike', interpretation: 'Test clé du canal postérieur.', steps: [
+            { title: 'Départ assis', text: 'Tête tournée à 45° vers le côté testé.', nystagmus: 'Aucun nystagmus', shape: 'neutral' },
+            { title: 'Passage couché', text: 'Déclenchement d’un nystagmus torsionnel du côté testé.', nystagmus: 'Torsionnel géotropique', shape: 'post-provoked' },
+            { title: 'Retour assis', text: 'Inversion du nystagmus.', nystagmus: 'Inversion du nystagmus', shape: 'post-return' }
+          ] } } },
+          ant: { tests: { deephead: { name: 'Deep Head Hanging', interpretation: 'Bon test d’appel du canal antérieur.', steps: [
+            { title: 'Départ assis', text: 'Tête droite avant la bascule.', nystagmus: 'Aucun nystagmus', shape: 'neutral' },
+            { title: 'Head hanging', text: 'Nystagmus vertical inférieur.', nystagmus: 'Vertical inférieur', shape: 'ant-provoked' },
+            { title: 'Retour assis', text: 'Une inversion peut être observée.', nystagmus: 'Possible inversion', shape: 'ant-return' }
+          ] } } },
+          horiz: { tests: {
+            bowlean: { name: 'Bow and Lean', interpretation: 'Distingue canalolithiase et cupulolithiase.', steps: [
+              { title: 'Tête droite', text: 'Observation de base.', nystagmus: 'Base de comparaison', shape: 'neutral' },
+              { title: 'Bow', text: 'Canalolithiase : vers l’oreille atteinte. Cupulolithiase : vers l’oreille saine.', nystagmus: 'Horizontal', shape: 'bow' },
+              { title: 'Lean', text: 'Le sens s’inverse.', nystagmus: 'Horizontal inversé', shape: 'lean' }
+            ] },
+            supineroll: { name: 'Supine Roll Test', interpretation: 'Géotropique : plus intense côté atteint. Agéotropique : plus intense côté sain.', steps: [
+              { title: 'Position centrale', text: 'Décubitus dorsal tête à 30° de flexion.', nystagmus: 'Base de comparaison', shape: 'neutral' },
+              { title: 'Rotation droite', text: 'Comparer intensité et sens.', nystagmus: 'Horizontal', shape: 'roll-right' },
+              { title: 'Rotation gauche', text: 'Comparer au côté opposé.', nystagmus: 'Horizontal', shape: 'roll-left' }
+            ] },
+            upright: { name: 'Upright Head Roll', interpretation: 'Test de confirmation.', steps: [
+              { title: 'Tête droite', text: 'Position assise de départ.', nystagmus: 'Aucun ou pseudo-spontané', shape: 'neutral' },
+              { title: 'Inclinaison latérale', text: 'Géotropique : suit l’inclinaison. Agéotropique : sens opposé.', nystagmus: 'Horizontal', shape: 'upright' }
+            ] }
+          } }
+        }
+      };
+
+      // Duplicate the single full template into the empty placeholders so the file stays usable.
+      function mirrorTemplateContent() {
+        const source = document.getElementById('tpl-post-right');
+        const ids = ['tpl-post-left','tpl-ant-right','tpl-ant-left','tpl-horiz-right','tpl-horiz-left'];
+        ids.forEach(id => {
+          const t = document.getElementById(id);
+          if (t && !t.innerHTML.trim()) t.innerHTML = source.innerHTML;
+        });
+      }
+      mirrorTemplateContent();
+
+      class DirectFileVisualizer {
+        constructor() {
+          this.host = document.getElementById('diagramHost');
+          this.stepBox = document.getElementById('stepBox');
+          this.interpretBox = document.getElementById('interpretBox');
+          this.channelSelect = document.getElementById('channelSelect');
+          this.testSelect = document.getElementById('testSelect');
+          this.sideSelect = document.getElementById('sideSelect');
+          this.variantSelect = document.getElementById('variantSelect');
+          this.variantWrap = document.getElementById('variantWrap');
+          this.prevBtn = document.getElementById('prevBtn');
+          this.playBtn = document.getElementById('playBtn');
+          this.nextBtn = document.getElementById('nextBtn');
+          this.resetBtn = document.getElementById('resetBtn');
+
+          this.channel = 'post';
+          this.test = 'dixhallpike';
+          this.side = 'right';
+          this.variant = 'geotropic';
+          this.stepIndex = 0;
+          this.timer = null;
+
+          this.bind();
+          this.fillChannelSelect();
+          this.fillTestSelect();
+          this.render();
+        }
+
+        bind() {
+          this.channelSelect.addEventListener('change', e => {
+            this.channel = e.target.value;
+            this.stepIndex = 0;
+            this.fillTestSelect();
+            this.render();
+          });
+
+          this.testSelect.addEventListener('change', e => {
+            this.test = e.target.value;
+            this.stepIndex = 0;
+            this.render();
+          });
+
+          this.sideSelect.addEventListener('change', e => {
+            this.side = e.target.value;
+            this.render();
+          });
+
+          this.variantSelect.addEventListener('change', e => {
+            this.variant = e.target.value;
+            this.render();
+          });
+
+          this.prevBtn.addEventListener('click', () => this.move(-1));
+          this.nextBtn.addEventListener('click', () => this.move(1));
+          this.resetBtn.addEventListener('click', () => {
+            this.stop();
+            this.stepIndex = 0;
+            this.render();
+          });
+          this.playBtn.addEventListener('click', () => this.play());
+        }
+
+        fillChannelSelect() {
+          this.channelSelect.innerHTML = Object.entries(COURSE.channels)
+            .map(([id, c]) => `<option value="${id}">${c.name}</option>`)
+            .join('');
+          this.channelSelect.value = this.channel;
+        }
+
+        fillTestSelect() {
+          const tests = COURSE.visualizer[this.channel].tests;
+          this.testSelect.innerHTML = Object.entries(tests)
+            .map(([id, t]) => `<option value="${id}">${t.name}</option>`)
+            .join('');
+          this.test = Object.keys(tests)[0];
+          this.testSelect.value = this.test;
+          this.variantWrap.style.display = this.channel === 'horiz' ? 'block' : 'none';
+        }
+
+        getTest() {
+          return COURSE.visualizer[this.channel].tests[this.test];
+        }
+
+        getStep() {
+          const steps = this.getTest().steps;
+          return steps[Math.max(0, Math.min(this.stepIndex, steps.length - 1))];
+        }
+
+        getShape() {
+          return this.getStep().shape || 'neutral';
+        }
+
+        variantLabel() {
+          if (this.variant === 'geotropic') return 'géotropique';
+          if (this.variant === 'ageotropic') return 'agéotropique';
+          return 'cupulolithiase';
+        }
+
+        move(delta) {
+          const steps = this.getTest().steps;
+          this.stepIndex = Math.max(0, Math.min(this.stepIndex + delta, steps.length - 1));
+          this.render();
+        }
+
+        play() {
+          if (this.timer) {
+            this.stop();
+            return;
+          }
+          const steps = this.getTest().steps;
+          this.stepIndex = 0;
+          this.render();
+          this.timer = setInterval(() => {
+            if (this.stepIndex >= steps.length - 1) {
+              this.stop();
+              return;
+            }
+            this.stepIndex += 1;
+            this.render();
+          }, 1800);
+        }
+
+        stop() {
+          if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+          }
+        }
+
+        templateId() {
+          return `tpl-${this.channel}-${this.side}`;
+        }
+
+        render() {
+          const step = this.getStep();
+          const test = this.getTest();
+
+          this.stepBox.innerHTML = `
+            <div class="badge success">Étape ${this.stepIndex + 1} / ${test.steps.length}</div>
+            <h3 style="margin-top:12px">${step.title}</h3>
+            <p>${step.text}</p>
+            <div class="note info"><strong>Nystagmus attendu :</strong> ${step.nystagmus}</div>
+          `;
+
+          this.interpretBox.innerHTML = `
+            <h3>${test.name}</h3>
+            <p>${test.interpretation}</p>
+            <div class="note warn">
+              <strong>Version fichier direct :</strong> le template est intégré dans la page pour éviter les problèmes de collage et de chargement JS.
+            </div>
+          `;
+
+          const tpl = document.getElementById(this.templateId());
+          const svg = tpl.content.firstElementChild.cloneNode(true);
+          this.host.innerHTML = '';
+          this.host.appendChild(svg);
+
+          this.patch(svg);
+        }
+
+        patch(svg) {
+          const title = svg.querySelector('#svgTitle');
+          const subtitle = svg.querySelector('#svgSubtitle');
+          if (title) title.textContent = `${COURSE.channels[this.channel].name} — ${this.getTest().name}`;
+          if (subtitle) subtitle.textContent = `Oreille atteinte : ${this.side === 'right' ? 'droite' : 'gauche'}${this.channel === 'horiz' ? ' • ' + this.variantLabel() : ''}`;
+
+          this.placeOtoliths(svg);
+          this.placeFlow(svg);
+          this.updateEyes(svg);
+          this.updateSiteLabels(svg);
+        }
+
+        updateSiteLabels(svg) {
+          const long = svg.querySelector('#siteLong');
+          const short = svg.querySelector('#siteShort');
+          const cup = svg.querySelector('#siteCup');
+          if (!long || !short || !cup) return;
+
+          if (this.channel !== 'horiz') return;
+
+          long.setAttribute('display', this.variant === 'geotropic' ? 'block' : 'none');
+          short.setAttribute('display', this.variant === 'ageotropic' ? 'block' : 'none');
+          cup.setAttribute('display', this.variant === 'cupulo' ? 'block' : 'none');
+        }
+
+        placeOtoliths(svg) {
+          const g = svg.querySelector('#otoconia');
+          if (!g) return;
+          const p = this.otolithPosition();
+          g.setAttribute('transform', `translate(${p.x} ${p.y})`);
+        }
+
+        placeFlow(svg) {
+          const flow = svg.querySelector('#flowArrow');
+          if (!flow) return;
+          const f = this.flowLine();
+          if (!f) {
+            flow.setAttribute('x1', '0');
+            flow.setAttribute('y1', '0');
+            flow.setAttribute('x2', '0');
+            flow.setAttribute('y2', '0');
+            return;
+          }
+          flow.setAttribute('x1', String(f.x1));
+          flow.setAttribute('y1', String(f.y1));
+          flow.setAttribute('x2', String(f.x2));
+          flow.setAttribute('y2', String(f.y2));
+        }
+
+        otolithPosition() {
+          const shape = this.getShape();
+
+          // Simple mirrored logic around center x=460 for the duplicated direct file.
+          const mirror = x => this.side === 'right' ? x : 920 - x;
+
+          if (this.channel === 'post') {
+            const map = {
+              neutral: { x: mirror(492), y: 356 },
+              'post-provoked': { x: mirror(560), y: 166 },
+              'post-return': { x: mirror(450), y: 250 }
+            };
+            return map[shape] || map.neutral;
+          }
+
+          if (this.channel === 'ant') {
+            const map = {
+              neutral: { x: mirror(488), y: 330 },
+              'ant-provoked': { x: mirror(570), y: 156 },
+              'ant-return': { x: mirror(450), y: 244 }
+            };
+            return map[shape] || map.neutral;
+          }
+
+          if (this.channel === 'horiz') {
+            if (this.variant === 'geotropic') {
+              const map = {
+                neutral: { x: mirror(654), y: 214 },
+                bow: { x: mirror(500), y: 244 },
+                lean: { x: mirror(640), y: 198 },
+                'roll-right': this.side === 'right' ? { x: 474, y: 232 } : { x: mirror(650), y: 214 },
+                'roll-left': this.side === 'right' ? { x: 650, y: 214 } : { x: mirror(474), y: 232 },
+                upright: { x: mirror(462), y: 190 }
+              };
+              return map[shape] || map.neutral;
+            }
+
+            if (this.variant === 'ageotropic') {
+              const map = {
+                neutral: { x: mirror(430), y: 232 },
+                bow: { x: mirror(408), y: 214 },
+                lean: { x: mirror(438), y: 228 },
+                'roll-right': this.side === 'right' ? { x: 414, y: 228 } : { x: mirror(438), y: 194 },
+                'roll-left': this.side === 'right' ? { x: 438, y: 194 } : { x: mirror(414), y: 228 },
+                upright: { x: mirror(410), y: 206 }
+              };
+              return map[shape] || map.neutral;
+            }
+
+            return { x: mirror(378), y: 214 };
+          }
+
+          return { x: 0, y: 0 };
+        }
+
+        flowLine() {
+          const shape = this.getShape();
+          const mirrorX = x => this.side === 'right' ? x : 920 - x;
+
+          if (this.channel === 'post') {
+            const map = {
+              neutral: null,
+              'post-provoked': { x1: mirrorX(500), y1: 340, x2: mirrorX(556), y2: 184 },
+              'post-return': { x1: mirrorX(548), y1: 188, x2: mirrorX(458), y2: 248 }
+            };
+            return map[shape] || null;
+          }
+
+          if (this.channel === 'ant') {
+            const map = {
+              neutral: null,
+              'ant-provoked': { x1: mirrorX(500), y1: 314, x2: mirrorX(564), y2: 182 },
+              'ant-return': { x1: mirrorX(548), y1: 176, x2: mirrorX(456), y2: 238 }
+            };
+            return map[shape] || null;
+          }
+
+          if (this.channel === 'horiz') {
+            if (this.variant === 'geotropic') {
+              const towardAmp = (this.test === 'bowlean' && shape === 'bow') ||
+                                (this.test === 'supineroll' && ((this.side === 'right' && shape === 'roll-right') || (this.side === 'left' && shape === 'roll-left'))) ||
+                                (this.test === 'upright' && shape === 'upright');
+              if (shape === 'neutral') return null;
+              return towardAmp
+                ? { x1: mirrorX(620), y1: 214, x2: mirrorX(430), y2: 214 }
+                : { x1: mirrorX(430), y1: 214, x2: mirrorX(620), y2: 214 };
+            }
+
+            if (this.variant === 'ageotropic') {
+              const towardAmp = (this.test === 'bowlean' && shape === 'lean') ||
+                                (this.test === 'supineroll' && ((this.side === 'right' && shape === 'roll-left') || (this.side === 'left' && shape === 'roll-right')));
+              if (shape === 'neutral') return null;
+              return towardAmp
+                ? { x1: mirrorX(450), y1: 220, x2: mirrorX(388), y2: 214 }
+                : { x1: mirrorX(388), y1: 214, x2: mirrorX(450), y2: 220 };
+            }
+
+            if (shape === 'neutral') return null;
+            const towardUtricle = this.test === 'bowlean' && shape === 'lean';
+            return towardUtricle
+              ? { x1: mirrorX(378), y1: 246, x2: mirrorX(378), y2: 184 }
+              : { x1: mirrorX(378), y1: 184, x2: mirrorX(378), y2: 246 };
+          }
+
+          return null;
+        }
+
+        updateEyes(svg) {
+          const model = this.getEyeModel();
+
+          const setLine = (id, line) => {
+            const el = svg.querySelector(id);
+            if (!el) return;
+            if (!line) {
+              el.setAttribute('x1', '0');
+              el.setAttribute('y1', '0');
+              el.setAttribute('x2', '0');
+              el.setAttribute('y2', '0');
+              return;
+            }
+            el.setAttribute('x1', String(line.x1));
+            el.setAttribute('y1', String(line.y1));
+            el.setAttribute('x2', String(line.x2));
+            el.setAttribute('y2', String(line.y2));
+          };
+
+          const setPupil = (id, x, y) => {
+            const el = svg.querySelector(id);
+            if (el) {
+              el.setAttribute('cx', String(x));
+              el.setAttribute('cy', String(y));
+            }
+          };
+
+          const setPath = (id, d) => {
+            const el = svg.querySelector(id);
+            if (el) el.setAttribute('d', d || '');
+          };
+
+          const setText = (id, txt) => {
+            const el = svg.querySelector(id);
+            if (el) el.textContent = txt || '';
+          };
+
+          setPupil('#pupilLeft', model.left.x, model.left.y);
+          setPupil('#pupilRight', model.right.x, model.right.y);
+          setLine('#eyeArrowLeft', model.left.arrow);
+          setLine('#eyeArrowRight', model.right.arrow);
+          setPath('#torsionLeft', model.left.torsionPath);
+          setPath('#torsionRight', model.right.torsionPath);
+          setText('#torsionLabelLeft', model.left.torsionLabel);
+          setText('#torsionLabelRight', model.right.torsionLabel);
+        }
+
+        getEyeModel() {
+          const shape = this.getShape();
+
+          const neutral = {
+            left: { x: 0, y: 0, arrow: null, torsionPath: '', torsionLabel: '' },
+            right: { x: 0, y: 0, arrow: null, torsionPath: '', torsionLabel: '' }
+          };
+
+          if (shape === 'neutral') return neutral;
+
+          if (this.channel === 'horiz') {
+            const dir = this.horizontalDir(shape);
+            return {
+              left: {
+                x: dir === 'right' ? 14 : -14,
+                y: 0,
+                arrow: dir === 'right' ? { x1: -24, y1: 0, x2: 24, y2: 0 } : { x1: 24, y1: 0, x2: -24, y2: 0 },
+                torsionPath: '',
+                torsionLabel: ''
+              },
+              right: {
+                x: dir === 'right' ? 14 : -14,
+                y: 0,
+                arrow: dir === 'right' ? { x1: -24, y1: 0, x2: 24, y2: 0 } : { x1: 24, y1: 0, x2: -24, y2: 0 },
+                torsionPath: '',
+                torsionLabel: ''
+              }
+            };
+          }
+
+          if (this.channel === 'ant') {
+            const down = shape !== 'ant-return';
+            return {
+              left: {
+                x: 0,
+                y: down ? 14 : -14,
+                arrow: down ? { x1: 0, y1: -24, x2: 0, y2: 24 } : { x1: 0, y1: 24, x2: 0, y2: -24 },
+                torsionPath: '',
+                torsionLabel: ''
+              },
+              right: {
+                x: 0,
+                y: down ? 14 : -14,
+                arrow: down ? { x1: 0, y1: -24, x2: 0, y2: 24 } : { x1: 0, y1: 24, x2: 0, y2: -24 },
+                torsionPath: '',
+                torsionLabel: ''
+              }
+            };
+          }
+
+          if (this.channel === 'post') {
+            const ccw = shape === 'post-return' ? this.side === 'left' : this.side === 'right';
+            const torsion = this.torsionPath(ccw);
+            return {
+              left: { x: 0, y: 0, arrow: null, torsionPath: torsion.path, torsionLabel: ccw ? 'anti-horaire' : 'horaire' },
+              right: { x: 0, y: 0, arrow: null, torsionPath: torsion.path, torsionLabel: ccw ? 'anti-horaire' : 'horaire' }
+            };
+          }
+
+          return neutral;
+        }
+
+        horizontalDir(shape) {
+          if (this.test === 'bowlean') {
+            if (shape === 'bow') {
+              return this.variant === 'geotropic'
+                ? (this.side === 'right' ? 'right' : 'left')
+                : (this.side === 'right' ? 'left' : 'right');
+            }
+            if (shape === 'lean') {
+              return this.variant === 'geotropic'
+                ? (this.side === 'right' ? 'left' : 'right')
+                : (this.side === 'right' ? 'right' : 'left');
+            }
+          }
+
+          if (this.test === 'supineroll') {
+            if (shape === 'roll-right') return this.variant === 'geotropic' ? 'right' : 'left';
+            if (shape === 'roll-left') return this.variant === 'geotropic' ? 'left' : 'right';
+          }
+
+          if (this.test === 'upright') {
+            return this.variant === 'geotropic'
+              ? (this.side === 'right' ? 'right' : 'left')
+              : (this.side === 'right' ? 'left' : 'right');
+          }
+
+          return 'right';
+        }
+
+        torsionPath(ccw) {
+          const start = ccw ? 0.15 * Math.PI : 0.85 * Math.PI;
+          const end = ccw ? 1.30 * Math.PI : -0.30 * Math.PI;
+          const r = 28;
+          const x1 = Math.cos(start) * r;
+          const y1 = Math.sin(start) * r;
+          const x2 = Math.cos(end) * r;
+          const y2 = Math.sin(end) * r;
+          const largeArc = 1;
+          const sweep = ccw ? 1 : 0;
+          return { path: `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} ${sweep} ${x2} ${y2}` };
+        }
+      }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        new DirectFileVisualizer();
+      });
+    })();
+  </script>
+</body>
+</html>
