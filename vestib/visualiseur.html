@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diagnostiques et manœuvres — VestibLab VPPB</title>
+  <link rel="stylesheet" href="app.css" />
+  <style>
+    .dm-hero { display:grid; gap:14px; }
+    .dm-title { margin:0; font-size:2rem; font-weight:850; color:#0f3e77; }
+    .dm-subtitle { margin:0; color:#4f6680; line-height:1.55; }
+    .dm-toggle { display:flex; gap:10px; flex-wrap:wrap; }
+    .dm-toggle .btn { min-width:160px; }
+    .dm-image-card { display:grid; gap:14px; }
+    .dm-image-frame { position:relative; min-height:420px; border:1px solid var(--line); border-radius:18px; overflow:hidden; background:#eef4fb; display:flex; align-items:center; justify-content:center; }
+    .dm-image-frame img { width:100%; height:100%; object-fit:contain; display:block; background:#eef4fb; }
+    .dm-image-frame img.mirror { transform:scaleX(-1); }
+    .dm-placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:24px; text-align:center; color:#5f7288; background:repeating-linear-gradient(45deg,#f5f8fc,#f5f8fc 14px,#edf3fa 14px,#edf3fa 28px); }
+    .dm-caption { color:#31506d; line-height:1.55; }
+    .dm-step-row { display:flex; gap:10px; flex-wrap:wrap; }
+    .dm-step-btn { padding:10px 14px; border-radius:999px; border:1px solid #d6e3f2; background:#fff; color:#16324f; font:inherit; cursor:pointer; }
+    .dm-step-btn.active { background:#1565c0; border-color:#1565c0; color:#fff; }
+    .dm-select-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .dm-panel-title { margin:0 0 12px; font-size:1.15rem; font-weight:800; color:#0f3e77; }
+    .dm-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(320px,.85fr); gap:18px; align-items:start; }
+    .dm-filename { display:inline-flex; padding:7px 10px; border-radius:999px; background:#eef5ff; color:#0f4f9f; border:1px solid #d8e7ff; font-size:.88rem; font-weight:700; word-break:break-all; }
+    .dm-eye-wrap { display:grid; gap:14px; }
+    .dm-eye-box { border:1px solid var(--line); border-radius:18px; background:#fbfdff; padding:16px; }
+    .dm-info-bubble { border-radius:16px; padding:14px 16px; background:#eef7ff; border:1px solid #d6e8ff; color:#214667; line-height:1.55; }
+    .dm-info-bubble strong { color:#0f3e77; }
+    .dm-note-list { display:grid; gap:10px; margin:0; padding-left:20px; color:#31506d; }
+    .dm-files-list { display:grid; gap:10px; }
+    .dm-files-list li { overflow-wrap:anywhere; }
+    .dm-current { color:#4f6680; line-height:1.6; }
+    .dm-badges { display:flex; flex-wrap:wrap; gap:10px; }
+    @media (max-width: 980px) { .dm-grid { grid-template-columns:1fr; } }
+    @media (max-width: 700px) { .dm-select-grid { grid-template-columns:1fr; } .dm-title { font-size:1.6rem; } .dm-image-frame { min-height:300px; } }
+  </style>
+</head>
+<body>
+  <header class="header compact">
+    <div class="shell">
+      <div class="topbar">
+        <a class="back-link" href="vestibulaire.html">← Accueil</a>
+        <div class="brand">Module diagnostiques et manœuvres</div>
+      </div>
+      <div class="tagline">Séquences diagnostiques et thérapeutiques illustrées par images fixes, avec lecture visuelle du nystagmus et repères de cours.</div>
+      <div class="nav-row" id="pageNav"></div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="shell main-grid">
+      <aside class="stack">
+        <div class="panel dm-hero">
+          <h1 class="dm-title">Diagnostiques et manœuvres</h1>
+          <p class="dm-subtitle">Les images servent à montrer la position du patient et la succession des étapes. Le schéma de nystagmus reste séparé, pour éviter de mélanger anatomie, mouvement et lecture clinique.</p>
+          <div class="dm-toggle" id="modeButtons"></div>
+        </div>
+
+        <div class="panel">
+          <h2 class="dm-panel-title">Choix de la séquence</h2>
+          <div class="dm-select-grid">
+            <div>
+              <label class="small" for="canalSelect">Canal</label>
+              <select id="canalSelect"></select>
+            </div>
+            <div>
+              <label class="small" for="itemSelect">Test / manœuvre</label>
+              <select id="itemSelect"></select>
+            </div>
+            <div>
+              <label class="small" for="sideSelect">Oreille atteinte</label>
+              <select id="sideSelect">
+                <option value="right">Droite</option>
+                <option value="left">Gauche</option>
+              </select>
+            </div>
+            <div id="subtypeWrap">
+              <label class="small" for="subtypeSelect">Variante</label>
+              <select id="subtypeSelect"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="dm-panel-title">Étapes</h2>
+          <div class="dm-step-row" id="stepButtons"></div>
+        </div>
+
+        <div class="panel">
+          <h2 class="dm-panel-title">Fichiers attendus pour la séquence</h2>
+          <div id="currentFilesBox"></div>
+        </div>
+      </aside>
+
+      <section class="stack">
+        <div class="hero-card">
+          <div class="dm-badges" id="badgeRow"></div>
+          <h2 class="h2" id="sequenceTitle" style="margin-top:10px"></h2>
+          <p class="lead" id="sequenceDesc"></p>
+          <div class="note warn" id="sequenceCourseNote"></div>
+        </div>
+
+        <div class="dm-grid">
+          <div class="panel dm-image-card">
+            <h2 class="dm-panel-title">Image de position / étape</h2>
+            <div class="dm-image-frame">
+              <img id="stepImage" alt="Illustration de la position" />
+              <div class="dm-placeholder" id="imagePlaceholder"></div>
+            </div>
+            <div class="dm-current" id="stepMeta"></div>
+            <div class="dm-caption" id="stepCaption"></div>
+          </div>
+
+          <div class="stack">
+            <div class="panel dm-eye-wrap">
+              <h2 class="dm-panel-title">Lecture visuelle du nystagmus</h2>
+              <div class="dm-eye-box" id="eyeBox"></div>
+              <div class="dm-info-bubble" id="infoBubble"></div>
+            </div>
+
+            <div class="panel">
+              <h2 class="dm-panel-title">Points pédagogiques</h2>
+              <div id="notesBox"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script src="visualiseur.js"></script>
+</body>
+</html>
