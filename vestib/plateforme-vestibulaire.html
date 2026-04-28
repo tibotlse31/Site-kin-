@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VestibLab — Plateforme vestibulaire</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="plateforme-vestibulaire.css" />
+</head>
+<body>
+  <header class="pv-header">
+    <div class="pv-shell pv-header-inner">
+      <a class="pv-back" href="vestibulaire.html">← Retour aux plateformes</a>
+      <div>
+        <h1>Plateforme vestibulaire</h1>
+        <p class="pv-subtitle">Bilan, tests, interprétation, pathologies, rééducation, cas cliniques et checklists.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="pv-shell pv-page">
+    <section class="pv-hero">
+      <div>
+        <span class="pv-eyebrow">Nouvelle interface pédagogique</span>
+        <h2>Raisonner vite, vérifier clairement, réviser efficacement.</h2>
+        <p>
+          Le contenu est organisé en fiches courtes, algorithmes décisionnels, cartes comparatives,
+          cas cliniques interactifs et checklists pratiques.
+        </p>
+      </div>
+      <div class="pv-hero-actions">
+        <button class="pv-btn pv-btn-primary" data-jump="bilan">Commencer par le bilan</button>
+        <button class="pv-btn pv-btn-soft" data-jump="cas">Faire un cas clinique</button>
+      </div>
+    </section>
+
+    <section class="pv-module-grid" id="moduleCards" aria-label="Modules de la plateforme"></section>
+
+    <section class="pv-workspace" aria-label="Espace de travail">
+      <aside class="pv-sidebar">
+        <div class="pv-search-box">
+          <label for="searchInput">Recherche rapide</label>
+          <input id="searchInput" type="search" placeholder="Ex. HIT, central, PPPD..." autocomplete="off" />
+        </div>
+        <nav id="sideNav" class="pv-side-nav" aria-label="Navigation des modules"></nav>
+      </aside>
+
+      <section class="pv-content" id="content" tabindex="-1"></section>
+    </section>
+  </main>
+
+  <div class="pv-toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="plateforme-vestibulaire-data.js"></script>
+  <script src="plateforme-vestibulaire.js"></script>
+</body>
+</html>
