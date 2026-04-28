@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plateforme vestibulaire — version finale</title>
+  <link rel="stylesheet" href="plateforme-vestibulaire-finale.css" />
+</head>
+<body>
+  <header class="top-header">
+    <div class="shell header-inner">
+      <a class="back-link" href="vestibulaire.html">← Accueil</a>
+      <div class="brand-block">
+        <div class="brand">Plateforme vestibulaire</div>
+        <p class="tagline">Version finale : fidèle aux cours, structurée pour apprendre, raisonner et s’entraîner.</p>
+      </div>
+    </div>
+    <div class="shell search-zone">
+      <label for="globalSearch" class="sr-only">Recherche globale</label>
+      <input id="globalSearch" type="search" placeholder="Recherche globale : HINTS, VPPB, nystagmus, Ménière, CTSIB, optocinétique…" autocomplete="off" />
+      <button id="clearSearch" class="mini-btn" type="button">Effacer</button>
+    </div>
+    <nav class="shell nav-row" id="mainNav" aria-label="Navigation principale"></nav>
+  </header>
+
+  <main class="shell page">
+    <section id="view" aria-live="polite"></section>
+  </main>
+
+  <script src="plateforme-vestibulaire-data-finale.js"></script>
+  <script src="plateforme-vestibulaire-finale.js"></script>
+</body>
+</html>
