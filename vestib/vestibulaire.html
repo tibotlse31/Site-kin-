@@ -79,7 +79,7 @@
       padding: 0 20px;
     }
 
-    .intro {
+    .hero {
       background: var(--white);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
@@ -88,19 +88,17 @@
       border: 1px solid #dbe7f5;
     }
 
-    .intro h2,
-    .panel-section h2 {
+    .hero h2 {
       font-family: 'Montserrat', sans-serif;
       font-size: 2rem;
       margin-bottom: 10px;
       color: #173d70;
     }
 
-    .intro p,
-    .panel-section > p {
+    .hero p {
       color: var(--muted);
       font-size: 1.08rem;
-      line-height: 1.55;
+      line-height: 1.6;
     }
 
     .platform-grid {
@@ -110,44 +108,44 @@
       margin-bottom: 28px;
     }
 
-    .platform-card {
-      width: 100%;
-      min-height: 210px;
-      text-align: left;
+    .platform-card,
+    .card {
       background: var(--white);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
       border: 1px solid #dbe7f5;
-      padding: 30px 26px;
+      padding: 26px 22px;
+      text-decoration: none;
       color: inherit;
-      cursor: pointer;
       transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      min-height: 190px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      font-family: inherit;
+      cursor: pointer;
     }
 
     .platform-card:hover,
-    .platform-card.active {
+    .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 14px 30px rgba(20, 55, 110, 0.14);
       border-color: #b7d2f7;
     }
 
     .platform-card.active {
-      outline: 3px solid rgba(31, 102, 193, 0.16);
+      border-color: var(--blue-2);
+      box-shadow: 0 16px 34px rgba(31, 102, 193, 0.18);
     }
 
-    .platform-card .icon {
-      font-size: 2.15rem;
+    .icon {
+      font-size: 2rem;
       margin-bottom: 14px;
     }
 
     .platform-card h3,
     .card h3 {
       font-family: 'Montserrat', sans-serif;
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       margin-bottom: 10px;
       color: #173d70;
     }
@@ -166,63 +164,26 @@
       color: var(--blue-2);
     }
 
-    .panel-section {
+    .vppb-section {
       display: none;
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      padding: 30px 26px;
-      border: 1px solid #dbe7f5;
-      margin-bottom: 28px;
+      margin-top: 18px;
     }
 
-    .panel-section.visible {
+    .vppb-section.visible {
       display: block;
     }
 
-    .section-head {
-      margin-bottom: 22px;
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.6rem;
+      color: #173d70;
+      margin: 0 0 18px;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 22px;
-    }
-
-    .card {
-      background: #fbfdff;
-      border-radius: var(--radius-lg);
-      box-shadow: none;
-      border: 1px solid #dbe7f5;
-      padding: 26px 22px;
-      text-decoration: none;
-      color: inherit;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-      min-height: 190px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 14px 30px rgba(20, 55, 110, 0.14);
-      border-color: #b7d2f7;
-    }
-
-    .card .icon {
-      font-size: 2rem;
-      margin-bottom: 14px;
-    }
-
-    .placeholder {
-      border-radius: var(--radius-lg);
-      border: 1px dashed #b7d2f7;
-      background: #f8fbff;
-      padding: 24px;
-      color: var(--muted);
-      line-height: 1.6;
     }
 
     .footer-note {
@@ -233,8 +194,8 @@
     }
 
     @media (max-width: 950px) {
-      .platform-grid,
-      .grid {
+      .grid,
+      .platform-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
@@ -242,15 +203,14 @@
         font-size: 2.1rem;
       }
 
-      .intro h2,
-      .panel-section h2 {
+      .hero h2 {
         font-size: 1.7rem;
       }
     }
 
     @media (max-width: 640px) {
-      .platform-grid,
-      .grid {
+      .grid,
+      .platform-grid {
         grid-template-columns: 1fr;
       }
 
@@ -267,13 +227,11 @@
         font-size: 1.8rem;
       }
 
-      .intro,
-      .panel-section {
+      .hero {
         padding: 24px 20px;
       }
 
-      .intro h2,
-      .panel-section h2 {
+      .hero h2 {
         font-size: 1.45rem;
       }
 
@@ -284,6 +242,7 @@
     }
   </style>
 </head>
+
 <body>
   <header class="topbar">
     <div class="topbar-inner">
@@ -294,48 +253,43 @@
   </header>
 
   <main class="container">
-    <section class="intro">
-      <h2>Outils vertige / vestibulaire</h2>
-      <p>Sélectionner une plateforme pour afficher ses modules.</p>
+    <section class="hero">
+      <h2>Plateformes vestibulaires</h2>
+      <p>
+        Accès aux modules VPPB existants et à la nouvelle plateforme vestibulaire générale.
+      </p>
     </section>
 
-    <section class="platform-grid" aria-label="Choix de plateforme">
-      <button class="platform-card" type="button" data-panel="vestibulairePanel" aria-expanded="false">
+    <section class="platform-grid">
+      <a class="platform-card" href="plateforme-vestibulaire.html">
         <div>
           <div class="icon">🧠</div>
           <h3>Plateforme vestibulaire</h3>
-          <p>Nouvelle interface destinée aux prochains contenus de cours vestibulaires.</p>
+          <p>
+            Bilan guidé, tests cliniques, drapeaux rouges, pathologies, rééducation,
+            cas cliniques et checklists.
+          </p>
         </div>
         <span>Ouvrir la plateforme →</span>
-      </button>
+      </a>
 
-      <button class="platform-card" type="button" data-panel="vppbPanel" aria-expanded="false">
+      <div class="platform-card" id="vppbToggle">
         <div>
           <div class="icon">🌀</div>
           <h3>Plateforme VPPB</h3>
-          <p>Accès aux modules Diagnostic, Traitements, Cas cliniques, Checklists, Pièges et Diagnostiques/manœuvres.</p>
+          <p>
+            Accéder aux contenus spécifiques VPPB : diagnostic, traitements,
+            cas cliniques, checklists, pièges et manœuvres.
+          </p>
         </div>
-        <span>Ouvrir la plateforme →</span>
-      </button>
-    </section>
-
-    <section class="panel-section" id="vestibulairePanel">
-      <div class="section-head">
-        <h2>Plateforme vestibulaire</h2>
-        <p>Cette section sera construite avec les nouveaux cours.</p>
-      </div>
-      <div class="placeholder">
-        Les futurs modules pourront être ajoutés ici : cours, fiches de révision, quiz, cas cliniques, diagnostics différentiels ou algorithmes de prise en charge.
+        <span>Afficher les modules →</span>
       </div>
     </section>
 
-    <section class="panel-section" id="vppbPanel">
-      <div class="section-head">
-        <h2>Plateforme VPPB</h2>
-        <p>Accès direct aux contenus de cours, aux manœuvres, aux cas cliniques, aux checklists et au module Diagnostiques et manœuvres.</p>
-      </div>
+    <section class="vppb-section" id="vppbSection">
+      <h2 class="section-title">Modules VPPB</h2>
 
-      <section class="grid">
+      <div class="grid">
         <a class="card" href="diagnostic.html">
           <div>
             <div class="icon">🧭</div>
@@ -389,35 +343,24 @@
           </div>
           <span>Ouvrir le module →</span>
         </a>
-      </section>
+      </div>
     </section>
 
-    <p class="footer-note">Module vestibulaire</p>
+    <p class="footer-note">Modules vestibulaires — VestibLab</p>
   </main>
 
   <script>
-    const platformCards = document.querySelectorAll('.platform-card');
-    const panels = document.querySelectorAll('.panel-section');
+    const vppbToggle = document.getElementById('vppbToggle');
+    const vppbSection = document.getElementById('vppbSection');
 
-    platformCards.forEach(card => {
-      card.addEventListener('click', () => {
-        const targetId = card.dataset.panel;
-        const targetPanel = document.getElementById(targetId);
-        const isAlreadyOpen = targetPanel.classList.contains('visible');
+    vppbToggle.addEventListener('click', () => {
+      vppbSection.classList.toggle('visible');
+      vppbToggle.classList.toggle('active');
 
-        panels.forEach(panel => panel.classList.remove('visible'));
-        platformCards.forEach(item => {
-          item.classList.remove('active');
-          item.setAttribute('aria-expanded', 'false');
-        });
-
-        if (!isAlreadyOpen) {
-          targetPanel.classList.add('visible');
-          card.classList.add('active');
-          card.setAttribute('aria-expanded', 'true');
-          targetPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
+      const label = vppbToggle.querySelector('span');
+      label.textContent = vppbSection.classList.contains('visible')
+        ? 'Masquer les modules ↑'
+        : 'Afficher les modules →';
     });
   </script>
 </body>
