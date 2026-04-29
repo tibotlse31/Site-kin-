@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plateforme vestibulaire — révision clinique</title>
+  <link rel="stylesheet" href="plateforme-vestibulaire.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navigation principale">
+      <a class="home-link" href="vestibulaire.html">← Accueil</a>
+      <div class="brand-block">
+        <div class="brand-mark">V</div>
+        <div><div class="brand">Vestibulaire</div><p class="tagline">Réviser, retrouver, raisonner.</p></div>
+      </div>
+      <nav id="mainNav" class="side-nav"></nav>
+      <div class="side-tools">
+        <button id="levelBtn" class="side-tool" type="button" aria-pressed="false">Mode approfondi</button>
+        <button id="glossaryBtn" class="side-tool" type="button">Acronymes</button>
+      </div>
+    </aside>
+    <main class="main-area">
+      <div class="mobile-topbar"><a href="vestibulaire.html">← Accueil</a><button id="mobileMenuBtn" type="button">Menu</button></div>
+      <section id="view" class="view" aria-live="polite"></section>
+    </main>
+  </div>
+  <aside id="glossaryPanel" class="drawer" aria-hidden="true"></aside>
+  <div id="overlay" class="overlay" hidden></div>
+  <script src="plateforme-vestibulaire-data.js"></script>
+  <script src="plateforme-vestibulaire.js"></script>
+</body>
+</html>
