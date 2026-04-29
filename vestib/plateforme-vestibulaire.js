@@ -50,6 +50,18 @@
   function openGlossary(){ renderGlossary(); glossaryPanel.classList.add('open'); glossaryPanel.setAttribute('aria-hidden','false'); overlay.hidden=false; }
   function closeDrawer(closeSidebar=true){ glossaryPanel.classList.remove('open'); glossaryPanel.setAttribute('aria-hidden','true'); if(closeSidebar) sidebar?.classList.remove('open'); overlay.hidden=true; }
   function render(){ renderNav(); if(current==='home')renderHome(); if(current==='paths')renderPaths(); if(current==='concepts')renderConcepts(); if(current==='systems')renderSystems(); if(current==='assessment')renderAssessment(); if(current==='pathologies')renderPathologies(); if(current==='rehab')renderRehab(); if(current==='cases')renderCases(); if(current==='quiz')renderQuiz(); if(current==='search')renderSearch(); }
-  glossaryBtn?.addEventListener('click',openGlossary); overlay?.addEventListener('click',()=>closeDrawer(true)); document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer(true);}); mobileMenuBtn?.addEventListener('click',()=>{sidebar.classList.add('open'); overlay.hidden=false;});document.body.classList.toggle('deep',deep); levelBtn.classList.toggle('on',deep); levelBtn.setAttribute('aria-pressed',deep?'true':'false'); levelBtn.textContent=deep?'Mode essentiel':'Mode approfondi';});
-  render();
+ glossaryBtn?.addEventListener('click', openGlossary);
+
+overlay?.addEventListener('click', () => closeDrawer(true));
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDrawer(true);
+});
+
+mobileMenuBtn?.addEventListener('click', () => {
+  sidebar?.classList.add('open');
+  if (overlay) overlay.hidden = false;
+});
+
+render();
 })();
